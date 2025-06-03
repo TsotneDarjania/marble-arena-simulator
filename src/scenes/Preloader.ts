@@ -1,9 +1,21 @@
 import { Scene } from "phaser";
 import { matchDataConfig } from "../config/matchConfig";
+import { TeamDataServerType } from "../main";
 
 export default class Preload extends Scene {
+  private teamData: {
+    hostTeam: TeamDataServerType;
+    guestTeam: TeamDataServerType;
+  };
+
   constructor() {
     super("Preload");
+  }
+
+  init(teamData: any) {
+    console.log(teamData);
+    this.teamData = teamData;
+    console.log("Received teamData:", this.teamData);
   }
 
   preload() {
@@ -69,6 +81,6 @@ export default class Preload extends Scene {
   }
 
   create() {
-    this.scene.start("Menu");
+    this.scene.start("Menu", this.teamData);
   }
 }

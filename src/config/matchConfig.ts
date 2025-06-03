@@ -25,18 +25,9 @@ export const matchDataConfig: MatchDataType = {
         "Great GoalKeeper",
         "Good Job",
         "Fantascit Save",
-        "Buffon Is Amazing",
       ],
-      defenderComments: [
-        "Good Defence",
-        "Chiellinni was good",
-        "Good Chance for CounterAttack",
-      ],
-      shooterComments: [
-        "Great Shoot!",
-        "May it will be Goal",
-        "Look at that, wow !!",
-      ],
+      defenderComments: ["", "", ""],
+      shooterComments: ["", "", ""],
     },
     freeKiskFrequency: 100, // from 0 to 100
     penaltyFrequency: 0, // from 0 to 100
