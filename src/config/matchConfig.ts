@@ -20,17 +20,12 @@ export const matchDataConfig: MatchDataType = {
     goalKeeperSpeed: 84,
     motionSpeed: 51,
     comments: {
-      saveBallComments: [
-        "Nice Save",
-        "Great GoalKeeper",
-        "Good Job",
-        "Fantascit Save",
-      ],
+      saveBallComments: ["", "", "", ""],
       defenderComments: ["", "", ""],
       shooterComments: ["", "", ""],
     },
-    freeKiskFrequency: 100, // from 0 to 100
-    penaltyFrequency: 0, // from 0 to 100
+    freeKiskFrequency: 0, // from 0 to 100
+    penaltyFrequency: 20, // from 0 to 100
   },
   guestTeamData: {
     name: "Manchester City",
@@ -51,26 +46,12 @@ export const matchDataConfig: MatchDataType = {
     goalKeeperSpeed: 100,
     motionSpeed: 100,
     comments: {
-      saveBallComments: [
-        "Nice Save",
-        "Great GoalKeeper",
-        "Good Job",
-        "Fantascit Save",
-        "Buffon Is Amazing",
-      ],
-      defenderComments: [
-        "Good Defence",
-        "Chiellinni was good",
-        "Good Chance for CounterAttack",
-      ],
-      shooterComments: [
-        "Great Shoot!",
-        "May it will be Goal",
-        "Look at that, wow !!",
-      ],
+      saveBallComments: [""],
+      defenderComments: ["", "", ""],
+      shooterComments: ["", "", ""],
     },
-    freeKiskFrequency: 100, // from 0 to 100
-    penaltyFrequency: 0, // from 0 to 100
+    freeKiskFrequency: 0, // from 0 to 100
+    penaltyFrequency: 20, // from 0 to 100
   },
   gameConfig: {
     mode: "marble-football",
@@ -80,8 +61,8 @@ export const matchDataConfig: MatchDataType = {
 } as MatchDataType;
 
 export const matchInfo = {
-  matchTitle: "Marble League",
-  matchSubTitle: "Fixture 1",
+  matchTitle: "",
+  matchSubTitle: "",
 } as MatchInfoType;
 
 export const stadiumConfig = {

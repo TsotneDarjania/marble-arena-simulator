@@ -1,5 +1,5 @@
 import * as Phaser from "phaser";
-import { matchDataConfig } from "../config/matchConfig";
+import { matchDataConfig, stadiumConfig } from "../config/matchConfig";
 import { TeamDataServerType } from "../main";
 import { GameDataStore } from "../config/gameDataStore";
 
@@ -128,9 +128,30 @@ export default class Menu extends Phaser.Scene {
       extraTimeText.setText(`Extra Time: ${extraTime ? "ON" : "OFF"}`);
     });
 
+    // Stadium Background Color Picker
+    this.add.text(100, 410, "Stadium Background:", { color: "#fff" });
+
+    const colorInput = document.createElement("input");
+    colorInput.type = "color";
+    colorInput.value = "#008800"; // Default
+    colorInput.style.position = "absolute";
+    colorInput.style.left = `${this.scale.canvas.offsetLeft + 260}px`;
+    colorInput.style.top = `${this.scale.canvas.offsetTop + 410}px`;
+    colorInput.style.zIndex = "1000";
+    document.body.appendChild(colorInput);
+
+    let selectedStadiumColor = "0xffffff";
+    colorInput.addEventListener("input", () => {
+      selectedStadiumColor = "0x" + colorInput.value.replace("#", "");
+    });
+
+    this.events.on("shutdown", () => {
+      colorInput.remove();
+    });
+
     // Start Button
     const startBtn = this.add
-      .text(400, 450, "Start Match", {
+      .text(400, 470, "Start Match", {
         fontSize: "24px",
         backgroundColor: "#0f0",
         padding: { x: 15, y: 10 },
@@ -152,84 +173,53 @@ export default class Menu extends Phaser.Scene {
           16
         );
 
-      matchDataConfig.hostTeamData.initials =
-        GameDataStore.teamData.hostTeam!.tablo_name;
+      const host = GameDataStore.teamData.hostTeam!;
+      const guest = GameDataStore.teamData.guestTeam!;
 
-      matchDataConfig.hostTeamData.formation =
-        GameDataStore.teamData.hostTeam!.default_strategy;
+      matchDataConfig.hostTeamData = {
+        ...matchDataConfig.hostTeamData,
+        initials: host.tablo_name,
+        formation: host.default_strategy,
+        tactics: {
+          formation: {
+            defenceLine: host.defence_strategy,
+            centerLine: host.midfielder_strategy,
+            attackLine: host.attack_strategy,
+          },
+        },
+        fansColor: getColor(host, hostColorChoice),
+        passSpeed: host.pass_speed,
+        shootSpeed: Math.min(host.pass_speed + 15, 99),
+        shootAccuracy: host.shoot_accuracy,
+        goalKeeperSpeed: host.goalkeeper_speed,
+        motionSpeed: host.defence_speed,
+        freeKiskFrequency: host.fault_possibility,
+      };
 
-      matchDataConfig.hostTeamData.tactics.formation.defenceLine =
-        GameDataStore.teamData.hostTeam!.defence_strategy;
-
-      matchDataConfig.hostTeamData.tactics.formation.centerLine =
-        GameDataStore.teamData.hostTeam!.midfielder_strategy;
-
-      matchDataConfig.hostTeamData.tactics.formation.attackLine =
-        GameDataStore.teamData.hostTeam!.attack_strategy;
-
-      matchDataConfig.hostTeamData.fansColor = getColor(
-        GameDataStore.teamData.hostTeam!,
-        hostColorChoice
-      );
-
-      matchDataConfig.hostTeamData.passSpeed =
-        GameDataStore.teamData.hostTeam!.pass_speed;
-
-      matchDataConfig.hostTeamData.shootSpeed = Math.min(
-        GameDataStore.teamData.hostTeam!.pass_speed + 15,
-        99
-      );
-      matchDataConfig.hostTeamData.shootAccuracy =
-        GameDataStore.teamData.hostTeam!.shoot_accuracy;
-
-      matchDataConfig.hostTeamData.goalKeeperSpeed =
-        GameDataStore.teamData.hostTeam!.goalkeeper_speed;
-
-      matchDataConfig.hostTeamData.motionSpeed =
-        GameDataStore.teamData.hostTeam!.defence_speed;
-
-      // Guest Team
-      matchDataConfig.guestTeamData.initials =
-        GameDataStore.teamData.guestTeam!.tablo_name;
-
-      matchDataConfig.guestTeamData.formation =
-        GameDataStore.teamData.guestTeam!.default_strategy;
-
-      matchDataConfig.guestTeamData.tactics.formation.defenceLine =
-        GameDataStore.teamData.guestTeam!.defence_strategy;
-
-      matchDataConfig.guestTeamData.tactics.formation.centerLine =
-        GameDataStore.teamData.guestTeam!.midfielder_strategy;
-
-      matchDataConfig.guestTeamData.tactics.formation.attackLine =
-        GameDataStore.teamData.guestTeam!.attack_strategy;
-
-      matchDataConfig.guestTeamData.fansColor = getColor(
-        GameDataStore.teamData.guestTeam!,
-        guestColorChoice
-      );
-
-      matchDataConfig.guestTeamData.passSpeed =
-        GameDataStore.teamData.guestTeam!.pass_speed;
-
-      matchDataConfig.guestTeamData.shootSpeed = Math.min(
-        GameDataStore.teamData.guestTeam!.pass_speed + 15,
-        99
-      );
-
-      matchDataConfig.guestTeamData.shootAccuracy =
-        GameDataStore.teamData.guestTeam!.shoot_accuracy;
-
-      matchDataConfig.guestTeamData.goalKeeperSpeed =
-        GameDataStore.teamData.guestTeam!.goalkeeper_speed;
-
-      matchDataConfig.guestTeamData.motionSpeed =
-        GameDataStore.teamData.guestTeam!.defence_speed;
+      matchDataConfig.guestTeamData = {
+        ...matchDataConfig.guestTeamData,
+        initials: guest.tablo_name,
+        formation: guest.default_strategy,
+        tactics: {
+          formation: {
+            defenceLine: guest.defence_strategy,
+            centerLine: guest.midfielder_strategy,
+            attackLine: guest.attack_strategy,
+          },
+        },
+        fansColor: getColor(guest, guestColorChoice),
+        passSpeed: guest.pass_speed,
+        shootSpeed: Math.min(guest.pass_speed + 15, 99),
+        shootAccuracy: guest.shoot_accuracy,
+        goalKeeperSpeed: guest.goalkeeper_speed,
+        motionSpeed: guest.defence_speed,
+        freeKiskFrequency: guest.fault_possibility,
+      };
 
       matchDataConfig.gameConfig.mathTime = selectedTime;
-      this.scene.start("GamePlay", {
-        extraTime,
-      });
+      stadiumConfig.spectatorsBackground = Number(selectedStadiumColor);
+
+      this.scene.start("GamePlay", { extraTime });
     });
   }
 }
