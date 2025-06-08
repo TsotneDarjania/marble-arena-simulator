@@ -25,7 +25,7 @@ export const matchDataConfig: MatchDataType = {
       shooterComments: ["", "", ""],
     },
     freeKiskFrequency: 0, // from 0 to 100
-    penaltyFrequency: 20, // from 0 to 100
+    penaltyFrequency: 2, // from 0 to 100
   },
   guestTeamData: {
     name: "Manchester City",
@@ -51,7 +51,7 @@ export const matchDataConfig: MatchDataType = {
       shooterComments: ["", "", ""],
     },
     freeKiskFrequency: 0, // from 0 to 100
-    penaltyFrequency: 20, // from 0 to 100
+    penaltyFrequency: 2, // from 0 to 100
   },
   gameConfig: {
     mode: "marble-football",

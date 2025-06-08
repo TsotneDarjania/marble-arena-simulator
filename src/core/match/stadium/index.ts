@@ -67,12 +67,12 @@ export class Stadium extends Phaser.GameObjects.Container {
 
   addSpectatorsBakcground() {
     const stadiumBck = this.scene.add.image(
-      this.scene.game.canvas.width / 2,
-      this.scene.game.canvas.height / 2 + 80,
+      this.scene.game.canvas.width / 2 - 40,
+      this.scene.game.canvas.height / 2 + 30,
       "stadiumBck"
     );
     stadiumBck.setTint(stadiumConfig.spectatorsBackground);
-    stadiumBck.setScale(0.8);
+    stadiumBck.setScale(0.9);
   }
 
   addfield() {
@@ -82,7 +82,7 @@ export class Stadium extends Phaser.GameObjects.Container {
       "stadiumLines"
     );
     this.stadiumField.setDisplaySize(
-      this.fieldImageWidth, 
+      this.fieldImageWidth,
       this.fieldImageHeight
     );
   }
