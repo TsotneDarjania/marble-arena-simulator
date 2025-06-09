@@ -147,6 +147,43 @@ export class MatchEventManager {
 
   isGoal(whoScored: "host" | "guest") {
     if (this.matchStatus === "playing") {
+      setTimeout(() => {
+        const bg = this.match.scene.add
+          .image(
+            this.match.scene.game.canvas.width / 2,
+            this.match.scene.game.canvas.height / 2,
+            "default"
+          )
+          .setDepth(150)
+          .setTint(0x000000)
+          .setScale(100)
+          .setAlpha(0);
+
+        const canvasScene = this.match.scene.scene.get(
+          "CanvasScene"
+        ) as CanvasScene;
+        canvasScene.showMarbleArenaLogo();
+
+        this.match.scene.tweens.add({
+          targets: [bg],
+          alpha: 1,
+          duration: 500,
+          onComplete: () => {
+            setTimeout(() => {
+              this.match.scene.tweens.add({
+                targets: bg,
+                alpha: 0,
+                delay: 300,
+                duration: 500,
+                onComplete: () => {
+                  bg.destroy();
+                },
+              });
+            }, 300);
+          },
+        });
+      }, 2700);
+
       this.match.matchTimer.stopTimer();
 
       if (whoScored === "host") {

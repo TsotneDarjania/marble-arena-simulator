@@ -148,22 +148,22 @@ export class Freekick {
     const isfailShoot =
       getRandomIntNumber(0, 100) < teamData.shootAccuracy ? false : true;
 
-    let y = 0;
+    let y = this.match.stadium.stadiumField.getBounds().centerY;
 
     if (isfailShoot) {
       const isTop = getRandomIntNumber(0, 100);
       if (isTop > 50) {
-        y = 473 + getRandomIntNumber(60, 90);
+        y += getRandomIntNumber(60, 90);
       } else {
-        y = 473 - getRandomIntNumber(60, 90);
+        y -= getRandomIntNumber(60, 90);
       }
     } else {
       const isTop = getRandomIntNumber(0, 100);
 
       if (isTop > 50) {
-        y = 473 + getRandomIntNumber(0, 55);
+        y += getRandomIntNumber(0, 55);
       } else {
-        y = 473 - getRandomIntNumber(0, 55);
+        y -= getRandomIntNumber(0, 55);
       }
     }
 

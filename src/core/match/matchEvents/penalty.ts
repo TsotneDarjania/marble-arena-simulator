@@ -63,25 +63,24 @@ export class Penalty {
         ? this.match.matchData.hostTeamData
         : this.match.matchData.guestTeamData;
     let x = 0;
-    const isfailShoot =
-      getRandomIntNumber(0, 100) < teamData.shootAccuracy ? false : true;
+    const isfailShoot = getRandomIntNumber(0, 100) < 70 ? false : true;
 
-    let y = 0;
+    let y = this.match.stadium.stadiumField.getBounds().centerY;
 
     if (isfailShoot) {
       const isTop = getRandomIntNumber(0, 100);
       if (isTop > 50) {
-        y = 473 + getRandomIntNumber(60, 90);
+        y += getRandomIntNumber(60, 90);
       } else {
-        y = 473 - getRandomIntNumber(60, 90);
+        y -= getRandomIntNumber(60, 90);
       }
     } else {
       const isTop = getRandomIntNumber(0, 100);
 
       if (isTop > 50) {
-        y = 473 + getRandomIntNumber(0, 55);
+        y += getRandomIntNumber(0, 55);
       } else {
-        y = 473 - getRandomIntNumber(0, 55);
+        y -= getRandomIntNumber(0, 55);
       }
     }
     if (this.whoIsGulity === "guest") {

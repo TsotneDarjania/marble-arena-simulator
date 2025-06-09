@@ -23,8 +23,8 @@ export default class GamePlayCameraController {
   }
 
   updateCameraZoom(ball: Phaser.Physics.Arcade.Image) {
-    const defaultCameraZoom = this.scene.cameras.main.zoom - 0.18;
-    const closeCameraZoom = this.scene.cameras.main.zoom - 0.18;
+    const defaultCameraZoom = this.scene.cameras.main.zoom - 0.1;
+    const closeCameraZoom = this.scene.cameras.main.zoom - 0.1;
 
     this.scene.events.on("update", () => {
       if (
