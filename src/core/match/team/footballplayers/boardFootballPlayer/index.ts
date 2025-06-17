@@ -469,17 +469,17 @@ export default class BoardFootballPlayer extends Phaser.GameObjects.Container {
     if (isfailShoot) {
       const isTop = getRandomIntNumber(0, 100);
       if (isTop > 50) {
-        y += getRandomIntNumber(60, 90);
+        y += getRandomIntNumber(70, 110);
       } else {
-        y -= getRandomIntNumber(60, 90);
+        y -= getRandomIntNumber(70, 110);
       }
     } else {
       const isTop = getRandomIntNumber(0, 100);
 
       if (isTop > 50) {
-        y += getRandomIntNumber(0, 55);
+        y += getRandomIntNumber(0, 65);
       } else {
-        y -= getRandomIntNumber(0, 55);
+        y -= getRandomIntNumber(0, 65);
       }
     }
 
