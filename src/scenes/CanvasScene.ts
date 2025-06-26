@@ -355,7 +355,7 @@ export default class CanvasScene extends Phaser.Scene {
       this.indicatorsContainer.add([bck, midline, score1, score2, logo1, logo2, initials1, initials2, this.timerText])
       this.indicatorsContainer.setScale(0.75)
       this.indicatorsContainer.x += 40
-      this.indicatorsContainer.y += 75
+      this.indicatorsContainer.y += 57
 
       this.indicatorsContainer.setAlpha(0)
 
