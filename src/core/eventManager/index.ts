@@ -36,6 +36,7 @@ export class EventManager {
       if (this.status !== "ready-for-start-match") return;
       if (event.code === "Space") {
         this.canvasScene.hideIntroWindow();
+        this.canvasScene.showMatchIndicators();
         this.gamePlayScene.match.startMatch();
       }
       this.status = "match-is-started";

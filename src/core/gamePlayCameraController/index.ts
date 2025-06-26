@@ -5,7 +5,7 @@ export default class GamePlayCameraController {
 
   showStartGameAnimation() {
     this.scene.cameras.main.zoomTo(
-      this.scene.cameras.main.zoom + 0.7, // Target zoom level
+      this.scene.cameras.main.zoom + 0.5, // Target zoom level
       7000, // Duration (in milliseconds)
       "Cubic.easeInOut", // Easing function
       false // Force (set to true if you want to force the zoom change)
@@ -17,9 +17,9 @@ export default class GamePlayCameraController {
   }
 
   startFollow(ball: Phaser.Physics.Arcade.Image) {
-    this.scene.cameras.main.startFollow(ball, false, 0.003);
+    // this.scene.cameras.main.startFollow(ball, false, 0);
 
-    this.updateCameraZoom(ball);
+    // this.updateCameraZoom(ball);
   }
 
   updateCameraZoom(ball: Phaser.Physics.Arcade.Image) {
