@@ -1,5 +1,4 @@
 import * as Phaser from "phaser";
-import { CameraController } from "../core";
 import GamePlay from "./GamePlay";
 import { IntroOverlay } from "../uiComponents/overlay";
 import { IntroWindow } from "../uiComponents/introWindow";
@@ -7,7 +6,6 @@ import { matchDataConfig, matchInfo } from "../config/matchConfig";
 import { calculatePercentage } from "../utils/math";
 
 export default class CanvasScene extends Phaser.Scene {
-  cameraController: CameraController;
   introOverlay: IntroOverlay;
 
   gamePlayMenu: Phaser.GameObjects.Container;
@@ -381,18 +379,13 @@ export default class CanvasScene extends Phaser.Scene {
 
   startIntroAnimation() {
     this.introOverlay.destroy(true);
-    this.cameraController.destroy();
 
     const gamePlayScene = this.scene.get("GamePlay") as GamePlay;
     gamePlayScene.startMatchPrepare();
     this.makeIntroAnimation();
   }
 
-  createCameraController() {
-    const gamePlayScene = this.scene.get("GamePlay") as GamePlay;
-    this.cameraController = new CameraController(this, gamePlayScene);
-  }
-
+ 
   makeIntroAnimation() {
     this.introWindow = new IntroWindow(this, 0, 0, {
       hostTeam: {

@@ -1,8 +1,10 @@
-import { TeamDataServerType } from "../main";
+import { TeamDataType } from "../types/gameTypes";
+
 
 export const GameDataStore = {
   teamData: {
-    hostTeam: null as TeamDataServerType | null,
-    guestTeam: null as TeamDataServerType | null,
+    hostTeam: null as TeamDataType | null,
+    guestTeam: null as TeamDataType | null,
   },
+  teams : null as Array<TeamDataType> | null
 };

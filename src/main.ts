@@ -4,49 +4,38 @@ import CanvasScene from "./scenes/CanvasScene";
 import GamePlay from "./scenes/GamePlay";
 import Menu from "./scenes/Menu";
 import Preload from "./scenes/Preloader";
-import { getGameData } from "./api/getGameData";
-import { matchDataConfig } from "./config/matchConfig";
+import {  getTeams } from "./api/getTeams";
+import { gameConfig} from "./config/matchConfig";
 import { GameDataStore } from "./config/gameDataStore";
+import { getTeamParamsFromURL } from "./utils/helper";
 
-// types.ts
-export type TeamDataServerType = {
-  id: number;
-  created_at: string;
-  name: string;
-  tablo_name: string;
-  team_logo_url: string;
-  primary_color: string;
-  secondary_color: string;
-  fifa_raiting: number;
-  default_strategy: string;
-
-  attack_speed: number;
-  attack_strategy: "wide-attack" | "normal" | "wide-back";
-  midfielder_speed: number;
-  midfielder_strategy: "wide-attack" | "normal" | "wide-back";
-  defence_speed: number;
-  defence_strategy: "wide-attack" | "normal";
-  goalkeeper_speed: number;
-
-  shoot_accuracy: number;
-  pass_speed: number;
-  pass_accuracy: number;
-  fault_possibility: number;
-};
 
 async function initGame() {
-  const teamData = (await getGameData()) as {
-    hostTeam: TeamDataServerType;
-    guestTeam: TeamDataServerType;
-  };
+  const teamParams = getTeamParamsFromURL();
+  if (teamParams) {
+    gameConfig.gameMode = "marble-league"
+  }
 
-  GameDataStore.teamData = teamData;
+  const teams = await getTeams()
+  if(!teams){
+    console.log("can not get teams....");
+    return;
+  }
 
-  matchDataConfig.hostTeamData.logoURL = teamData.hostTeam.team_logo_url;
-  matchDataConfig.hostTeamData.logoKey = teamData.hostTeam.name;
+  GameDataStore.teams = teams;
+  
+  // const teamData = (await getGameData()) as {
+  //   hostTeam: TeamDataServerType;
+  //   guestTeam: TeamDataServerType;
+  // };
 
-  matchDataConfig.guestTeamData.logoURL = teamData.guestTeam.team_logo_url;
-  matchDataConfig.guestTeamData.logoKey = teamData.guestTeam.name;
+  // GameDataStore.teamData = teamData;
+
+  // matchDataConfig.hostTeamData.logoURL = teamData.hostTeam.team_logo_url;
+  // matchDataConfig.hostTeamData.logoKey = teamData.hostTeam.name;
+
+  // matchDataConfig.guestTeamData.logoURL = teamData.guestTeam.team_logo_url;
+  // matchDataConfig.guestTeamData.logoKey = teamData.guestTeam.name;
 
   const config: Types.Core.GameConfig = {
     type: Phaser.AUTO,

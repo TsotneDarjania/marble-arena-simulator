@@ -1,1 +1,1 @@
-export { default as SelectBar } from "./selectBar";
+export { default as TeamsSelector } from "./TeamsSelector";

@@ -1,22 +1,18 @@
 import { Scene } from "phaser";
 import { matchDataConfig } from "../config/matchConfig";
-import { TeamDataServerType } from "../main";
+import { GameDataStore } from "../config/gameDataStore";
+
 
 export default class Preload extends Scene {
-  private teamData: {
-    hostTeam: TeamDataServerType;
-    guestTeam: TeamDataServerType;
-  };
+  // private teamData: {
+  //   hostTeam: TeamDataServerType;
+  //   guestTeam: TeamDataServerType;
+  // };
 
   constructor() {
     super("Preload");
   }
 
-  init(teamData: any) {
-    console.log(teamData);
-    this.teamData = teamData;
-    console.log("Received teamData:", this.teamData);
-  }
 
   preload() {
     this.load.setPath("assets/");
@@ -50,17 +46,6 @@ export default class Preload extends Scene {
     this.load.image("mike", "image/ui/mike.png");
     this.load.image("marbleArenaLogo", "image/ui/logo.png");
 
-    // Default Team Logos
-    this.load.image(
-      matchDataConfig.hostTeamData.logoKey,
-      matchDataConfig.hostTeamData.logoURL
-    );
-    this.load.image(
-      matchDataConfig.guestTeamData.logoKey,
-      matchDataConfig.guestTeamData.logoURL
-    );
-    this.load.image("liverpool", "image/teamLogos/premierLeague/Liverpool.png");
-
     // GameObjects
     this.load.image("ball", "image/gameObjects/ball.png");
     this.load.image("circle", "image/gameObjects/circle.png");
@@ -78,9 +63,15 @@ export default class Preload extends Scene {
     this.load.audio("faul", ["sounds/is-faul.mp3"]);
     this.load.audio("referee", ["sounds/referee.mp3"]);
     this.load.audio("goalkeeperJumpSound", ["sounds/goalkeeperJumpSound.mp3"]);
+
+    // Teams
+    GameDataStore.teams!.forEach((team) => {
+      this.load.image(team.name, team.team_logo_url);
+    })
   }
 
   create() {
-    this.scene.start("Menu", this.teamData);
+    this.scene.start("Menu")
+    // this.scene.start("Menu", this.teamData);
   }
 }

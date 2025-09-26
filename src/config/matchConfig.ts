@@ -1,4 +1,8 @@
-import { MatchDataType, MatchInfoType } from "../types/gameTypes";
+import { GameModeType, MatchDataType, MatchInfoType } from "../types/gameTypes";
+
+export const gameConfig : {gameMode : GameModeType} = {
+  gameMode : "friendly"
+} 
 
 export const matchDataConfig: MatchDataType = {
   hostTeamData: {
