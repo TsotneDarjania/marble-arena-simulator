@@ -1,26 +1,25 @@
 import BoardFootballPlayer from "../core/match/team/footballplayers/boardFootballPlayer";
 
-
-
 export type MatchDataType = {
   hostTeamData: TeamDataType;
   guestTeamData: TeamDataType;
   gameConfig: GameConfigType;
 };
 
+export type Formation =
+  | "4-4-2"
+  | "5-3-2"
+  | "3-4-4"
+  | "3-5-2"
+  | "3-3-4"
+  | "4-3-3"
+  | "3-4-3"
+  | "5-4-1";
 
 export type TeamDataType = {
-  attack_speed: string;
+  attack_speed: number;
   attack_strategy: "normal" | "wide-back";
-  default_strategy:
-    | "4-4-2"
-    | "5-3-2"
-    | "3-4-4"
-    | "3-5-2"
-    | "3-3-4"
-    | "4-3-3"
-    | "3-4-3"
-    | "5-4-1";
+  default_strategy: Formation;
   defence_speed: number;
   defence_strategy: "wide-attack" | "wide-back" | "center-attack" | "normal";
   fault_possibility: number;
@@ -91,4 +90,4 @@ export type FootballPlayerData = {
   position: "goalKeeper" | "defender" | "middfielder" | "attacker";
 };
 
-export type GameModeType = "marble-league" | "friendly"
+export type GameModeType = "marble-league" | "friendly";

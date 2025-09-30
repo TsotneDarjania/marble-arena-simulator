@@ -7,8 +7,8 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
   matchSettingsButton!: MenuButton;
   gameSettingsButton!: MenuButton;
 
-  hostTeamPlan : TeamPlan;
-  guestTeamPlan : TeamPlan;
+  hostTeamPlan: TeamPlan;
+  guestTeamPlan: TeamPlan;
 
   constructor(
     scene: Phaser.Scene,
@@ -26,21 +26,45 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
 
   init() {
     this.addMainButtons();
-    this.addTeamPlans()
+    this.addTeamPlans();
   }
 
-  addTeamPlans(){
-   this.hostTeamPlan = new TeamPlan(this.scene, -this.scene.game.canvas.width/2,0,true, this.homeTeam)
+  addTeamPlans() {
+    this.hostTeamPlan = new TeamPlan(this.scene, 0, 0, true, this.homeTeam);
+    this.guestTeamPlan = new TeamPlan(this.scene, 0, 0, false, this.guestTeam);
   }
 
   addMainButtons() {
-    this.startMatchButton = new MenuButton(this.scene, 0, (this.scene.game.canvas.height / 2) - 50, "Start Match");
-    this.add(this.startMatchButton)
-    
-    this.matchSettingsButton = new MenuButton(this.scene, -220, (this.scene.game.canvas.height / 2) - 50, "Match Settings", undefined, undefined,undefined,0xF5D22B);
-    this.add(this.matchSettingsButton)
-   
-    this.gameSettingsButton = new MenuButton(this.scene, 220, (this.scene.game.canvas.height / 2) - 50, "Game Settings", undefined, undefined,undefined,0xF5D22B);
-    this.add(this.gameSettingsButton)
+    this.startMatchButton = new MenuButton(
+      this.scene,
+      0,
+      this.scene.game.canvas.height / 2 - 50,
+      "Start Match"
+    );
+    this.add(this.startMatchButton);
+
+    this.matchSettingsButton = new MenuButton(
+      this.scene,
+      -220,
+      this.scene.game.canvas.height / 2 - 50,
+      "Match Settings",
+      undefined,
+      undefined,
+      undefined,
+      0xf5d22b
+    );
+    this.add(this.matchSettingsButton);
+
+    this.gameSettingsButton = new MenuButton(
+      this.scene,
+      220,
+      this.scene.game.canvas.height / 2 - 50,
+      "Game Settings",
+      undefined,
+      undefined,
+      undefined,
+      0xf5d22b
+    );
+    this.add(this.gameSettingsButton);
   }
 }

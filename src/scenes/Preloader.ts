@@ -2,7 +2,6 @@ import { Scene } from "phaser";
 import { matchDataConfig } from "../config/matchConfig";
 import { GameDataStore } from "../config/gameDataStore";
 
-
 export default class Preload extends Scene {
   // private teamData: {
   //   hostTeam: TeamDataServerType;
@@ -12,7 +11,6 @@ export default class Preload extends Scene {
   constructor() {
     super("Preload");
   }
-
 
   preload() {
     this.load.setPath("assets/");
@@ -34,6 +32,8 @@ export default class Preload extends Scene {
     this.load.image("grid", "image/gameObjects/grid.png");
 
     // UI
+    this.load.image("menu-stadium-field", "image/ui/fitch.png");
+    this.load.image("menuArrowButton", "image/ui/arrow.png");
     this.load.image("defaultButton", "image/ui/default-button.png");
     this.load.image("default", "image/ui/default.png");
     this.load.image("cameraZoomButton", "image/ui/camera-zoom-button.png");
@@ -67,11 +67,11 @@ export default class Preload extends Scene {
     // Teams
     GameDataStore.teams!.forEach((team) => {
       this.load.image(team.name, team.team_logo_url);
-    })
+    });
   }
 
   create() {
-    this.scene.start("Menu")
+    this.scene.start("Menu");
     // this.scene.start("Menu", this.teamData);
   }
 }
