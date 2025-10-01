@@ -90,4 +90,15 @@ export type FootballPlayerData = {
   position: "goalKeeper" | "defender" | "middfielder" | "attacker";
 };
 
+export type GameDataType = {
+  teamsData : {
+      hostTeam : TeamDataType | null,
+      guestTeam : TeamDataType | null
+  }
+  teams : Array<TeamDataType> | null
+  matchSettings : {
+    time : number,
+    showModals : boolean
+  }
+}
 export type GameModeType = "marble-league" | "friendly";

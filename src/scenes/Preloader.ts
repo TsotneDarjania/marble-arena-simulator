@@ -1,6 +1,6 @@
 import { Scene } from "phaser";
 import { matchDataConfig } from "../config/matchConfig";
-import { GameDataStore } from "../config/gameDataStore";
+import { GameData } from "../config/gameData";
 
 export default class Preload extends Scene {
   // private teamData: {
@@ -45,6 +45,7 @@ export default class Preload extends Scene {
     this.load.image("live", "image/ui/live.png");
     this.load.image("mike", "image/ui/mike.png");
     this.load.image("marbleArenaLogo", "image/ui/logo.png");
+    this.load.image("closeButton", "image/ui/close.png");
 
     // GameObjects
     this.load.image("ball", "image/gameObjects/ball.png");
@@ -65,7 +66,7 @@ export default class Preload extends Scene {
     this.load.audio("goalkeeperJumpSound", ["sounds/goalkeeperJumpSound.mp3"]);
 
     // Teams
-    GameDataStore.teams!.forEach((team) => {
+    GameData.teams!.forEach((team) => {
       this.load.image(team.name, team.team_logo_url);
     });
   }

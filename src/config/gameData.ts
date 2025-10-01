@@ -1,0 +1,14 @@
+import { GameDataType, TeamDataType } from "../types/gameTypes";
+
+
+export const GameData : GameDataType = {
+  teamsData: {
+    hostTeam: null,
+    guestTeam: null 
+  },
+  teams : null,
+  matchSettings : {
+    time : 0.5,
+    showModals : true
+  }
+};

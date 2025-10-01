@@ -1,5 +1,6 @@
 import { TeamDataType } from "../../../types/gameTypes";
 import { MenuButton } from "../menuButton/menuButton";
+import { GameSettingsPopup } from "./gameSettingsPopup/gamesOptionPopup";
 import { TeamPlan } from "./teamPlan/teamPlan";
 
 export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
@@ -9,6 +10,8 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
 
   hostTeamPlan: TeamPlan;
   guestTeamPlan: TeamPlan;
+
+  matchSettingsPopup: GameSettingsPopup;
 
   constructor(
     scene: Phaser.Scene,
@@ -27,6 +30,22 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
   init() {
     this.addMainButtons();
     this.addTeamPlans();
+    this.addPopups();
+  }
+
+  addPopups() {
+    this.matchSettingsPopup = new GameSettingsPopup(
+      this.scene,
+      this.scene.game.canvas.width / 2,
+      this.scene.game.canvas.height / 2,
+      {
+        width: 700,
+        height: 500,
+        fillColor: 0x0d3020,
+        strokeWidth: 6,
+        strokeColor: 0x071c13,
+      }
+    );
   }
 
   addTeamPlans() {
@@ -53,6 +72,12 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
       undefined,
       0xf5d22b
     );
+      this.matchSettingsButton.on("click", () => {
+      this.matchSettingsPopup.show({
+        duration: 1000,
+        fromScale: 0,
+      });
+    });
     this.add(this.matchSettingsButton);
 
     this.gameSettingsButton = new MenuButton(

@@ -25,7 +25,6 @@ export class MenuButton extends Phaser.GameObjects.Container {
     public h = 48,
     public r = 14,
     bckColor?: number,          // <-- Optional
-    onClick?: () => void
   ) {
     super(scene, x, y);
     scene.add.existing(this);
@@ -37,7 +36,8 @@ export class MenuButton extends Phaser.GameObjects.Container {
 
     this.build(label);
     this.draw("normal");
-    if (onClick) this.setOnClick(onClick);
+    this.setOnClick()
+
   }
 
   // ---------- Public API ----------
@@ -70,12 +70,12 @@ export class MenuButton extends Phaser.GameObjects.Container {
     return this;
   }
 
-  setOnClick(fn: () => void): this {
+  setOnClick(): this {
     this.hit.removeAllListeners("pointerdown");
     this.hit.on("pointerdown", () => {
       if (!this.enabled) return;
       this.press();
-      fn();
+      this.emit("click")
     });
     return this;
   }

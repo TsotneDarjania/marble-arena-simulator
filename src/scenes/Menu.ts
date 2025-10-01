@@ -3,7 +3,7 @@ import * as Phaser from "phaser";
 import { calculatePercentage } from "../utils/math";
 import { TeamsSelector } from "../core";
 import { TeamDataType } from "../types/gameTypes";
-import { GameDataStore } from "../config/gameDataStore";
+import { GameData } from "../config/gameData";
 import MenuTeamsSettings from "../core/uiMechanics/menuTeamsSettings/menuTeamsSettings";
 import { MenuButton } from "../core/uiMechanics/menuButton/menuButton";
 
@@ -20,15 +20,15 @@ export default class Menu extends Phaser.Scene {
       .image(0, -5, "default")
       .setDisplaySize(this.game.canvas.width + 10, this.game.canvas.height + 10)
       .setOrigin(0)
-      .setTint(0x021f14)
+      .setTint(0x165438)
       .setAlpha(1);
 
     const menuTeamsSettings = new MenuTeamsSettings(
       this,
       this.game.canvas.width / 2,
       this.game.canvas.height / 2,
-      GameDataStore.teams![0],
-      GameDataStore.teams![1]
+      GameData.teams![0],
+      GameData.teams![1]
     );
 
     //   const title = this.add

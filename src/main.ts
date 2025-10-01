@@ -6,7 +6,7 @@ import Menu from "./scenes/Menu";
 import Preload from "./scenes/Preloader";
 import {  getTeams } from "./api/getTeams";
 import { gameConfig} from "./config/matchConfig";
-import { GameDataStore } from "./config/gameDataStore";
+import { GameData } from "./config/gameData";
 import { getTeamParamsFromURL } from "./utils/helper";
 
 
@@ -22,7 +22,7 @@ async function initGame() {
     return;
   }
 
-  GameDataStore.teams = teams;
+  GameData.teams = teams;
   
   // const teamData = (await getGameData()) as {
   //   hostTeam: TeamDataServerType;
