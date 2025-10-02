@@ -1,7 +1,6 @@
 import { GameData } from "../../../../config/gameData";
 import { SettingsSelector } from "../settingsSelector/settingsSelector";
 import { StadiumBackgroundColorSelector } from "../stadiumBackgroundColorSelector/stadiumBackgroundColorSelector";
-import { TeamColorSelector } from "../teamColorSelector/teamColorSelector";
 
 // MatchSettingsPopup.ts
 export type PopupStyle = {

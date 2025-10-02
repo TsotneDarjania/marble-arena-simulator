@@ -142,7 +142,7 @@ export default class BoardFootballPlayer extends Phaser.GameObjects.Container {
   }
 
   addImage() {
-    this.image = this.scene.physics.add.image(0, 0, this.teamData.logoKey);
+    this.image = this.scene.physics.add.image(0, 0, this.teamData.name);
     this.image.setCircle(30);
     this.add(this.image);
   }
@@ -426,7 +426,7 @@ export default class BoardFootballPlayer extends Phaser.GameObjects.Container {
 
     const { x, y } = this.getAnotherFootballerPositions(anotherFootballer);
 
-    this.scene.match.ball.kick(mapToRange(this.teamData.passSpeed, 160, 300), {
+    this.scene.match.ball.kick(mapToRange(this.teamData.pass_speed, 160, 300), {
       x,
       y,
     });
@@ -444,7 +444,7 @@ export default class BoardFootballPlayer extends Phaser.GameObjects.Container {
       ]
     );
 
-    this.scene.match.ball.kick(mapToRange(this.teamData.passSpeed, 160, 300), {
+    this.scene.match.ball.kick(mapToRange(this.teamData.pass_speed, 160, 300), {
       x,
       y,
     });
@@ -459,10 +459,10 @@ export default class BoardFootballPlayer extends Phaser.GameObjects.Container {
         this.playerData.who === "hostPlayer" ? "host" : "guest"
       );
 
-    console.log(this.teamData.shootAccuracy);
+    console.log(this.teamData.shoot_accuracy);
     let x = 0;
     const isfailShoot =
-      getRandomIntNumber(0, 100) < this.teamData.shootAccuracy ? false : true;
+      getRandomIntNumber(0, 100) < this.teamData.shoot_accuracy ? false : true;
 
     let y = this.scene.match.stadium.stadiumField.getBounds().centerY;
 
@@ -492,7 +492,7 @@ export default class BoardFootballPlayer extends Phaser.GameObjects.Container {
         this.scene.match.hostTeam.boardFootballPlayers.goalKeeper.getBounds()
           .centerX - 10;
     }
-    this.scene.match.ball.kick(mapToRange(this.teamData.shootSpeed, 250, 500), {
+    this.scene.match.ball.kick(mapToRange(this.teamData.pass_speed, 250, 500), {
       x,
       y,
     });

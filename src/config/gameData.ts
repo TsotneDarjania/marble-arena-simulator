@@ -8,7 +8,9 @@ export const GameData : GameDataType = {
   teams : null,
   matchSettings : {
     time : 0.5,
-    showModals : true
+    showModals : true,
+    hostTeamFansColor : 0xffffff,
+    guestTeamFansColor : 0xffffff
   },
   gameSettings: {
     fansSounds: true,

@@ -46,8 +46,8 @@ export class Penalty {
         : calculatePercentage(40, this.match.stadium.innerFielddWidth),
       0,
       this.whoIsGulity === "host"
-        ? this.match.matchData.guestTeamData.logoKey
-        : this.match.matchData.hostTeamData.logoKey
+        ? this.match.matchData.guestTeamData.name
+        : this.match.matchData.hostTeamData.name
     );
     this.shooterFootballer.setScale(0.6);
     this.shooterFootballer.setDepth(100);
@@ -93,7 +93,7 @@ export class Penalty {
           .centerX - 10;
     }
     this.match.scene.match.ball.kick(
-      mapToRange(teamData.shootSpeed, 250, 500),
+      mapToRange(teamData.pass_speed, 250, 500),
       {
         x,
         y,

@@ -3,8 +3,8 @@ import { Match } from "../core";
 import CanvasScene from "./CanvasScene";
 import { SoundManager } from "../core/soundManager";
 import GamePlayCameraController from "../core/gamePlayCameraController";
-import { matchDataConfig } from "../config/matchConfig";
 import { EventManager } from "../core/eventManager";
+import { GameData } from "../config/gameData";
 
 export default class GamePlay extends Phaser.Scene {
   match: Match;
@@ -35,7 +35,15 @@ export default class GamePlay extends Phaser.Scene {
   createMatch() {
     this.soundManager.stadiumNoice.play();
 
-    this.match = new Match(matchDataConfig, this);
+    this.match = new Match({
+      hostTeamData: GameData.teamsData.hostTeam!,
+      guestTeamData: GameData.teamsData.guestTeam!,
+      gameConfig : {
+        mode : "board-football",
+        hostFansCountPercent : 50,
+        mathTime: GameData.matchSettings.time
+      }
+    }, this);
   }
 
   createCameraMotion() {

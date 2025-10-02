@@ -213,7 +213,7 @@ export class Corner {
         : this.match.matchData.guestTeamData;
     let x = 0;
     const isfailShoot =
-      getRandomIntNumber(0, 100) < teamData.shootAccuracy ? false : true;
+      getRandomIntNumber(0, 100) < teamData.shoot_accuracy ? false : true;
 
     let y = this.match.stadium.stadiumField.getBounds().centerY;
 
@@ -244,7 +244,7 @@ export class Corner {
           .centerX - 10;
     }
     this.match.scene.match.ball.kick(
-      mapToRange(teamData.shootSpeed, 250, 500),
+      mapToRange(teamData.pass_speed, 250, 500),
       {
         x,
         y,
@@ -287,8 +287,8 @@ export class Corner {
       x,
       y,
       this.teamWhoShootCorner === "hostTeam"
-        ? this.match.matchData.guestTeamData.logoKey
-        : this.match.matchData.hostTeamData.logoKey
+        ? this.match.matchData.guestTeamData.name
+        : this.match.matchData.hostTeamData.name
     );
     this.deffender.setDepth(110);
     this.deffender.setScale(0.6);
@@ -318,8 +318,8 @@ export class Corner {
       x,
       y,
       this.teamWhoShootCorner === "hostTeam"
-        ? this.match.matchData.hostTeamData.logoKey
-        : this.match.matchData.guestTeamData.logoKey
+        ? this.match.matchData.hostTeamData.name
+        : this.match.matchData.guestTeamData.name
     );
     this.attacker.setDepth(110);
     this.attacker.setCircle(30);
@@ -337,8 +337,8 @@ export class Corner {
       x,
       y,
       this.teamWhoShootCorner === "hostTeam"
-        ? this.match.matchData.hostTeamData.logoKey
-        : this.match.matchData.guestTeamData.logoKey
+        ? this.match.matchData.hostTeamData.name
+        : this.match.matchData.guestTeamData.name
     );
     this.fakeFootballer.setScale(0.6);
   }

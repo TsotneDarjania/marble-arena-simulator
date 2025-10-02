@@ -13,6 +13,7 @@ export class EventManager {
     // When you will click Start Simulation Button
     this.canvasScene.introOverlay.button.addOnClickEvent(() => {
       this.canvasScene.startIntroAnimation();
+      this.canvasScene.cameraController.destroy()
     });
 
     this.gamePlayScene.input.keyboard?.on("keydown", (event: KeyboardEvent) => {

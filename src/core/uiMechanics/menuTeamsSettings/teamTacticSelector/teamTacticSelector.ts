@@ -1,4 +1,4 @@
-import { Formation, TeamDataType } from "../../../../types/gameTypes";
+import { TeamDataType } from "../../../../types/gameTypes";
 import { TeamFormation } from "../formation/formation";
 
 export class TeamTacticSelector extends Phaser.GameObjects.Container {

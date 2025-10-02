@@ -1,3 +1,4 @@
+import { GameData } from "../../../config/gameData";
 import { TeamDataType } from "../../../types/gameTypes";
 import { MenuButton } from "../menuButton/menuButton";
 import { GameSettingsPopup } from "./gameSettingsPopup/gameSettingsPopup";
@@ -33,6 +34,10 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
     this.addMainButtons();
     this.addTeamPlans();
     this.addPopups();
+
+    // Initialize Fans Colors
+    GameData.matchSettings.hostTeamFansColor =  Number(`0x${GameData.teamsData.hostTeam!.primary_color.replace("#", "")}`)
+    GameData.matchSettings.guestTeamFansColor =  Number(`0x${GameData.teamsData.guestTeam!.primary_color.replace("#", "")}`)
   }
 
   addPopups() {
@@ -75,6 +80,9 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
       this.scene.game.canvas.height / 2 - 50,
       "Start Match"
     );
+    this.startMatchButton.on("click", () => {
+      this.scene.scene.start("GamePlay")
+    })
     this.add(this.startMatchButton);
 
     this.matchSettingsButton = new MenuButton(

@@ -28,8 +28,8 @@ export class MatchIntroEnvironment {
         side === "left" ? -40 : 40,
         y,
         side === "left"
-          ? this.match.matchData.hostTeamData.logoKey
-          : this.match.matchData.guestTeamData.logoKey
+          ? this.match.matchData.hostTeamData.name
+          : this.match.matchData.guestTeamData.name
       );
       image.setScale(0.5);
       image.alpha = 0;

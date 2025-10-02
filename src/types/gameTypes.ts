@@ -99,6 +99,8 @@ export type GameDataType = {
   matchSettings : {
     time : number,
     showModals : boolean
+    hostTeamFansColor : number,
+    guestTeamFansColor : number
   },
   gameSettings : {
     fansSounds: boolean,

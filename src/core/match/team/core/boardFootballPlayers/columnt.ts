@@ -34,13 +34,13 @@ export class Column extends Phaser.GameObjects.Container {
   init() {
     switch (this.type) {
       case "defence":
-        this.quantity = Number(this.teamData.formation.split("-")[0]);
+        this.quantity = Number(this.teamData.default_strategy.split("-")[0]);
         break;
       case "middle":
-        this.quantity = Number(this.teamData.formation.split("-")[1]);
+        this.quantity = Number(this.teamData.default_strategy.split("-")[1]);
         break;
       case "attack":
-        this.quantity = Number(this.teamData.formation.split("-")[2]);
+        this.quantity = Number(this.teamData.default_strategy.split("-")[2]);
         break;
       default:
         throw Error("Invalied Formation Parameter");
@@ -116,7 +116,7 @@ export class Column extends Phaser.GameObjects.Container {
       );
 
       if (
-        this.teamData.tactics.formation.defenceLine === "wide-attack" &&
+        this.teamData.defence_strategy === "wide-attack" &&
         this.type === "defence"
       ) {
         if (i === 0 || i === this.quantity - 1) {
@@ -133,7 +133,7 @@ export class Column extends Phaser.GameObjects.Container {
       }
 
       if (
-        this.teamData.tactics.formation.centerLine === "wide-attack" &&
+        this.teamData.midfielder_strategy === "wide-attack" &&
         this.type === "middle"
       ) {
         if (i === 0 || i === this.quantity - 1) {
@@ -150,7 +150,7 @@ export class Column extends Phaser.GameObjects.Container {
       }
 
       if (
-        this.teamData.tactics.formation.centerLine === "wide-back" &&
+        this.teamData.attack_strategy === "wide-back" &&
         this.type === "middle"
       ) {
         if (i === 0 || i === this.quantity - 1) {
@@ -167,24 +167,7 @@ export class Column extends Phaser.GameObjects.Container {
       }
 
       if (
-        this.teamData.tactics.formation.attackLine === "wide-attack" &&
-        this.type === "attack"
-      ) {
-        if (i === 0 || i === this.quantity - 1) {
-          this.side === "left"
-            ? (footballer.x += calculatePercentage(
-                2.5,
-                this.stadium.innerFielddWidth
-              ))
-            : (footballer.x -= calculatePercentage(
-                2.5,
-                this.stadium.innerFielddWidth
-              ));
-        }
-      }
-
-      if (
-        this.teamData.tactics.formation.attackLine === "wide-back" &&
+        this.teamData.attack_strategy === "wide-back" &&
         this.type === "attack"
       ) {
         if (i === 0 || i === this.quantity - 1) {

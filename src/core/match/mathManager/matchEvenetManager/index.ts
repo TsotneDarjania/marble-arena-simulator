@@ -41,7 +41,7 @@ export class MatchEventManager {
   calculatePenaltyPossibility() {
     if (this.match.matchManager.teamWhoHasBall === "hostTeam") {
       const random = getRandomIntNumber(0, 100);
-      if (random > this.match.matchData.guestTeamData.penaltyFrequency) {
+      if (random > 80) {
         return;
       }
       const randomFootballer =
@@ -67,7 +67,7 @@ export class MatchEventManager {
       randomFootballer.startFreeKickBehaviour();
     } else {
       const random = getRandomIntNumber(0, 100);
-      if (random > this.match.matchData.hostTeamData.penaltyFrequency) {
+      if (random > 80) {
         return;
       }
 
@@ -98,7 +98,7 @@ export class MatchEventManager {
   calculateFreeKickPossibility() {
     if (this.match.matchManager.teamWhoHasBall === "hostTeam") {
       const random = getRandomIntNumber(0, 100);
-      if (random > this.match.matchData.guestTeamData.freeKiskFrequency) {
+      if (random < this.match.matchData.guestTeamData.fault_possibility) {
         return;
       }
       const randomFootballer =
@@ -121,7 +121,7 @@ export class MatchEventManager {
       randomFootballer.startFreeKickBehaviour();
     } else {
       const random = getRandomIntNumber(0, 100);
-      if (random > this.match.matchData.hostTeamData.freeKiskFrequency) {
+      if (random < this.match.matchData.hostTeamData.fault_possibility) {
         return;
       }
       const randomFootballer =

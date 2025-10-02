@@ -2,10 +2,13 @@ import * as Phaser from "phaser";
 import GamePlay from "./GamePlay";
 import { IntroOverlay } from "../uiComponents/overlay";
 import { IntroWindow } from "../uiComponents/introWindow";
-import { matchDataConfig, matchInfo } from "../config/matchConfig";
+import { matchInfo } from "../config/matchConfig";
 import { calculatePercentage } from "../utils/math";
+import { GameData } from "../config/gameData";
+import { CanvasSceneCameraController } from "../core";
 
 export default class CanvasScene extends Phaser.Scene {
+  cameraController: CanvasSceneCameraController
   introOverlay: IntroOverlay;
 
   gamePlayMenu: Phaser.GameObjects.Container;
@@ -19,7 +22,7 @@ export default class CanvasScene extends Phaser.Scene {
   lastPenaltiesRightXPosition = 50;
 
   possibleToShowCommentatorTexrt = true;
-  indicatorsContainer:Phaser.GameObjects.Container;
+  indicatorsContainer: Phaser.GameObjects.Container;
 
   constructor() {
     super("CanvasScene");
@@ -29,6 +32,11 @@ export default class CanvasScene extends Phaser.Scene {
     this.addIntroOverlay();
     this.createCameraController();
     this.createIndicators();
+  }
+
+  createCameraController() {
+    const gamePlayScene = this.scene.get("GamePlay") as GamePlay;
+    this.cameraController = new CanvasSceneCameraController(this, gamePlayScene);
   }
 
   showComentator(side: "left" | "right", comment: string) {
@@ -258,18 +266,16 @@ export default class CanvasScene extends Phaser.Scene {
   createIndicators() {
     this.indicatorsContainer = this.add.container();
     // Background
-    const bck =  this.add
+    const bck = this.add
       .image(this.game.canvas.width / 2, 60, "matchIndicatorBck")
       .setTint(0x02010d)
       .setAlpha(0);
-   
-    
+
     this.timerText = this.add.text(this.game.canvas.width / 2, 83, "0", {
       fontSize: "25px",
       color: "#F3FFFF",
       align: "center",
       strokeThickness: 1,
-
     });
     this.timerText.setOrigin(0.5);
 
@@ -277,15 +283,14 @@ export default class CanvasScene extends Phaser.Scene {
     const logo1 = this.add.image(
       this.game.canvas.width / 2 - 158,
       56,
-      matchDataConfig.hostTeamData.logoKey
-    
+      GameData.teamsData.hostTeam!.name
     );
 
     // guestTeamLogo
     const logo2 = this.add.image(
       this.game.canvas.width / 2 + 158,
       56,
-      matchDataConfig.guestTeamData.logoKey
+      GameData.teamsData.guestTeam!.name
     );
 
     // hostTeamInitials
@@ -293,7 +298,7 @@ export default class CanvasScene extends Phaser.Scene {
       .text(
         this.game.canvas.width / 2 - 120,
         60,
-        matchDataConfig.hostTeamData.initials,
+        GameData.teamsData.hostTeam!.tablo_name,
         {
           fontSize: "35px",
           color: "#E9FFFF",
@@ -303,14 +308,13 @@ export default class CanvasScene extends Phaser.Scene {
         }
       )
       .setOrigin(0, 0.5);
-    
 
     //guestTeamInitials
-    const initials2 =  this.add
+    const initials2 = this.add
       .text(
         this.game.canvas.width / 2 + 120,
         60,
-        matchDataConfig.guestTeamData.initials,
+        GameData.teamsData.guestTeam!.tablo_name,
         {
           fontSize: "35px",
           color: "#E9FFFF",
@@ -320,10 +324,9 @@ export default class CanvasScene extends Phaser.Scene {
         }
       )
       .setOrigin(1, 0.5);
-   
 
     // hostTeamScore
-    const score1 = this.hostTeamScoretext = this.add
+    const score1 = (this.hostTeamScoretext = this.add
       .text(this.game.canvas.width / 2 - 20, 60, "0", {
         fontSize: "45px",
         color: "#E9FFFF",
@@ -331,10 +334,9 @@ export default class CanvasScene extends Phaser.Scene {
         strokeThickness: 2,
         align: "right",
       })
-      .setOrigin(1, 0.5);
-    
+      .setOrigin(1, 0.5));
 
-      const score2 = this.guestTeamScoretext = this.add
+    const score2 = (this.guestTeamScoretext = this.add
       .text(this.game.canvas.width / 2 + 50, 60, "0", {
         fontSize: "45px",
         color: "#E9FFFF",
@@ -342,21 +344,29 @@ export default class CanvasScene extends Phaser.Scene {
         strokeThickness: 2,
         align: "left",
       })
-      .setOrigin(1, 0.5);
-    
+      .setOrigin(1, 0.5));
 
     // HorizontalLine
-    const midline =  this.add
+    const midline = this.add
       .image(this.game.canvas.width / 2, 60, "default")
       .setDisplaySize(20, 7);
 
-      this.indicatorsContainer.add([bck, midline, score1, score2, logo1, logo2, initials1, initials2, this.timerText])
-      this.indicatorsContainer.setScale(0.75)
-      this.indicatorsContainer.x += 40
-      this.indicatorsContainer.y += 75
+    this.indicatorsContainer.add([
+      bck,
+      midline,
+      score1,
+      score2,
+      logo1,
+      logo2,
+      initials1,
+      initials2,
+      this.timerText,
+    ]);
+    this.indicatorsContainer.setScale(0.75);
+    this.indicatorsContainer.x += 40;
+    this.indicatorsContainer.y += 75;
 
-      this.indicatorsContainer.setAlpha(0)
-
+    this.indicatorsContainer.setAlpha(0);
   }
 
   addIntroOverlay() {
@@ -385,16 +395,15 @@ export default class CanvasScene extends Phaser.Scene {
     this.makeIntroAnimation();
   }
 
- 
   makeIntroAnimation() {
     this.introWindow = new IntroWindow(this, 0, 0, {
       hostTeam: {
-        name: matchDataConfig.hostTeamData.name,
-        logoKey: matchDataConfig.hostTeamData.logoKey,
+        name: GameData.teamsData.hostTeam!.name,
+        logoKey: GameData.teamsData.hostTeam!.name,
       },
       guestTeam: {
-        name: matchDataConfig.guestTeamData.name,
-        logoKey: matchDataConfig.guestTeamData.logoKey,
+        name: GameData.teamsData.guestTeam!.name,
+        logoKey: GameData.teamsData.guestTeam!.name,
       },
       info: {
         matchTitle: matchInfo.matchTitle,
@@ -512,7 +521,7 @@ export default class CanvasScene extends Phaser.Scene {
     }, 1500);
   }
 
-  showMatchIndicators(){
-    this.indicatorsContainer.setAlpha(1)
+  showMatchIndicators() {
+    this.indicatorsContainer.setAlpha(1);
   }
 }

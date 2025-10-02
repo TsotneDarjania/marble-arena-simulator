@@ -106,6 +106,9 @@ export class MatchSettingsPopup extends Phaser.GameObjects.Container {
       ],
       Number(`0x${GameData.teamsData.hostTeam!.primary_color.replace("#", "")}`)
     );
+    homeTeamColorSelector.on("change", (newColor : number) => {
+      GameData.matchSettings.hostTeamFansColor = newColor
+    })
 
     this.add(homeTeamColorSelector);
 
@@ -120,6 +123,9 @@ export class MatchSettingsPopup extends Phaser.GameObjects.Container {
       ],
       Number(`0x${GameData.teamsData.guestTeam!.primary_color.replace("#", "")}`)
     );
+    guestTeamColorSelector.on("change", (newColor : number) => {
+      GameData.matchSettings.guestTeamFansColor = newColor
+    })
 
     this.add(guestTeamColorSelector);
   }
