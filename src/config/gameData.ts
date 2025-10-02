@@ -1,5 +1,4 @@
-import { GameDataType, TeamDataType } from "../types/gameTypes";
-
+import { GameDataType } from "../types/gameTypes";
 
 export const GameData : GameDataType = {
   teamsData: {
@@ -10,5 +9,10 @@ export const GameData : GameDataType = {
   matchSettings : {
     time : 0.5,
     showModals : true
+  },
+  gameSettings: {
+    fansSounds: true,
+    gameSounds: true,
+    stadiumBackgroundColor : 0xffffff
   }
 };

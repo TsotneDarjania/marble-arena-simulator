@@ -99,6 +99,11 @@ export type GameDataType = {
   matchSettings : {
     time : number,
     showModals : boolean
+  },
+  gameSettings : {
+    fansSounds: boolean,
+    gameSounds : boolean,
+    stadiumBackgroundColor : number
   }
 }
 export type GameModeType = "marble-league" | "friendly";

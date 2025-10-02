@@ -1,6 +1,7 @@
 import { TeamDataType } from "../../../types/gameTypes";
 import { MenuButton } from "../menuButton/menuButton";
-import { GameSettingsPopup } from "./gameSettingsPopup/gamesOptionPopup";
+import { GameSettingsPopup } from "./gameSettingsPopup/gameSettingsPopup";
+import { MatchSettingsPopup } from "./matchSettingsPopup/matcSettingsPopup";
 import { TeamPlan } from "./teamPlan/teamPlan";
 
 export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
@@ -11,7 +12,8 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
   hostTeamPlan: TeamPlan;
   guestTeamPlan: TeamPlan;
 
-  matchSettingsPopup: GameSettingsPopup;
+  matchSettingsPopup: MatchSettingsPopup;
+  gameSetgingsPopup: GameSettingsPopup;
 
   constructor(
     scene: Phaser.Scene,
@@ -34,7 +36,20 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
   }
 
   addPopups() {
-    this.matchSettingsPopup = new GameSettingsPopup(
+    this.matchSettingsPopup = new MatchSettingsPopup(
+      this.scene,
+      this.scene.game.canvas.width / 2,
+      this.scene.game.canvas.height / 2,
+      {
+        width: 700,
+        height: 500,
+        fillColor: 0x0d3020,
+        strokeWidth: 6,
+        strokeColor: 0x071c13,
+      }
+    );
+
+    this.gameSetgingsPopup = new GameSettingsPopup(
       this.scene,
       this.scene.game.canvas.width / 2,
       this.scene.game.canvas.height / 2,
@@ -72,7 +87,8 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
       undefined,
       0xf5d22b
     );
-      this.matchSettingsButton.on("click", () => {
+    this.matchSettingsButton.on("click", () => {
+      this.gameSetgingsPopup.hide()
       this.matchSettingsPopup.show({
         duration: 1000,
         fromScale: 0,
@@ -90,6 +106,13 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
       undefined,
       0xf5d22b
     );
+    this.gameSettingsButton.on("click", () => {
+      this.matchSettingsPopup.hide()
+      this.gameSetgingsPopup.show({
+        duration: 1000,
+        fromScale: 0,
+      });
+    });
     this.add(this.gameSettingsButton);
   }
 }

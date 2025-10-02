@@ -1,5 +1,6 @@
 import { GameData } from "../../../../config/gameData";
 import { SettingsSelector } from "../settingsSelector/settingsSelector";
+import { StadiumBackgroundColorSelector } from "../stadiumBackgroundColorSelector/stadiumBackgroundColorSelector";
 import { TeamColorSelector } from "../teamColorSelector/teamColorSelector";
 
 // MatchSettingsPopup.ts
@@ -68,7 +69,7 @@ export class GameSettingsPopup extends Phaser.GameObjects.Container {
     const matchTimeSelector = new SettingsSelector(
       this.scene,
       0,
-      -70,
+      -80,
       "Match Time ",
       [0.5, 1, 2, 3, 4, 5, 10, 20],
       GameData.matchSettings.time
@@ -80,48 +81,52 @@ export class GameSettingsPopup extends Phaser.GameObjects.Container {
 
     this.add(matchTimeSelector);
 
-    const showModalsSelector = new SettingsSelector(
+    const fansSoundSelector = new SettingsSelector(
       this.scene,
       0,
-      0,
-      "Show Modals",
+      -10,
+      "Fans Sounds",
       ["yes", "no"],
       GameData.matchSettings.showModals ? "yes" : "no"
     );
 
-    showModalsSelector.on("change", (newVal: string) => {
-      GameData.matchSettings.showModals = newVal === "yes";
+    fansSoundSelector.on("change", (newVal: string) => {
+      GameData.gameSettings.fansSounds = newVal === "yes";
     });
 
-    this.add(showModalsSelector);
+    this.add(fansSoundSelector);
 
-    const homeTeamColorSelector = new TeamColorSelector(
+    const gameSoundsSelector = new SettingsSelector(
       this.scene,
       0,
-      70,
-      GameData.teams![0].name,
-      [
-        Number(`0x${GameData.teams![0].primary_color.replace("#", "")}`),
-        Number(`0x${GameData.teams![0].secondary_color.replace("#", "")}`),
-      ],
-      0xff0000
+      60,
+      "Game Sounds",
+      ["yes", "no"],
+      GameData.matchSettings.showModals ? "yes" : "no"
     );
 
-    this.add(homeTeamColorSelector);
+    gameSoundsSelector.on("change", (newVal: string) => {
+      GameData.gameSettings.gameSounds = newVal === "yes";
+    });
 
-    const guestTeamColorSelector = new TeamColorSelector(
-      this.scene,
-      0,
-      140,
-      GameData.teams![1].name,
-      [
-        Number(`0x${GameData.teams![1].primary_color.replace("#", "")}`),
-        Number(`0x${GameData.teams![1].secondary_color.replace("#", "")}`),
-      ],
-      0xff0000
-    );
+    this.add(gameSoundsSelector);
 
-    this.add(guestTeamColorSelector);
+    // In your scene:
+    const bgSelector = new StadiumBackgroundColorSelector(this.scene, -15, 130, {
+      title: "Stadium BG",
+      initialColor: 0xffffff,
+      width: 140,
+      height: 56,
+      showLabel: true,
+    });
+
+    this.add(bgSelector)
+
+    bgSelector.on("change", (color: number) => {
+      // Apply to your stadium background graphics/sprite, e.g.:
+      // stadiumRect.fillColor = color;
+      console.log("Picked color:", color.toString(16));
+    });
   }
 
   private addTitle() {
@@ -147,9 +152,14 @@ export class GameSettingsPopup extends Phaser.GameObjects.Container {
     this.setSize(w, h);
   }
 
-  private addCloseButton() { // <<< added
+  private addCloseButton() {
+    // <<< added
     this.closeButton = this.scene.add
-      .image(this.style.width / 2 + 27, -this.style.height / 2 - 27, "closeButton")
+      .image(
+        this.style.width / 2 + 27,
+        -this.style.height / 2 - 27,
+        "closeButton"
+      )
       .setOrigin(0.5)
       .setScale(0.8)
       .setInteractive({ cursor: "pointer" });
