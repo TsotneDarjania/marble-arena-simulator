@@ -110,8 +110,8 @@ export class GameSettingsPopup extends Phaser.GameObjects.Container {
 
     this.add(gameSoundsSelector);
 
-    // In your scene:
-    const bgSelector = new StadiumBackgroundColorSelector(this.scene, -15, 130, {
+
+    const stadiumBGColorSelector = new StadiumBackgroundColorSelector(this.scene, -15, 130, {
       title: "Stadium BG",
       initialColor: 0xffffff,
       width: 140,
@@ -119,12 +119,10 @@ export class GameSettingsPopup extends Phaser.GameObjects.Container {
       showLabel: true,
     });
 
-    this.add(bgSelector)
+    this.add( stadiumBGColorSelector)
 
-    bgSelector.on("change", (color: number) => {
-      // Apply to your stadium background graphics/sprite, e.g.:
-      // stadiumRect.fillColor = color;
-      console.log("Picked color:", color.toString(16));
+     stadiumBGColorSelector.on("change", (color: number) => {
+      GameData.gameSettings.stadiumBackgroundColor = color
     });
   }
 

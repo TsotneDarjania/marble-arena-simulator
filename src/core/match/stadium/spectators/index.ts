@@ -31,13 +31,13 @@ export default class Spectators extends Phaser.GameObjects.Container {
     this.guestTeamSpectators = [];
 
     this.addTopSpectators();
-    this.addTopRightAngleSpectators();
-    this.addRightSpectators();
-    this.addBottomRightAngleSpectators();
+    // this.addTopRightAngleSpectators();
+    // this.addRightSpectators();
+    // this.addBottomRightAngleSpectators();
     this.addBottomSpectators();
-    this.addBottomLeftAngleSpectators();
-    this.addLeftSpectators();
-    this.addTopLeftAngleSpectators();
+    // this.addBottomLeftAngleSpectators();
+    // this.addLeftSpectators();
+    // this.addTopLeftAngleSpectators();
   }
 
   addTopSpectators() {
@@ -46,10 +46,10 @@ export default class Spectators extends Phaser.GameObjects.Container {
       -this.stadium.stadiumHeight / 2
     );
 
-    let posX = 0;
-    let posY = -170;
+    let posX = -40;
+    let posY = -90;
 
-    for (let i = 1; i < 4; i++) {
+    for (let i = 1; i < 3; i++) {
       const spectatorsGroup = new SpectatorsGroup(
         this.stadium.scene,
         posX,
@@ -57,11 +57,11 @@ export default class Spectators extends Phaser.GameObjects.Container {
         5,
         "spectatorLine"
       );
-      spectatorsGroup.setScale(0.8);
+      spectatorsGroup.setScale(0.3);
       this.topSpectatorsContainer.add(spectatorsGroup);
       this.allSpectators.push(...spectatorsGroup.images);
 
-      posX += 300;
+      posX += 500;
       if (i % 3 === 0) {
         posY -= 210;
         posX = 0;
@@ -78,10 +78,10 @@ export default class Spectators extends Phaser.GameObjects.Container {
       this.stadium.stadiumHeight / 2
     );
 
-    let posX = 0;
-    let posY = 170;
+    let posX = -40;
+    let posY = 230;
 
-    for (let i = 1; i < 4; i++) {
+    for (let i = 1; i < 3; i++) {
       const spectatorsGroup = new SpectatorsGroup(
         this.stadium.scene,
         posX,
@@ -89,11 +89,11 @@ export default class Spectators extends Phaser.GameObjects.Container {
         5,
         "spectatorLine"
       );
-      spectatorsGroup.setScale(0.8);
+      spectatorsGroup.setScale(0.3);
       this.bottomSpectatorsContainer.add(spectatorsGroup);
       this.allSpectators.push(...spectatorsGroup.images);
 
-      posX += 300;
+      posX += 500;
       if (i % 3 === 0) {
         posY += 210;
         posX = 0;
@@ -120,9 +120,9 @@ export default class Spectators extends Phaser.GameObjects.Container {
         posX,
         posY,
         5,
-        "spectatorLine13"
+        "spectatorLine"
       );
-      spectatorsGroup.setScale(0.8);
+      spectatorsGroup.setScale(0.4);
       this.leftSpectatorsContainer.add(spectatorsGroup);
       this.allSpectators.push(...spectatorsGroup.images);
 
@@ -149,9 +149,9 @@ export default class Spectators extends Phaser.GameObjects.Container {
         posX,
         posY,
         5,
-        "spectatorLine13"
+        "spectatorLine"
       );
-      spectatorsGroup.setScale(0.8);
+      spectatorsGroup.setScale(0.4);
       this.rightSpectatorsContainer.add(spectatorsGroup);
       this.allSpectators.push(...spectatorsGroup.images);
 
@@ -180,7 +180,7 @@ export default class Spectators extends Phaser.GameObjects.Container {
         5,
         "spectatorLine"
       );
-      spectatorsGroup.setScale(0.8);
+      spectatorsGroup.setScale(0.4);
       this.topLeftAngleSpectatroContainer.add(spectatorsGroup);
       this.allSpectators.push(...spectatorsGroup.images);
 
@@ -209,7 +209,7 @@ export default class Spectators extends Phaser.GameObjects.Container {
         5,
         "spectatorLine"
       );
-      spectatorsGroup.setScale(0.8);
+      spectatorsGroup.setScale(0.3);
       this.topRightAngleSpectatroContainer.add(spectatorsGroup);
       this.allSpectators.push(...spectatorsGroup.images);
 
@@ -238,7 +238,7 @@ export default class Spectators extends Phaser.GameObjects.Container {
         5,
         "spectatorLine"
       );
-      spectatorsGroup.setScale(0.8);
+      spectatorsGroup.setScale(0.4);
       this.bottomLeftAngleSpectatroContainer.add(spectatorsGroup);
       this.allSpectators.push(...spectatorsGroup.images);
 
@@ -267,7 +267,7 @@ export default class Spectators extends Phaser.GameObjects.Container {
         5,
         "spectatorLine"
       );
-      spectatorsGroup.setScale(0.8);
+      spectatorsGroup.setScale(0.4);
       this.bottomRightAngleSpectatroContainer.add(spectatorsGroup);
       this.allSpectators.push(...spectatorsGroup.images);
 

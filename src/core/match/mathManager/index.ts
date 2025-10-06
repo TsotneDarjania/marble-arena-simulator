@@ -1,7 +1,6 @@
 import Match from "..";
 import CanvasScene from "../../../scenes/CanvasScene";
 import { getRandomIntNumber } from "../../../utils/math";
-import { ComentatorManager } from "../commentatorManager";
 import { Corner } from "../matchEvents/corner";
 import { Freekick } from "../matchEvents/freeKick";
 import { LastPenalties } from "../matchEvents/lastPenalties";
@@ -29,7 +28,6 @@ export default class MatchManager {
   // Core
   footballersMotionManager!: FootballersMotionManager;
   matchEvenetManager!: MatchEventManager;
-  comentatorManager!: ComentatorManager;
 
   whichTeamHaveToResume!: "host" | "guest";
 
@@ -41,7 +39,6 @@ export default class MatchManager {
     this.match.matchTimer.startTimer();
     this.createFootballersMotionManager();
     this.createMatchEvenetManager();
-    this.createComentatorManager();
     this.teamWhoHasBall = "hostTeam";
 
     // this.match.matchManager.matchEvenetManager.matchStatus = "isLastPenalties";
@@ -50,9 +47,6 @@ export default class MatchManager {
     // this.startLastPenalties();
   }
 
-  createComentatorManager() {
-    this.comentatorManager = new ComentatorManager(this.match);
-  }
 
   createFootballersMotionManager() {
     this.footballersMotionManager = new FootballersMotionManager(this.match);

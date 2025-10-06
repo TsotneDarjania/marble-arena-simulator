@@ -16,11 +16,11 @@ export default class Preload extends Scene {
     this.load.setPath("assets/");
 
     // Stadium
-    this.load.image("stadiumLines", "image/gameObjects/stadium-lines.png");
+    this.load.image("stadiumField", "image/gameObjects/stadium-field.png");
     this.load.image("spectatorLine", "image/gameObjects/spectator-line.png");
     this.load.image(
-      "spectatorLine13",
-      "image/gameObjects/spectator-line-13.png"
+      "spectatorLine",
+      "image/gameObjects/spectator-line.png"
     );
     this.load.image(
       "stadiumSurrounding",

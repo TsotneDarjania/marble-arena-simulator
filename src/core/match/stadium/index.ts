@@ -1,4 +1,4 @@
-import { stadiumConfig } from "../../../config/matchConfig";
+import { GameData } from "../../../config/gameData";
 import GamePlay from "../../../scenes/GamePlay";
 import { calculatePercentage } from "../../../utils/math";
 import Spectators from "./spectators";
@@ -45,7 +45,7 @@ export class Stadium extends Phaser.GameObjects.Container {
     this.addSpectators();
     this.addSurounding();
 
-    this.addLights();
+    // this.addLights();
     this.addColliders();
 
     this.addGrids();
@@ -67,11 +67,11 @@ export class Stadium extends Phaser.GameObjects.Container {
 
   addSpectatorsBakcground() {
     const stadiumBck = this.scene.add.image(
-      this.scene.game.canvas.width / 2 - 40,
-      this.scene.game.canvas.height / 2 + 30,
+      this.scene.game.canvas.width / 2,
+      this.scene.game.canvas.height / 2,
       "stadiumBck"
     );
-    stadiumBck.setTint(stadiumConfig.spectatorsBackground);
+    stadiumBck.setTint(GameData.gameSettings.stadiumBackgroundColor);
     stadiumBck.setScale(0.9);
   }
 
@@ -79,9 +79,8 @@ export class Stadium extends Phaser.GameObjects.Container {
     this.stadiumField = this.scene.add.image(
       this.scene.game.canvas.width / 2,
       this.scene.game.canvas.height / 2,
-      "stadiumLines"
-    );
-    this.stadiumField.setDisplaySize(
+      "stadiumField"
+    ).setDisplaySize(
       this.fieldImageWidth,
       this.fieldImageHeight
     );

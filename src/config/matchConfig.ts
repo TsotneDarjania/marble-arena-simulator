@@ -8,7 +8,3 @@ export const matchInfo = {
   matchTitle: "",
   matchSubTitle: "",
 } as MatchInfoType;
-
-export const stadiumConfig = {
-  spectatorsBackground: 0xbac1cc,
-};
