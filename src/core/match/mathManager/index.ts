@@ -40,11 +40,6 @@ export default class MatchManager {
     this.createFootballersMotionManager();
     this.createMatchEvenetManager();
     this.teamWhoHasBall = "hostTeam";
-
-    // this.match.matchManager.matchEvenetManager.matchStatus = "isLastPenalties";
-    // this.match.hostTeam.hideTeam();
-    // this.match.guestTeam.hideTeam();
-    // this.startLastPenalties();
   }
 
 

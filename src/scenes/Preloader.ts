@@ -1,5 +1,4 @@
 import { Scene } from "phaser";
-import { matchDataConfig } from "../config/matchConfig";
 import { GameData } from "../config/gameData";
 
 export default class Preload extends Scene {
@@ -17,11 +16,8 @@ export default class Preload extends Scene {
 
     // Stadium
     this.load.image("stadiumField", "image/gameObjects/stadium-field.png");
+    this.load.image("spectatorCornerLine", "image/gameObjects/spectator-corner-line.png");
     this.load.image("spectatorLine", "image/gameObjects/spectator-line.png");
-    this.load.image(
-      "spectatorLine",
-      "image/gameObjects/spectator-line.png"
-    );
     this.load.image(
       "stadiumSurrounding",
       "image/gameObjects/stadium-surrounding.png"
@@ -73,6 +69,5 @@ export default class Preload extends Scene {
 
   create() {
     this.scene.start("Menu");
-    // this.scene.start("Menu", this.teamData);
   }
 }

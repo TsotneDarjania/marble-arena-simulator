@@ -71,7 +71,7 @@ export class Stadium extends Phaser.GameObjects.Container {
       this.scene.game.canvas.height / 2 + 20,
       "stadiumBck"
     );
-    stadiumBck.setTint(0x03111a);
+    stadiumBck.setTint(0x032E29);
     stadiumBck.setScale(0.7);
   }
 

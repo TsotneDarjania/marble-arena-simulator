@@ -94,7 +94,7 @@ export default class Match {
     this.hostTeamCoach = new Coach(
       this.scene,
       this.scene.game.canvas.width / 2 - 150,
-      this.scene.game.canvas.height / 2 + 320,
+      this.scene.game.canvas.height / 2 + 300,
       GameData.teamsData.hostTeam!.name,
       true
     );
@@ -102,7 +102,7 @@ export default class Match {
     this.guestTeamCoach = new Coach(
       this.scene,
       this.scene.game.canvas.width / 2 + 150,
-      this.scene.game.canvas.height / 2 + 320,
+      this.scene.game.canvas.height / 2 + 300,
       GameData.teamsData.guestTeam!.name,
       false
     );
