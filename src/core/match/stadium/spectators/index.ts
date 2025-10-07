@@ -274,8 +274,8 @@ export default class Spectators extends Phaser.GameObjects.Container {
       posY += 210;
     }
 
-    this.bottomRightAngleSpectatroContainer.setPosition(600, 320);
-    this.bottomRightAngleSpectatroContainer.setRotation(2.55619);
+    this.bottomRightAngleSpectatroContainer.setPosition(610, 310);
+    this.bottomRightAngleSpectatroContainer.setRotation(2.50619);
     this.add(this.bottomRightAngleSpectatroContainer);
   }
 

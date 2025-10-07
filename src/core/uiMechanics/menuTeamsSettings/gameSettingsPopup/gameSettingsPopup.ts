@@ -113,7 +113,7 @@ export class GameSettingsPopup extends Phaser.GameObjects.Container {
 
     const stadiumBGColorSelector = new StadiumBackgroundColorSelector(this.scene, -15, 130, {
       title: "Stadium BG",
-      initialColor: 0xffffff,
+      initialColor: 0x032E29,
       width: 140,
       height: 56,
       showLabel: true,

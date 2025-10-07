@@ -7,7 +7,7 @@ export const GameData : GameDataType = {
   },
   teams : null,
   matchSettings : {
-    time : 0.5,
+    time : 2,
     showModals : true,
     hostTeamFansColor : 0xffffff,
     guestTeamFansColor : 0xffffff
@@ -15,6 +15,6 @@ export const GameData : GameDataType = {
   gameSettings: {
     fansSounds: true,
     gameSounds: true,
-    stadiumBackgroundColor : 0xffffff
+    stadiumBackgroundColor : 0x032E29
   }
 };

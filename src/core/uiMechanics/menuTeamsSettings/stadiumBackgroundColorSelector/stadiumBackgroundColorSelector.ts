@@ -16,7 +16,7 @@ export class StadiumBackgroundColorSelector extends Phaser.GameObjects.Container
     y: number,
     {
       title = "Background",
-      initialColor = 0x1e1e1e,
+      initialColor = 0x032E29,
       width = 120,
       height = 48,
       showLabel = true,

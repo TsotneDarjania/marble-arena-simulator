@@ -71,7 +71,7 @@ export class Stadium extends Phaser.GameObjects.Container {
       this.scene.game.canvas.height / 2 + 20,
       "stadiumBck"
     );
-    stadiumBck.setTint(0x032E29);
+    stadiumBck.setTint(GameData.gameSettings.stadiumBackgroundColor);
     stadiumBck.setScale(0.7);
   }
 
@@ -126,9 +126,6 @@ export class Stadium extends Phaser.GameObjects.Container {
   startGoalSelebration(team: "host" | "guest") {
     this.scene.soundManager.goalSelebration.play();
 
-    this.light1.startAnimation(false);
-    this.light2.startAnimation(false);
-    this.light3.startAnimation(false);
     this.light4.startAnimation(true);
     this.light5.startAnimation(false);
     this.light6.startAnimation(true);
@@ -138,9 +135,6 @@ export class Stadium extends Phaser.GameObjects.Container {
   }
 
   stopGoalSelebration() {
-    this.light1.stopAnimation();
-    this.light2.stopAnimation();
-    this.light3.stopAnimation();
     this.light4.stopAnimation();
     this.light5.stopAnimation();
     this.light6.stopAnimation();
