@@ -26,8 +26,8 @@ export default class StadiumLight extends Phaser.GameObjects.Container {
   }
 
   addImage() {
-    this.image = this.scene.add.image(0, 0, "stadiumLight").setScale(1.2);
-    this.image.setTint(0x205c5c);
+    this.image = this.scene.add.image(0, 0, "stadiumLight").setScale(0.65);
+    this.image.setTint(0x106e7a);
 
     this.add(this.image);
   }

@@ -45,7 +45,7 @@ export class Stadium extends Phaser.GameObjects.Container {
     this.addSpectators();
     this.addSurounding();
 
-    // this.addLights();
+    this.addLights();
     this.addColliders();
 
     this.addGrids();
@@ -68,22 +68,21 @@ export class Stadium extends Phaser.GameObjects.Container {
   addSpectatorsBakcground() {
     const stadiumBck = this.scene.add.image(
       this.scene.game.canvas.width / 2,
-      this.scene.game.canvas.height / 2,
+      this.scene.game.canvas.height / 2 + 20,
       "stadiumBck"
     );
-    stadiumBck.setTint(GameData.gameSettings.stadiumBackgroundColor);
-    stadiumBck.setScale(0.9);
+    stadiumBck.setTint(0x03111a);
+    stadiumBck.setScale(0.7);
   }
 
   addfield() {
-    this.stadiumField = this.scene.add.image(
-      this.scene.game.canvas.width / 2,
-      this.scene.game.canvas.height / 2,
-      "stadiumField"
-    ).setDisplaySize(
-      this.fieldImageWidth,
-      this.fieldImageHeight
-    );
+    this.stadiumField = this.scene.add
+      .image(
+        this.scene.game.canvas.width / 2,
+        this.scene.game.canvas.height / 2,
+        "stadiumField"
+      )
+      .setDisplaySize(this.fieldImageWidth, this.fieldImageHeight);
   }
 
   addSpectators() {
@@ -93,13 +92,11 @@ export class Stadium extends Phaser.GameObjects.Container {
   }
 
   addSurounding() {
-    const stadiumSurrounding = this.scene.add.image(
-      0,
-      30,
-      "stadiumSurrounding"
-    );
+    const stadiumSurrounding = this.scene.add
+      .image(0, -10, "stadiumSurrounding")
+      .setScale(2.2);
 
-    stadiumSurrounding.setTint(0xffffff);
+    stadiumSurrounding.setTint(0x08364e);
     this.add(stadiumSurrounding);
   }
 
@@ -107,29 +104,20 @@ export class Stadium extends Phaser.GameObjects.Container {
     this.lightsContainer = this.scene.add.container();
     this.lightsContainer.setPosition(0, -20);
 
-    this.light1 = new StadiumLight(this.scene, 0, -320);
-    this.lightsContainer.add(this.light1);
-
-    this.light2 = new StadiumLight(this.scene, -400, -320);
-    this.lightsContainer.add(this.light2);
-
-    this.light3 = new StadiumLight(this.scene, 400, -320);
-    this.lightsContainer.add(this.light3);
-
-    this.light4 = new StadiumLight(this.scene, -660, -200);
-    this.light4.setRotation(-0.85398);
+    this.light4 = new StadiumLight(this.scene, -540, -290);
+    this.light4.setRotation(-0.80398);
     this.lightsContainer.add(this.light4);
 
-    this.light5 = new StadiumLight(this.scene, 650, -184);
-    this.light5.setRotation(0.805398);
+    this.light5 = new StadiumLight(this.scene, 540, -294);
+    this.light5.setRotation(0.803398);
     this.lightsContainer.add(this.light5);
 
-    this.light6 = new StadiumLight(this.scene, -650, 289);
+    this.light6 = new StadiumLight(this.scene, -550, 339);
     this.light6.setRotation(-2.4036);
     this.lightsContainer.add(this.light6);
 
-    this.light7 = new StadiumLight(this.scene, 650, 279);
-    this.light7.setRotation(2.2736);
+    this.light7 = new StadiumLight(this.scene, 550, 339);
+    this.light7.setRotation(2.4036);
     this.lightsContainer.add(this.light7);
 
     this.add(this.lightsContainer);
