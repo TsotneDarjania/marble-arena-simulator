@@ -9,7 +9,6 @@ export type MatchDataType = {
 export type Formation =
   | "4-4-2"
   | "5-3-2"
-  | "3-4-4"
   | "3-5-2"
   | "3-3-4"
   | "4-3-3"
@@ -21,12 +20,12 @@ export type TeamDataType = {
   attack_strategy: "normal" | "wide-back";
   default_strategy: Formation;
   defence_speed: number;
-  defence_strategy: "wide-attack" | "wide-back" | "center-attack" | "normal";
+  defence_strategy: "wide-attack" | "wide-back" | "normal";
   fault_possibility: number;
   goalkeeper_speed: number;
   id: number;
   midfielder_speed: number;
-  midfielder_strategy: "wide-attack" | "wide-back" | "normal";
+  midfielder_strategy: "wide-attack" | "wide-back" | "center-attack" | "normal";
   name: string;
   pass_accuracy: number;
   pass_speed: number;
@@ -37,33 +36,6 @@ export type TeamDataType = {
   team_logo_url: string;
   fifa_raiting: number;
 };
-// export type TeamDataType = {
-//   name: string;
-//   initials: string;
-//   logoKey: string;
-//   logoURL: string;
-//   formation: string;
-//   fansColor: number;
-//   tactics: {
-//     formation: {
-//       defenceLine: "wide-attack" | "normal";
-//       centerLine: "wide-attack" | "wide-back" | "normal";
-//       attackLine: "wide-attack" | "wide-back" | "normal";
-//     };
-//   };
-//   passSpeed: number;
-//   shootSpeed: number;
-//   goalKeeperSpeed: number;
-//   shootAccuracy: number;
-//   motionSpeed: number;
-//   comments: {
-//     saveBallComments: Array<string>;
-//     defenderComments: Array<string>;
-//     shooterComments: Array<string>;
-//   };
-//   freeKiskFrequency: number;
-//   penaltyFrequency: number;
-// };
 
 export type GameConfigType = {
   mode: MatchModeType;
@@ -91,21 +63,22 @@ export type FootballPlayerData = {
 };
 
 export type GameDataType = {
-  teamsData : {
-      hostTeam : TeamDataType | null,
-      guestTeam : TeamDataType | null
-  }
-  teams : Array<TeamDataType> | null
-  matchSettings : {
-    time : number,
-    showModals : boolean
-    hostTeamFansColor : number,
-    guestTeamFansColor : number
-  },
-  gameSettings : {
-    fansSounds: boolean,
-    gameSounds : boolean,
-    stadiumBackgroundColor : number
-  }
-}
+  teamsData: {
+    hostTeam: TeamDataType | null;
+    guestTeam: TeamDataType | null;
+  };
+  teams: Array<TeamDataType> | null;
+  matchSettings: {
+    time: number;
+    isExtraTimes: boolean;
+    showModals: boolean;
+    hostTeamFansColor: number;
+    guestTeamFansColor: number;
+  };
+  gameSettings: {
+    fansSounds: boolean;
+    gameSounds: boolean;
+    stadiumBackgroundColor: number;
+  };
+};
 export type GameModeType = "marble-league" | "friendly";

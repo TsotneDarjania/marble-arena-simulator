@@ -2,19 +2,18 @@ import * as Phaser from "phaser";
 import GamePlay from "./GamePlay";
 import { IntroOverlay } from "../uiComponents/overlay";
 import { IntroWindow } from "../uiComponents/introWindow";
-import { matchInfo } from "../config/matchConfig";
-import { calculatePercentage } from "../utils/math";
 import { GameData } from "../config/gameData";
 import { CanvasSceneCameraController } from "../core";
 
 export default class CanvasScene extends Phaser.Scene {
-  cameraController: CanvasSceneCameraController
+  cameraController: CanvasSceneCameraController;
   introOverlay: IntroOverlay;
 
   gamePlayMenu: Phaser.GameObjects.Container;
   introWindow: IntroWindow;
 
   timerText: Phaser.GameObjects.Text;
+  pressToStartText: Phaser.GameObjects.Text;
   hostTeamScoretext: Phaser.GameObjects.Text;
   guestTeamScoretext: Phaser.GameObjects.Text;
 
@@ -34,9 +33,48 @@ export default class CanvasScene extends Phaser.Scene {
     this.createIndicators();
   }
 
+  destroyPressToStartText() {
+    this.pressToStartText.destroy();
+  }
+
+  showPressToStartText() {
+    this.pressToStartText = this.add
+      .text(
+        this.game.canvas.width / 2,
+        this.game.canvas.height / 2,
+        "Press to start game",
+        {
+          fontSize: "36px",
+          align: "center",
+          color: "#ffffffff",
+          stroke: "#ffffffff",
+          strokeThickness: 1,
+          backgroundColor: "black",
+          padding: {
+            left: 12,
+            right: 12,
+            top: 6,
+            bottom: 6,
+          },
+        }
+      )
+      .setOrigin(0.5);
+
+    this.tweens.add({
+      targets: this.pressToStartText,
+      duration: 700,
+      alpha: 0.5,
+      yoyo: true,
+      repeat: -1,
+    });
+  }
+
   createCameraController() {
     const gamePlayScene = this.scene.get("GamePlay") as GamePlay;
-    this.cameraController = new CanvasSceneCameraController(this, gamePlayScene);
+    this.cameraController = new CanvasSceneCameraController(
+      this,
+      gamePlayScene
+    );
   }
 
   showComentator(side: "left" | "right", comment: string) {
@@ -62,28 +100,6 @@ export default class CanvasScene extends Phaser.Scene {
         : this.game.canvas.width - comentatorImage.getBounds().width / 2 - 130,
       comentatorImage.getBounds().height / 2 + 20
     );
-
-    // const liveImage = this.add.image(0, 0, "live");
-    // liveImage.setOrigin(0.5);
-    // liveImage.setScale(0.3);
-    // liveImage.setAlpha(0);
-    // liveImage.setPosition(
-    //   side === "left"
-    //     ? comentatorImage.getBounds().width / 2 + 152
-    //     : this.game.canvas.width - comentatorImage.getBounds().width / 2 - 152,
-    //   comentatorImage.getBounds().centerY + 246
-    // );
-
-    // const mikeImage = this.add.image(0, 0, "mike");
-    // mikeImage.setOrigin(0.5);
-    // mikeImage.setScale(0.4);
-    // mikeImage.setAlpha(0);
-    // mikeImage.setPosition(
-    //   side === "left"
-    //     ? comentatorImage.getBounds().width / 2 - 80
-    //     : this.game.canvas.width - comentatorImage.getBounds().width / 2 + 80,
-    //   comentatorImage.getBounds().centerY + 246
-    // );
 
     const text = this.add.text(
       this.game.canvas.width / 2,
@@ -128,74 +144,6 @@ export default class CanvasScene extends Phaser.Scene {
       comentatorImage.destroy();
       text.destroy();
     }, 2000);
-  }
-
-  //For Comentator
-  showComment(message: string) {
-    if (!this.possibleToShowCommentatorTexrt) return;
-    this.possibleToShowCommentatorTexrt = false;
-
-    const text = this.add.text(this.game.canvas.width / 2, 83, message, {
-      fontSize: "65px",
-      color: "#2CE67C",
-      align: "center",
-      strokeThickness: 5,
-    });
-    text.setOrigin(0.5);
-
-    text.setPosition(this.game.canvas.width / 2, this.game.canvas.height - 80);
-
-    this.tweens.add({
-      targets: text,
-      duration: 600,
-      delay: 1200,
-      alpha: 0,
-      scale: 0,
-      onComplete: () => {
-        text.destroy();
-        this.possibleToShowCommentatorTexrt = true;
-      },
-    });
-  }
-
-  showBallSaveIcon(side: "left" | "right") {
-    const image = this.add.image(
-      20,
-      this.game.canvas.height / 2 + 40,
-      "ballSaveIcon"
-    );
-    image.setTint(0x94ff98);
-    image.setOrigin(0.5);
-    image.setScale(0.4);
-
-    if (side === "left") {
-      image.setPosition(
-        image.getBounds().width / 2 +
-          calculatePercentage(3, this.game.canvas.width),
-        this.game.canvas.height -
-          image.getBounds().height / 2 -
-          calculatePercentage(3, this.game.canvas.height)
-      );
-    } else {
-      image.setPosition(
-        this.game.canvas.width -
-          image.getBounds().width / 2 -
-          calculatePercentage(3, this.game.canvas.width),
-        this.game.canvas.height -
-          image.getBounds().height / 2 -
-          calculatePercentage(3, this.game.canvas.height)
-      );
-    }
-
-    this.tweens.add({
-      targets: image,
-      duration: 400,
-      delay: 1100,
-      alpha: 0,
-      onComplete: () => {
-        image.destroy();
-      },
-    });
   }
 
   // During Transitions
@@ -264,40 +212,47 @@ export default class CanvasScene extends Phaser.Scene {
   }
 
   createIndicators() {
-    this.indicatorsContainer = this.add.container();
+    this.indicatorsContainer = this.add
+      .container(this.game.canvas.width / 2, -20)
+      .setAlpha(0);
     // Background
     const bck = this.add
-      .image(this.game.canvas.width / 2, 60, "matchIndicatorBck")
+      .image(0, 0, "matchIndicatorBck")
       .setTint(0x02010d)
-      .setAlpha(0);
+      .setAlpha(0.8);
 
-    this.timerText = this.add.text(this.game.canvas.width / 2, 83, "0", {
-      fontSize: "25px",
-      color: "#F3FFFF",
-      align: "center",
-      strokeThickness: 1,
-    });
+    this.timerText = this.add.text(
+      this.indicatorsContainer.width / 2,
+      this.indicatorsContainer.height / 2 + 20,
+      "0",
+      {
+        fontSize: "25px",
+        color: "#F3FFFF",
+        align: "center",
+        strokeThickness: 1,
+      }
+    );
     this.timerText.setOrigin(0.5);
 
     // hostTeamLogo
     const logo1 = this.add.image(
-      this.game.canvas.width / 2 - 158,
-      56,
+      -160,
+      this.indicatorsContainer.height / 2 - 3,
       GameData.teamsData.hostTeam!.name
     );
 
     // guestTeamLogo
     const logo2 = this.add.image(
-      this.game.canvas.width / 2 + 158,
-      56,
+      160,
+      this.indicatorsContainer.height / 2 - 3,
       GameData.teamsData.guestTeam!.name
     );
 
     // hostTeamInitials
     const initials1 = this.add
       .text(
-        this.game.canvas.width / 2 - 120,
-        60,
+        -125,
+        this.indicatorsContainer.height / 2,
         GameData.teamsData.hostTeam!.tablo_name,
         {
           fontSize: "35px",
@@ -312,8 +267,8 @@ export default class CanvasScene extends Phaser.Scene {
     //guestTeamInitials
     const initials2 = this.add
       .text(
-        this.game.canvas.width / 2 + 120,
-        60,
+        125,
+        this.indicatorsContainer.height / 2,
         GameData.teamsData.guestTeam!.tablo_name,
         {
           fontSize: "35px",
@@ -327,7 +282,7 @@ export default class CanvasScene extends Phaser.Scene {
 
     // hostTeamScore
     const score1 = (this.hostTeamScoretext = this.add
-      .text(this.game.canvas.width / 2 - 20, 60, "0", {
+      .text(-20, this.indicatorsContainer.height / 2, "0", {
         fontSize: "45px",
         color: "#E9FFFF",
         fontStyle: "bold",
@@ -337,7 +292,7 @@ export default class CanvasScene extends Phaser.Scene {
       .setOrigin(1, 0.5));
 
     const score2 = (this.guestTeamScoretext = this.add
-      .text(this.game.canvas.width / 2 + 50, 60, "0", {
+      .text(50, this.indicatorsContainer.height / 2, "0", {
         fontSize: "45px",
         color: "#E9FFFF",
         fontStyle: "bold",
@@ -348,7 +303,7 @@ export default class CanvasScene extends Phaser.Scene {
 
     // HorizontalLine
     const midline = this.add
-      .image(this.game.canvas.width / 2, 60, "default")
+      .image(0, this.indicatorsContainer.height / 2, "default")
       .setDisplaySize(20, 7);
 
     this.indicatorsContainer.add([
@@ -363,8 +318,6 @@ export default class CanvasScene extends Phaser.Scene {
       this.timerText,
     ]);
     this.indicatorsContainer.setScale(0.75);
-    this.indicatorsContainer.x += 40;
-    this.indicatorsContainer.y += 75;
 
     this.indicatorsContainer.setAlpha(0);
   }
@@ -396,20 +349,7 @@ export default class CanvasScene extends Phaser.Scene {
   }
 
   makeIntroAnimation() {
-    this.introWindow = new IntroWindow(this, 0, 0, {
-      hostTeam: {
-        name: GameData.teamsData.hostTeam!.name,
-        logoKey: GameData.teamsData.hostTeam!.name,
-      },
-      guestTeam: {
-        name: GameData.teamsData.guestTeam!.name,
-        logoKey: GameData.teamsData.guestTeam!.name,
-      },
-      info: {
-        matchTitle: matchInfo.matchTitle,
-        matchSubTitle: matchInfo.matchSubTitle,
-      },
-    });
+    this.introWindow = new IntroWindow(this, 0, 0);
   }
 
   hideIntroWindow() {
@@ -522,6 +462,13 @@ export default class CanvasScene extends Phaser.Scene {
   }
 
   showMatchIndicators() {
-    this.indicatorsContainer.setAlpha(1);
+    this.tweens.add({
+      delay: 800,
+      targets: this.indicatorsContainer,
+      y: 100,
+      alpha: 1,
+      duration: 1000,
+      ease: Phaser.Math.Easing.Sine.InOut,
+    });
   }
 }

@@ -65,7 +65,7 @@ export class TeamTacticSelector extends Phaser.GameObjects.Container {
       let currentStrategyIndex = 0;
 
       if (this.title === "DF") {
-        strategies = ["wide-attack", "wide-back", "center-attack", "normal"];
+        strategies = ["wide-attack", "wide-back", "normal"];
         currentStrategyIndex = strategies.indexOf(this.team.defence_strategy);
 
         currentStrategyIndex--;
@@ -75,7 +75,7 @@ export class TeamTacticSelector extends Phaser.GameObjects.Container {
         this.team.defence_strategy = strategies[currentStrategyIndex];
       }
       if (this.title === "MD") {
-        strategies = ["wide-attack", "wide-back", "normal"];
+        strategies = ["wide-attack", "wide-back", "center-attack", "normal"];
         currentStrategyIndex = strategies.indexOf(
           this.team.midfielder_strategy
         );
@@ -120,7 +120,7 @@ export class TeamTacticSelector extends Phaser.GameObjects.Container {
       let currentStrategyIndex = 0;
 
       if (this.title === "DF") {
-        strategies = ["wide-attack", "wide-back", "center-attack", "normal"];
+        strategies = ["wide-attack", "wide-back", "normal"];
         currentStrategyIndex = strategies.indexOf(this.team.defence_strategy);
         currentStrategyIndex++;
         if (currentStrategyIndex > strategies.length - 1)
@@ -129,7 +129,7 @@ export class TeamTacticSelector extends Phaser.GameObjects.Container {
         this.team.defence_strategy = strategies[currentStrategyIndex];
       }
       if (this.title === "MD") {
-        strategies = ["wide-attack", "wide-back", "normal"];
+        strategies = ["wide-attack", "wide-back", "center-attack", "normal"];
         currentStrategyIndex = strategies.indexOf(
           this.team.midfielder_strategy
         );

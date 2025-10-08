@@ -10,7 +10,6 @@ export class TeamFormation extends Phaser.GameObjects.Container {
   formations: Formation[] = [
     "4-4-2",
     "5-3-2",
-    "3-4-4",
     "3-5-2",
     "3-3-4",
     "4-3-3",
@@ -80,11 +79,6 @@ export class TeamFormation extends Phaser.GameObjects.Container {
         this.footballers.push(img);
 
         if (i === 0) {
-          if (this.team.defence_strategy === "center-attack") {
-            if (j !== 0 && j !== formation[i] - 1) {
-              img.setPosition(img.x + 20, img.y);
-            }
-          }
           if (this.team.defence_strategy === "wide-attack") {
             if (j === 0 || j === formation[i] - 1) {
               img.setPosition(img.x + 20, img.y);
@@ -106,6 +100,11 @@ export class TeamFormation extends Phaser.GameObjects.Container {
           if (this.team.midfielder_strategy === "wide-back") {
             if (j === 0 || j === formation[i] - 1) {
               img.setPosition(img.x - 20, img.y);
+            }
+          }
+          if (this.team.midfielder_strategy === "center-attack") {
+            if (j !== 0 && j !== formation[i] - 1) {
+              img.setPosition(img.x + 20, img.y);
             }
           }
         }

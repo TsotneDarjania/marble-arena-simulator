@@ -9,6 +9,7 @@ export const GameData : GameDataType = {
   matchSettings : {
     time : 2,
     showModals : true,
+    isExtraTimes: false,
     hostTeamFansColor : 0xffffff,
     guestTeamFansColor : 0xffffff
   },

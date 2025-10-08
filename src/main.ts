@@ -5,7 +5,6 @@ import GamePlay from "./scenes/GamePlay";
 import Menu from "./scenes/Menu";
 import Preload from "./scenes/Preloader";
 import {  getTeams } from "./api/getTeams";
-import { gameConfig} from "./config/matchConfig";
 import { GameData } from "./config/gameData";
 import { getTeamParamsFromURL } from "./utils/helper";
 
@@ -13,7 +12,7 @@ import { getTeamParamsFromURL } from "./utils/helper";
 async function initGame() {
   const teamParams = getTeamParamsFromURL();
   if (teamParams) {
-    gameConfig.gameMode = "marble-league"
+    // gameConfig.gameMode = "marble-league"
   }
 
   const teams = await getTeams()

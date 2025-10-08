@@ -68,7 +68,7 @@ export class MatchSettingsPopup extends Phaser.GameObjects.Container {
     const matchTimeSelector = new SettingsSelector(
       this.scene,
       0,
-      -80,
+      -130,
       "Match Time ",
       [0.5, 1, 2, 3, 4, 5, 10, 20],
       GameData.matchSettings.time
@@ -83,7 +83,7 @@ export class MatchSettingsPopup extends Phaser.GameObjects.Container {
     const showModalsSelector = new SettingsSelector(
       this.scene,
       0,
-      -10,
+      -60,
       "Show Modals",
       ["yes", "no"],
       GameData.matchSettings.showModals ? "yes" : "no"
@@ -95,37 +95,62 @@ export class MatchSettingsPopup extends Phaser.GameObjects.Container {
 
     this.add(showModalsSelector);
 
+    const extraTimesSelector = new SettingsSelector(
+      this.scene,
+      0,
+      10,
+      "Extra Times",
+      ["yes", "no"],
+      GameData.matchSettings.showModals ? "yes" : "no"
+    );
+
+    extraTimesSelector.on("change", (newVal: string) => {
+      GameData.matchSettings.isExtraTimes = newVal === "yes";
+    });
+
+    this.add(extraTimesSelector)
+
     const homeTeamColorSelector = new TeamColorSelector(
       this.scene,
       0,
-      60,
+      80,
       GameData.teamsData.hostTeam!.name,
       [
-        Number(`0x${GameData.teamsData.hostTeam!.primary_color.replace("#", "")}`),
-        Number(`0x${GameData.teamsData.hostTeam!.secondary_color.replace("#", "")}`),
+        Number(
+          `0x${GameData.teamsData.hostTeam!.primary_color.replace("#", "")}`
+        ),
+        Number(
+          `0x${GameData.teamsData.hostTeam!.secondary_color.replace("#", "")}`
+        ),
       ],
       Number(`0x${GameData.teamsData.hostTeam!.primary_color.replace("#", "")}`)
     );
-    homeTeamColorSelector.on("change", (newColor : number) => {
-      GameData.matchSettings.hostTeamFansColor = newColor
-    })
+    homeTeamColorSelector.on("change", (newColor: number) => {
+      GameData.matchSettings.hostTeamFansColor = newColor;
+    });
 
     this.add(homeTeamColorSelector);
 
     const guestTeamColorSelector = new TeamColorSelector(
       this.scene,
       0,
-      130,
+      150,
       GameData.teamsData.guestTeam!.name,
       [
-        Number(`0x${GameData.teamsData.guestTeam!.primary_color.replace("#", "")}`),
-        Number(`0x${GameData.teamsData.guestTeam!.secondary_color.replace("#", "")}`),
+        Number(
+          `0x${GameData.teamsData.guestTeam!.primary_color.replace("#", "")}`
+        ),
+        Number(
+          `0x${GameData.teamsData.guestTeam!.secondary_color.replace("#", "")}`
+        ),
       ],
-      Number(`0x${GameData.teamsData.guestTeam!.primary_color.replace("#", "")}`)
+      Number(
+        `0x${GameData.teamsData.guestTeam!.primary_color.replace("#", "")}`
+      )
     );
-    guestTeamColorSelector.on("change", (newColor : number) => {
-      GameData.matchSettings.guestTeamFansColor = newColor
-    })
+    guestTeamColorSelector.on("change", (newColor: number) => {
+      GameData.matchSettings.guestTeamFansColor = newColor;
+    });
 
     this.add(guestTeamColorSelector);
   }
@@ -153,9 +178,14 @@ export class MatchSettingsPopup extends Phaser.GameObjects.Container {
     this.setSize(w, h);
   }
 
-  private addCloseButton() { // <<< added
+  private addCloseButton() {
+    // <<< added
     this.closeButton = this.scene.add
-      .image(this.style.width / 2 + 27, -this.style.height / 2 - 27, "closeButton")
+      .image(
+        this.style.width / 2 + 27,
+        -this.style.height / 2 - 27,
+        "closeButton"
+      )
       .setOrigin(0.5)
       .setScale(0.8)
       .setInteractive({ cursor: "pointer" });

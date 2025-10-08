@@ -13,7 +13,7 @@ export class EventManager {
     // When you will click Start Simulation Button
     this.canvasScene.introOverlay.button.addOnClickEvent(() => {
       this.canvasScene.startIntroAnimation();
-      this.canvasScene.cameraController.destroy()
+      this.canvasScene.cameraController.destroy();
     });
 
     this.gamePlayScene.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
@@ -36,17 +36,30 @@ export class EventManager {
     this.gamePlayScene.input.keyboard?.on("keydown", (event: KeyboardEvent) => {
       if (this.status !== "ready-for-start-match") return;
       if (event.code === "Space") {
-        this.canvasScene.hideIntroWindow();
-        this.canvasScene.showMatchIndicators();
-        this.gamePlayScene.match.startMatch();
+        this.startMatchCommand();
       }
       this.status = "match-is-started";
     });
+
+    // Also trigger start when user clicks anywhere
+    this.gamePlayScene.input.on("pointerdown", () => {
+      if (this.status !== "ready-for-start-match") return;
+      this.startMatchCommand();
+      this.status = "match-is-started";
+    });
+  }
+
+  private startMatchCommand() {
+    this.canvasScene.hideIntroWindow();
+    this.canvasScene.showMatchIndicators();
+    this.canvasScene.destroyPressToStartText();
+    this.gamePlayScene.match.startMatch();
   }
 
   manageGameEvents() {
     this.gamePlayScene.events.on("cameraZoomFinished", () => {
       this.status = "ready-for-start-match";
+      this.canvasScene.showPressToStartText();
     });
   }
 }

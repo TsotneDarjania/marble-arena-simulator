@@ -56,7 +56,7 @@ export default class Menu extends Phaser.Scene {
       onComplete: () => {
         this.tweens.add({
           targets: [title, subtitle],
-          delay: 2000,
+          delay: 300,
           duration: 1000,
           alpha: 0,
           onComplete: () => {
