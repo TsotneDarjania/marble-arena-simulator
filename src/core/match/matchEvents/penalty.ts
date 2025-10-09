@@ -134,7 +134,9 @@ export class Penalty {
     this.wasGoalScored = true;
     this.match.stadium.startGoalSelebration(whoScored);
     this.match.ball.startBlinkAnimation();
-    this.match.ball.stop();
+    setTimeout(() => {
+      this.match.ball.stop();
+    }, 90);
     this.match.hostTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.guestTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.hostTeam.stopFullMotion();

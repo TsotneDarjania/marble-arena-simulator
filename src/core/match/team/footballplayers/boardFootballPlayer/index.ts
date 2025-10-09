@@ -291,7 +291,11 @@ export default class BoardFootballPlayer extends Phaser.GameObjects.Container {
         cornerRandom = -1;
       }
       if (cornerRandom > 90) {
-        const side = this.scene.match.ball.y > 474 ? "bottom" : "top";
+        const side =
+          this.scene.match.ball.getBounds().centerY >
+          this.scene.game.canvas.height / 2
+            ? "bottom"
+            : "top";
         this.scene.match.matchManager.matchEvenetManager.footballerSaveToCorner(
           side
         );
@@ -305,8 +309,8 @@ export default class BoardFootballPlayer extends Phaser.GameObjects.Container {
                   .centerX + getRandomIntNumber(60, 110),
           y:
             side === "top"
-              ? 473 - getRandomIntNumber(190, 230)
-              : 473 + getRandomIntNumber(190, 230),
+              ? this.scene.game.canvas.height / 2 - getRandomIntNumber(190, 230)
+              : this.scene.game.canvas.height / 2 + getRandomIntNumber(190, 230),
         });
       }
     }

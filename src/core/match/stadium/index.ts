@@ -31,6 +31,9 @@ export class Stadium extends Phaser.GameObjects.Container {
 
   stadiumColliders: StadiumColliders;
 
+  leftGoalLine: Phaser.GameObjects.Image;
+  rightGoalLine: Phaser.GameObjects.Image;
+
   constructor(public scene: GamePlay, x: number, y: number) {
     super(scene, x, y);
     scene.add.existing(this);
@@ -50,6 +53,28 @@ export class Stadium extends Phaser.GameObjects.Container {
 
     this.addGrids();
     this.addBrandTitle();
+    this.addGoalLines();
+  }
+
+  addGoalLines() {
+    this.leftGoalLine = this.scene.add
+      .image(
+        this.scene.game.canvas.width/2 - 496,
+        this.scene.game.canvas.height / 2,
+        "default"
+      )
+      .setOrigin(0.5)
+      .setDisplaySize(5,100)
+      .setTint(0xdc1800);
+    this.rightGoalLine = this.scene.add
+      .image(
+        this.scene.game.canvas.width/2 + 496,
+        this.scene.game.canvas.height / 2,
+        "default"
+      )
+      .setOrigin(0.5)
+      .setDisplaySize(5,100)
+      .setTint(0xdc1800);
   }
 
   addBrandTitle() {

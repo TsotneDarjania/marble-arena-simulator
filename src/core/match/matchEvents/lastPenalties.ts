@@ -26,25 +26,10 @@ export class LastPenalties {
     this.prepareGoalkeeper();
     this.prepareAttaker();
     this.prepareBall();
-    this.listenGoalEvents();
 
     setTimeout(() => {
       this.shoot();
     }, getRandomIntNumber(2000, 5000));
-  }
-
-  listenGoalEvents() {
-    this.match.scene.events.on("update", () => {
-      if (
-        this.match.ball.x <
-        this.match.hostTeam.boardFootballPlayers.goalKeeper.getBounds()
-          .centerX -
-          16
-      ) {
-        if (this.canCheckIfIsGoal === false) return;
-        this.isGoal();
-      }
-    });
   }
 
   prepareGoalkeeper() {
@@ -168,7 +153,9 @@ export class LastPenalties {
 
     this.match.stadium.startGoalSelebration(this.whosTurn);
     this.match.ball.startBlinkAnimation();
-    this.match.ball.stop();
+    setTimeout(() => {
+      this.match.ball.stop();
+    }, 90);
     this.match.hostTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.guestTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.hostTeam.boardFootballPlayers.goalKeeper.deactive();

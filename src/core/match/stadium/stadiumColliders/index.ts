@@ -32,9 +32,9 @@ export default class StadiumColliders {
 
     const leftTop = this.scene.physics.add.body(
       this.scene.game.canvas.width / 2 - this.stadium.innerFielddWidth / 2 - 60,
-      this.scene.game.canvas.height / 2 - 79,
+      this.scene.game.canvas.height / 2 - 73,
       60,
-      13
+      4
     );
     leftTop.setImmovable(true);
     this.goalPostColliders.push(leftTop);
@@ -43,7 +43,7 @@ export default class StadiumColliders {
       this.scene.game.canvas.width / 2 - this.stadium.innerFielddWidth / 2 - 60,
       this.scene.game.canvas.height / 2 + 65,
       60,
-      13
+      4
     );
     leftBottom.setImmovable(true);
     this.goalPostColliders.push(leftBottom);
@@ -64,9 +64,9 @@ export default class StadiumColliders {
 
     const rightTop = this.scene.physics.add.body(
       this.scene.game.canvas.width / 2 + this.stadium.innerFielddWidth / 2,
-      this.scene.game.canvas.height / 2 - 79,
+      this.scene.game.canvas.height / 2 - 73,
       60,
-      13
+      4
     );
     rightTop.setImmovable(true);
     this.goalPostColliders.push(rightTop);
@@ -75,7 +75,7 @@ export default class StadiumColliders {
       this.scene.game.canvas.width / 2 + this.stadium.innerFielddWidth / 2,
       this.scene.game.canvas.height / 2 + 65,
       60,
-      13
+      4
     );
     rightBottom.setImmovable(true);
     this.goalPostColliders.push(rightBottom);
@@ -121,7 +121,7 @@ export default class StadiumColliders {
         this.stadium.innerFielddHeight / 2 -
         15,
       13,
-      180
+      194
     );
     this.leftTopCollider.setImmovable(true);
 
@@ -141,7 +141,7 @@ export default class StadiumColliders {
         this.stadium.innerFielddHeight / 2 -
         15,
       13,
-      195
+      192
     );
     this.rightTopCollider.setImmovable(true);
 
@@ -149,9 +149,9 @@ export default class StadiumColliders {
       this.scene.game.canvas.width / 2 + this.stadium.innerFielddWidth / 2,
       this.scene.game.canvas.height / 2 +
         this.stadium.innerFielddHeight / 2 -
-        187,
+        183,
       13,
-      210
+      200
     );
     this.rightBottomCollider.setImmovable(true);
 

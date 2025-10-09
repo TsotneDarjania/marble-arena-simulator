@@ -44,7 +44,9 @@ async function initGame() {
     antialias: true,
     physics: {
       default: "arcade",
-      arcade: {},
+      arcade: {
+        debug: true
+      },
     },
     scale: {
       mode: Phaser.Scale.FIT,

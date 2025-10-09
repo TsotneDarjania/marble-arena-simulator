@@ -220,7 +220,10 @@ export class MatchEventManager {
       this.match.guestTeam.stopFullMotion();
       this.match.guestTeam.boardFootballPlayers.goalKeeper.stopMotion();
 
-      this.match.ball.stop();
+      setTimeout(() => {
+        this.match.ball.stop();
+      }, 90);
+
       this.match.ball.startBlinkAnimation();
       this.match.stadium.startGoalSelebration(whoScored);
 
@@ -251,9 +254,7 @@ export class MatchEventManager {
       if (this.isPossibleToListenGoalEvents) {
         if (
           this.match.ball.x <
-          this.match.hostTeam.boardFootballPlayers.goalKeeper.getBounds()
-            .centerX -
-            16
+          this.match.stadium.leftGoalLine.getBounds().centerX
         ) {
           if (
             this.match.matchManager.matchEvenetManager.matchStatus ===
@@ -266,9 +267,7 @@ export class MatchEventManager {
 
         if (
           this.match.ball.x >
-          this.match.guestTeam.boardFootballPlayers.goalKeeper.getBounds()
-            .centerX +
-            16
+          this.match.stadium.rightGoalLine.getBounds().centerX
         ) {
           this.isGoal("host");
         }
