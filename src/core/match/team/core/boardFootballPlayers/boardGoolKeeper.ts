@@ -82,21 +82,10 @@ export default class BoardGoalKeeper extends BoardFootballPlayer {
   }
 
   save() {
-    // this.scene.soundManager.goalKeeperJumpSound.play();
-    this.scene.match.matchManager.comentatorManager.showCommentForGoalKeeper(
-      this.playerData.who === "hostPlayer" ? "host" : "guest"
-    );
-
     setTimeout(() => {
       this.alreadyTouchBall = false;
     }, 200);
-    // const canvasScene = this.scene.scene.get("CanvasScene") as CanvasScene;
 
-    // if (this.playerData.who === "hostPlayer") {
-    //   canvasScene.showBallSaveIcon("left");
-    // } else {
-    //   canvasScene.showBallSaveIcon("right");
-    // }
     this.makeShortPass();
   }
 

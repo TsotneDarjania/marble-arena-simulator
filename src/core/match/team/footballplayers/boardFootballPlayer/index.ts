@@ -309,13 +309,6 @@ export default class BoardFootballPlayer extends Phaser.GameObjects.Container {
               : 473 + getRandomIntNumber(190, 230),
         });
       }
-
-      // For Commentator
-      const random = getRandomIntNumber(0, 100);
-      random > 80 &&
-        this.scene.match.matchManager.comentatorManager.showCommentForDefennder(
-          this.playerData.who === "hostPlayer" ? "host" : "guest"
-        );
     }
 
     if (
@@ -453,13 +446,6 @@ export default class BoardFootballPlayer extends Phaser.GameObjects.Container {
   shoot() {
     this.scene.soundManager.shoot.play();
 
-    const random = getRandomIntNumber(0, 100);
-    random > 80 &&
-      this.scene.match.matchManager.comentatorManager.showCommentForShooter(
-        this.playerData.who === "hostPlayer" ? "host" : "guest"
-      );
-
-    console.log(this.teamData.shoot_accuracy);
     let x = 0;
     const isfailShoot =
       getRandomIntNumber(0, 100) < this.teamData.shoot_accuracy ? false : true;

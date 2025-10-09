@@ -49,6 +49,69 @@ export class Stadium extends Phaser.GameObjects.Container {
     this.addColliders();
 
     this.addGrids();
+    this.addBrandTitle();
+  }
+
+  addBrandTitle() {
+    const cx = this.scene.game.canvas.width / 2;
+    const cy = this.scene.game.canvas.height / 2 + 295;
+    const text = "Marble Arena";
+
+    // 1. Dark imprint that sinks into the grass
+    const imprint = this.scene.add
+      .text(cx, cy, text, {
+        fontFamily: "Arial Black",
+        fontSize: "36px",
+        color: "#0e3d0e", // dark turf tone
+        stroke: "#000000",
+        strokeThickness: 2,
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setAlpha(0.6)
+      .setBlendMode(Phaser.BlendModes.MULTIPLY);
+
+    // slight blur to soften the imprint edges
+    if (imprint.postFX?.addBlur) imprint.postFX.addBlur(1.5, 1.5, 1);
+
+    // 2. Overspray / chalk layer for grassy paint halo
+    const overspray = this.scene.add
+      .text(cx, cy, text, {
+        fontFamily: "Arial Black",
+        fontSize: "36px",
+        color: "#7fff00", // bright green for halo
+        stroke: "#1c6b1c", // darker green rim
+        strokeThickness: 10,
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setAlpha(0.35)
+      .setBlendMode(Phaser.BlendModes.OVERLAY);
+
+    if (overspray.postFX?.addBlur) overspray.postFX.addBlur(2.5, 2.5, 1);
+
+    // 3. Top crisp paint layer
+    const paint = this.scene.add
+      .text(cx, cy, text, {
+        fontFamily: "Arial Black",
+        fontSize: "36px",
+        color: "#b9ff9f", // painted stripe color
+        stroke: "#134d13", // edge outline
+        strokeThickness: 4,
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setBlendMode(Phaser.BlendModes.NORMAL);
+
+    // small breathing shimmer (optional)
+    this.scene.tweens.add({
+      targets: paint,
+      alpha: { from: 0.95, to: 1 },
+      duration: 900,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.easeInOut",
+    });
   }
 
   addGrids() {

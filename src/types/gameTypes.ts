@@ -43,12 +43,7 @@ export type GameConfigType = {
   mathTime: number;
 };
 
-export type MatchModeType =
-  | "board-football"
-  | "old-style"
-  | "new-style"
-  | "marble-football"
-  | "experimental";
+export type MatchModeType = "board-football";
 
 export type MatchInfoType = {
   matchTitle: string;
