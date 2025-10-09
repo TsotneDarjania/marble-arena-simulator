@@ -59,22 +59,25 @@ export class Stadium extends Phaser.GameObjects.Container {
   addGoalLines() {
     this.leftGoalLine = this.scene.add
       .image(
-        this.scene.game.canvas.width/2 - 496,
+        this.scene.game.canvas.width / 2 - 505,
         this.scene.game.canvas.height / 2,
         "default"
       )
       .setOrigin(0.5)
-      .setDisplaySize(5,100)
-      .setTint(0xdc1800);
+      .setDisplaySize(5, 100)
+      .setTint(0xdc1800)
+      .setAlpha(0);
+
     this.rightGoalLine = this.scene.add
       .image(
-        this.scene.game.canvas.width/2 + 496,
+        this.scene.game.canvas.width / 2 + 505,
         this.scene.game.canvas.height / 2,
         "default"
       )
       .setOrigin(0.5)
-      .setDisplaySize(5,100)
-      .setTint(0xdc1800);
+      .setDisplaySize(5, 100)
+      .setTint(0xdc1800)
+      .setAlpha(0);
   }
 
   addBrandTitle() {

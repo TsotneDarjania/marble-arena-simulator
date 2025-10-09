@@ -45,7 +45,7 @@ async function initGame() {
     physics: {
       default: "arcade",
       arcade: {
-        debug: true
+        // debug: true
       },
     },
     scale: {
