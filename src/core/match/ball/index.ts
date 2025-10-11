@@ -22,19 +22,21 @@ export class Ball extends Phaser.Physics.Arcade.Image {
     this.setScale(0.4);
     this.setCircle(22, 10, 11);
 
-    // Enable physics properties
     this.setBounce(0.8);
-    // this.setCollideWorldBounds(true);
+
     this.addParticles();
     this.createBlinkAnimation();
-
     this.setDepth(11);
+
+    // enable damping
+    this.setDamping(true);
+    this.setDrag(0.8); // <-- THIS is realistic friction for damping mode
   }
 
   private addParticles() {
     this.emitter = this.scene.add.particles(this.x, this.y, "circle", {
       lifespan: 370,
-      alpha: { start: 0.6, end: 0 },
+      alpha: { start: 0.4, end: 0 },
       scale: { start: 0.2, end: 0 },
       tint: [0xf7332d, 0xf7332d, 0xfa8238, 0xf7e52d],
       frequency: 0,
@@ -49,10 +51,11 @@ export class Ball extends Phaser.Physics.Arcade.Image {
   }
 
   kick(speed: number, { x, y }: { x: number; y: number }) {
-    // Apply a force gradually for smoother motion
-    this.scene.physics.moveTo(this, x, y, speed);
-    this.anglurarVelocity = speed * 4;
-    this.setAngularVelocity(this.anglurarVelocity);
+    const angle = Phaser.Math.Angle.Between(this.x, this.y, x, y);
+    const velocity = this.scene.physics.velocityFromRotation(angle, speed);
+
+    this.setVelocity(velocity.x, velocity.y);
+    this.setAngularVelocity(speed * 3.5);
   }
 
   stop() {
