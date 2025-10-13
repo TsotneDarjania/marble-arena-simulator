@@ -329,14 +329,12 @@ export default class BoardFootballPlayer extends Phaser.GameObjects.Container {
       if ((this.parentContainer as Column).toBottom) {
         this.scene.match.ball.goTowardFootballer(
           this.getBounds().centerX,
-          this.getBounds().centerY +
-            (this.parentContainer as Column).tweenDuration * 0.3
+          this.getBounds().centerY
         );
       } else {
         this.scene.match.ball.goTowardFootballer(
           this.getBounds().centerX,
-          this.getBounds().centerY -
-            (this.parentContainer as Column).tweenDuration * 0.3
+          this.getBounds().centerY
         );
       }
     } else {
@@ -358,12 +356,12 @@ export default class BoardFootballPlayer extends Phaser.GameObjects.Container {
         this.getBounds().centerY
       );
     }, 200);
-    setTimeout(() => {
-      this.scene.match.ball.goTowardFootballer(
-        this.getBounds().centerX,
-        this.getBounds().centerY
-      );
-    }, 300);
+    // setTimeout(() => {
+    //   this.scene.match.ball.goTowardFootballer(
+    //     this.getBounds().centerX,
+    //     this.getBounds().centerY
+    //   );
+    // }, 300);
 
     setTimeout(() => {
       if (
