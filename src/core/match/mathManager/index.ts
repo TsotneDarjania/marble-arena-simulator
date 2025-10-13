@@ -1,4 +1,5 @@
 import Match from "..";
+import { GameData } from "../../../config/gameData";
 import CanvasScene from "../../../scenes/CanvasScene";
 import { getRandomIntNumber } from "../../../utils/math";
 import { Corner } from "../matchEvents/corner";
@@ -41,7 +42,6 @@ export default class MatchManager {
     this.createMatchEvenetManager();
     this.teamWhoHasBall = "hostTeam";
   }
-
 
   createFootballersMotionManager() {
     this.footballersMotionManager = new FootballersMotionManager(this.match);
@@ -129,36 +129,88 @@ export default class MatchManager {
       this.match.ball.reset();
       this.match.matchTimer.stopTimer();
 
+      const cavnasScene = this.match.scene.scene.get(
+        "CanvasScene"
+      ) as CanvasScene;
+
       if (status === "halfTimeEnd") {
         this.match.matchTimer.time = 45;
+        if (GameData.matchSettings.showModals) {
+          cavnasScene.showMatchContinueModal();
+        }
       }
       if (status === "fullTimeEnd") {
         this.match.matchTimer.time = 90;
+
+        if (!GameData.matchSettings.isExtraTimes) {
+          cavnasScene.showLastresult(
+            this.match.matchManager.hostScore.toString(),
+            this.match.matchManager.guestScore.toString()
+          );
+        } else {
+          if (
+            this.match.matchManager.hostScore !==
+            this.match.matchManager.guestScore
+          ) {
+            cavnasScene.showLastresult(
+              this.match.matchManager.hostScore.toString(),
+              this.match.matchManager.guestScore.toString()
+            );
+          } else {
+            if (GameData.matchSettings.showModals) {
+              cavnasScene.showMatchContinueModal();
+            }
+          }
+        }
       }
       if (status === "firstExtraTimeEnd") {
         this.match.matchTimer.time = 105;
       }
       if (status === "secondExtraTimeEnd") {
         this.match.matchTimer.time = 120;
+
+        if (
+          this.match.matchManager.hostScore !==
+          this.match.matchManager.guestScore
+        ) {
+          cavnasScene.showLastresult(
+            this.match.matchManager.hostScore.toString(),
+            this.match.matchManager.guestScore.toString()
+          );
+        } else {
+          if (GameData.matchSettings.showModals) {
+            cavnasScene.showMatchContinueModal();
+          }
+        }
       }
 
-      const cavnasScene = this.match.scene.scene.get(
-        "CanvasScene"
-      ) as CanvasScene;
       cavnasScene.timerText.setText(this.match.matchTimer.time.toString());
     }, 1500);
   }
 
   resumeMatch() {
+    const cavnasScene = this.match.scene.scene.get(
+      "CanvasScene"
+    ) as CanvasScene;
+    cavnasScene.destoryMatchContinueModal();
+
+    if(this.match.matchTimer.time === 90){
+      if(!GameData.matchSettings.isExtraTimes) return;
+      if(this.match.matchManager.hostScore !== this.match.matchManager.guestScore){
+        return;
+      }
+    }
+
+
     this.match.scene.soundManager.referee.play();
+
     setTimeout(() => {
+      this.matchEvenetManager.matchStatus = "playing";
       if (this.matchEvenetManager.isSecondExtraTimeEnded) {
         this.startLastPenalties();
       } else {
         this.match.hostTeam.boardFootballPlayers.goalKeeper.startMotion();
         this.match.guestTeam.boardFootballPlayers.goalKeeper.startMotion();
-
-        this.matchEvenetManager.matchStatus = "playing";
         this.match.matchManager.teamWhoHasBall =
           this.whichTeamHaveToResume === "host" ? "hostTeam" : "guestTeam";
         this.makeFirstKick(this.whichTeamHaveToResume);

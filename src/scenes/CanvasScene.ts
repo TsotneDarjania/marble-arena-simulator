@@ -23,6 +23,8 @@ export default class CanvasScene extends Phaser.Scene {
   possibleToShowCommentatorTexrt = true;
   indicatorsContainer: Phaser.GameObjects.Container;
 
+  matchContinueModal: Phaser.GameObjects.Container;
+
   constructor() {
     super("CanvasScene");
   }
@@ -31,6 +33,43 @@ export default class CanvasScene extends Phaser.Scene {
     this.addIntroOverlay();
     this.createCameraController();
     this.createIndicators();
+  }
+
+  showMatchContinueModal() {
+    this.matchContinueModal = this.add.container();
+
+    const bck = this.add
+      .image(0, 0, "default")
+      .setDisplaySize(
+        this.game.canvas.width + 100,
+        this.game.canvas.height + 100
+      )
+      .setOrigin(0)
+      .setTint(0x000000)
+      .setAlpha(0.4)
+      .setDepth(100);
+
+    const text = this.add
+      .text(
+        this.game.canvas.width / 2,
+        this.game.canvas.height / 2,
+        "Press anywhere to continue",
+        {
+          fontSize: "36px",
+          align: "center",
+          color: "#ffffffff",
+          stroke: "#ffffffff",
+          strokeThickness: 1,
+        }
+      )
+      .setDepth(101)
+      .setOrigin(0.5);
+
+    this.matchContinueModal.add([bck, text]);
+  }
+
+  destoryMatchContinueModal() {
+    this.matchContinueModal?.destroy(true);
   }
 
   destroyPressToStartText() {
@@ -77,106 +116,38 @@ export default class CanvasScene extends Phaser.Scene {
     );
   }
 
-  showComentator(side: "left" | "right", comment: string) {
-    const image = this.add.image(
-      this.game.canvas.width / 2,
-      this.game.canvas.height / 2,
-      "default"
-    );
-    image.setAlpha(0);
-    image.setScale(1.2);
-    image.setOrigin(0.5);
-    image.setTint(0x000000);
-    image.setAlpha(0.7);
-    image.setDisplaySize(this.game.canvas.width, this.game.canvas.height);
-
-    const comentatorImage = this.add.image(0, 0, "comentator");
-    comentatorImage.setOrigin(0.5);
-    comentatorImage.setScale(0.35);
-    comentatorImage.setAlpha(0);
-    comentatorImage.setPosition(
-      side === "left"
-        ? comentatorImage.getBounds().width / 2 + 130
-        : this.game.canvas.width - comentatorImage.getBounds().width / 2 - 130,
-      comentatorImage.getBounds().height / 2 + 20
-    );
-
-    const text = this.add.text(
-      this.game.canvas.width / 2,
-      this.game.canvas.height / 2 + 100,
-      comment,
-      {
-        fontSize: "85px",
-        color: "#DBD65C",
-        align: "center",
-        strokeThickness: 5,
-      }
-    );
-    text.setAlpha(0);
-    text.setScale(0);
-    text.setOrigin(0.5);
-
-    this.tweens.add({
-      targets: [image],
-      duration: 800,
-      ease: Phaser.Math.Easing.Back.Out,
-      alpha: 0.6,
-    });
-
-    this.tweens.add({
-      targets: [comentatorImage],
-      duration: 300,
-      ease: Phaser.Math.Easing.Back.Out,
-      alpha: 1,
-    });
-
-    this.tweens.add({
-      targets: [text],
-      duration: 700,
-      ease: Phaser.Math.Easing.Back.Out,
-      alpha: 1,
-      scale: 1,
-      delay: 400,
-    });
-
-    setTimeout(() => {
-      image.destroy();
-      comentatorImage.destroy();
-      text.destroy();
-    }, 2000);
-  }
-
   // During Transitions
-  showMarbleArenaLogo() {
+  showTransition() {
+    
+    console.log("aq var")
+   
+    const container = this.add
+      .container(this.game.canvas.width / 2, this.game.canvas.height / 2).setAlpha(0)
+      .setDepth(100);
+
+    const bg = this.add.image(0, 0, "default").setTint(0x000000).setScale(100);
+
     const marbleArenaLogo = this.add
-      .image(
-        this.game.canvas.width / 2,
-        this.game.canvas.height / 2,
-        "marbleArenaLogo"
-      )
-      .setScale(0)
-      .setOrigin(0.5)
-      .setDepth(150)
-      .setAlpha(0);
+      .image(0, 0, "marbleArenaLogo")
+      .setScale(0.5)
+      .setOrigin(0.5);
+
+    container.add([bg, marbleArenaLogo]);
 
     this.tweens.add({
-      targets: marbleArenaLogo,
+      targets: container,
       alpha: 1,
-      scale: 0.45,
       duration: 500,
       onComplete: () => {
-        setTimeout(() => {
-          this.tweens.add({
-            targets: marbleArenaLogo,
-            alpha: 0,
-            scale: 0,
-            delay: 300,
-            duration: 500,
-            onComplete: () => {
-              marbleArenaLogo.destroy();
-            },
-          });
-        }, 300);
+        this.tweens.add({
+          targets: container,
+          alpha: 0,
+          delay: 1000,
+          duration: 500,
+          onComplete: () => {
+            container.destroy(true);
+          },
+        });
       },
     });
   }
@@ -318,6 +289,7 @@ export default class CanvasScene extends Phaser.Scene {
       this.timerText,
     ]);
     this.indicatorsContainer.setScale(0.75);
+    this.indicatorsContainer.setDepth(10);
 
     this.indicatorsContainer.setAlpha(0);
   }
@@ -363,61 +335,93 @@ export default class CanvasScene extends Phaser.Scene {
     });
   }
 
-  showLastresult(data: { winner?: string; winnerLogoKey: string }) {
-    const background = this.scene.scene.add.image(
-      this.game.canvas.width / 2,
-      this.game.canvas.height / 2,
-      "default"
-    );
-    background.setDisplaySize(600, this.game.canvas.height);
-    background.setTint(0x0c1c2d);
-    background.setAlpha(0);
+  showLastresult(hostScore: string, guestScore: string) {
+    const container = this.add.container();
 
-    const winnerText = this.scene.scene.add
+    const background = this.scene.scene.add
+      .image(this.game.canvas.width / 2, this.game.canvas.height / 2, "default")
+      .setAlpha(0.8)
+      .setDisplaySize(900, 250)
+      .setTint(0x0c2114);
+
+    const hostTeamText = this.scene.scene.add
       .text(
-        this.game.canvas.width / 2,
-        this.game.canvas.height / 2 - 160,
-        "Winner",
-        {
-          fontSize: "45px",
-          color: "#E9FFFF",
-          fontStyle: "bold",
-          strokeThickness: 2,
-          align: "center",
-        }
-      )
-      .setAlpha(0)
-      .setOrigin(0.5);
-
-    const winnerLogo = this.scene.scene.add
-      .image(
-        this.game.canvas.width / 2,
+        this.game.canvas.width / 2 - 100,
         this.game.canvas.height / 2,
-        data.winnerLogoKey
-      )
-      .setAlpha(0)
-      .setScale(2.2);
-
-    const winnerTeamText = this.scene.scene.add
-      .text(
-        this.game.canvas.width / 2,
-        this.game.canvas.height / 2 + 160,
-        data.winner ? data.winner : "Draw",
+        GameData.teamsData.hostTeam!.name,
         {
-          fontSize: "45px",
+          fontSize: "42px",
           color: "#E9FFFF",
           fontStyle: "bold",
-          strokeThickness: 2,
           align: "center",
         }
       )
-      .setAlpha(0)
-      .setOrigin(0.5);
+      .setOrigin(1, 0.5);
 
-    this.scene.scene.tweens.add({
-      targets: [background, winnerLogo, winnerText, winnerTeamText],
-      duration: 500,
+    const hostTeamScore = this.scene.scene.add
+      .text(
+        this.game.canvas.width / 2 - 60,
+        this.game.canvas.height / 2,
+        hostScore,
+        {
+          fontSize: "42px",
+          color: "#00e4e4ff",
+          fontStyle: "bold",
+          align: "center",
+        }
+      )
+      .setOrigin(1, 0.5);
+
+    const line = this.scene.scene.add
+      .text(this.game.canvas.width / 2, this.game.canvas.height / 2, "-", {
+        fontSize: "42px",
+        color: "#E9FFFF",
+        fontStyle: "bold",
+        align: "center",
+      })
+      .setOrigin(0.5, 0.5);
+
+    const guestTeamText = this.scene.scene.add
+      .text(
+        this.game.canvas.width / 2 + 100,
+        this.game.canvas.height / 2,
+        GameData.teamsData.guestTeam!.name,
+        {
+          fontSize: "42px",
+          color: "#E9FFFF",
+          fontStyle: "bold",
+          align: "center",
+        }
+      )
+      .setOrigin(0, 0.5);
+
+    const guestTeamScore = this.scene.scene.add
+      .text(
+        this.game.canvas.width / 2 + 60,
+        this.game.canvas.height / 2,
+        guestScore,
+        {
+          fontSize: "42px",
+          color: "#00e4e4ff",
+          fontStyle: "bold",
+          align: "center",
+        }
+      )
+      .setOrigin(0, 0.5);
+
+    container.add([
+      background,
+      hostTeamScore,
+      hostTeamText,
+      guestTeamScore,
+      guestTeamText,
+    ]);
+    container.alpha = 0;
+
+    this.add.tween({
+      targets: container,
       alpha: 1,
+      duration: 1000,
     });
   }
 

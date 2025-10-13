@@ -43,7 +43,15 @@ export class EventManager {
 
     // Also trigger start when user clicks anywhere
     this.gamePlayScene.input.on("pointerdown", () => {
+      if (
+        this.gamePlayScene.match.matchManager?.matchEvenetManager?.matchStatus ===
+        "pause"
+      ) {
+        this.gamePlayScene.match.matchManager.resumeMatch();
+      }
+
       if (this.status !== "ready-for-start-match") return;
+
       this.startMatchCommand();
       this.status = "match-is-started";
     });

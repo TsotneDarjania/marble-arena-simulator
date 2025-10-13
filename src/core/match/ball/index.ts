@@ -51,40 +51,40 @@ export class Ball extends Phaser.Physics.Arcade.Image {
   }
 
   kick(speed: number, { x, y }: { x: number; y: number }) {
+    const angle = Phaser.Math.Angle.Between(this.x, this.y, x, y);
+    const velocity = this.scene.physics.velocityFromRotation(
+      angle,
+      speed * 1.2
+    );
 
-    console.log(speed)
-  const angle = Phaser.Math.Angle.Between(this.x, this.y, x, y);
-  const velocity = this.scene.physics.velocityFromRotation(angle, speed * 1.2);
+    this.setVelocity(velocity.x, velocity.y);
+    this.setAngularVelocity(speed * 3.5);
 
-  this.setVelocity(velocity.x, velocity.y);
-  this.setAngularVelocity(speed * 3.5);
+    // ✅ Keep minimal constant velocity
+    const body = this.body as Phaser.Physics.Arcade.Body;
+    const minSpeed = 120; // adjust as needed
 
-  // ✅ Keep minimal constant velocity
-  const body = this.body as Phaser.Physics.Arcade.Body;
-  const minSpeed = 120; // adjust as needed
+    this.scene.time.addEvent({
+      delay: 120, // check every 50ms
+      loop: true,
+      callback: () => {
+        const vx = body.velocity.x;
+        const vy = body.velocity.y;
+        const currentSpeed = Math.sqrt(vx * vx + vy * vy);
 
-  this.scene.time.addEvent({
-    delay: 120, // check every 50ms
-    loop: true,
-    callback: () => {
-      const vx = body.velocity.x;
-      const vy = body.velocity.y;
-      const currentSpeed = Math.sqrt(vx * vx + vy * vy);
+        if (currentSpeed < minSpeed) {
+          // normalize direction and reapply minimal speed
+          const dir = new Phaser.Math.Vector2(vx, vy).normalize();
+          body.setVelocity(dir.x * minSpeed, dir.y * minSpeed);
+        }
 
-      if (currentSpeed < minSpeed) {
-        // normalize direction and reapply minimal speed
-        const dir = new Phaser.Math.Vector2(vx, vy).normalize();
-        body.setVelocity(dir.x * minSpeed, dir.y * minSpeed);
-      }
-
-      // stop enforcing when ball is almost stopped manually
-      if (currentSpeed <= 1) {
-        (this.scene.time as any).removeEvent(this);
-      }
-    },
-  });
-}
-
+        // stop enforcing when ball is almost stopped manually
+        if (currentSpeed <= 1) {
+          (this.scene.time as any).removeEvent(this);
+        }
+      },
+    });
+  }
 
   stop() {
     this.setVelocity(0, 0);

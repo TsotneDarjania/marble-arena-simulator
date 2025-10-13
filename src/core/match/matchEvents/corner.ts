@@ -55,51 +55,18 @@ export class Corner {
   }
 
   destroyCorner() {
-    const bg = this.match.scene.add
-      .image(
-        this.match.scene.game.canvas.width / 2,
-        this.match.scene.game.canvas.height / 2,
-        "default"
-      )
-      .setDepth(150)
-      .setTint(0x000000)
-      .setScale(100)
-      .setAlpha(0);
-
     const canvasScene = this.match.scene.scene.get(
       "CanvasScene"
     ) as CanvasScene;
-    canvasScene.showMarbleArenaLogo();
+    canvasScene.showTransition()
 
-    this.match.scene.tweens.add({
-      targets: [bg],
-      alpha: 1,
-      duration: 500,
-      onComplete: () => {
-        this.match.stadium.stopGoalSelebration();
-        this.match.matchManager.matchEvenetManager.resumeUfterCorner(
-          this.teamWhoShootCorner === "hostTeam" ? "guest" : "host",
-          this.isGoalScored
-        );
-        this.destroy();
-        setTimeout(() => {
-          this.match.scene.tweens.add({
-            targets: bg,
-            alpha: 0,
-            delay: 300,
-            duration: 500,
-            onComplete: () => {
-              clearTimeout(this.timeOut_1);
-              clearTimeout(this.timeOut_2);
-              clearTimeout(this.timeOut_3);
-              clearTimeout(this.timeOut_4);
-              clearTimeout(this.timeOut_5);
-              bg.destroy();
-            },
-          });
-        }, 300);
-      },
-    });
+    setTimeout(() => {
+      clearTimeout(this.timeOut_1);
+      clearTimeout(this.timeOut_2);
+      clearTimeout(this.timeOut_3);
+      clearTimeout(this.timeOut_4);
+      clearTimeout(this.timeOut_5);
+    }, 1300);
   }
 
   isGoal(whoScored: "host" | "guest") {
@@ -125,8 +92,8 @@ export class Corner {
     this.match.stadium.startGoalSelebration(whoScored);
     this.match.ball.startBlinkAnimation();
     setTimeout(() => {
-        this.match.ball.stop();
-      }, 90);
+      this.match.ball.stop();
+    }, 90);
     this.match.hostTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.guestTeam.boardFootballPlayers.goalKeeper.stopMotion();
 

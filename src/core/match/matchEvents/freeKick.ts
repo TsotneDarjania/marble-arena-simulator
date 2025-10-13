@@ -73,8 +73,8 @@ export class Freekick {
     this.match.stadium.startGoalSelebration(whoScored);
     this.match.ball.startBlinkAnimation();
     setTimeout(() => {
-        this.match.ball.stop();
-      }, 90);
+      this.match.ball.stop();
+    }, 90);
     this.match.hostTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.guestTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.hostTeam.stopFullMotion();
@@ -94,49 +94,21 @@ export class Freekick {
   }
 
   destroyFreeKick() {
-    const bg = this.match.scene.add
-      .image(
-        this.match.scene.game.canvas.width / 2,
-        this.match.scene.game.canvas.height / 2,
-        "default"
-      )
-      .setDepth(150)
-      .setTint(0x000000)
-      .setScale(100)
-      .setAlpha(0);
-
     const canvasScene = this.match.scene.scene.get(
       "CanvasScene"
     ) as CanvasScene;
-    canvasScene.showMarbleArenaLogo();
+    canvasScene.showTransition();
 
-    this.match.scene.tweens.add({
-      targets: [bg],
-      alpha: 1,
-      duration: 500,
-      onComplete: () => {
-        this.match.stadium.stopGoalSelebration();
-        this.match.matchManager.matchEvenetManager.resumeUfterFreeKick(
-          this.teamWhoIsGuilty,
-          this.isGoalScored
-        );
+    setTimeout(() => {
+      this.match.stadium.stopGoalSelebration();
+      this.match.matchManager.matchEvenetManager.resumeUfterFreeKick(
+        this.teamWhoIsGuilty,
+        this.isGoalScored
+      );
 
-        this.shooterfootballer.destroy();
-        this.longDistanceSecondShooter?.destroy();
-
-        setTimeout(() => {
-          this.match.scene.tweens.add({
-            targets: bg,
-            alpha: 0,
-            delay: 300,
-            duration: 500,
-            onComplete: () => {
-              bg.destroy();
-            },
-          });
-        }, 300);
-      },
-    });
+      this.shooterfootballer.destroy();
+      this.longDistanceSecondShooter?.destroy();
+    }, 500);
   }
 
   shoot() {
