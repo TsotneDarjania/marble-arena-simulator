@@ -17,6 +17,7 @@ export default class GamePlay extends Phaser.Scene {
   }
 
   create() {
+    console.log(GameData.matchSettings.isExtraTimes);
     // Change the fixedStep to true to make the physics simulation more smooth
     this.physics.world.fixedStep = true;
     this.physics.world.setFPS(4120);
@@ -37,15 +38,18 @@ export default class GamePlay extends Phaser.Scene {
   createMatch() {
     this.soundManager.stadiumNoice.play();
 
-    this.match = new Match({
-      hostTeamData: GameData.teamsData.hostTeam!,
-      guestTeamData: GameData.teamsData.guestTeam!,
-      gameConfig : {
-        mode : "board-football",
-        hostFansCountPercent : 50,
-        mathTime: GameData.matchSettings.time
-      }
-    }, this);
+    this.match = new Match(
+      {
+        hostTeamData: GameData.teamsData.hostTeam!,
+        guestTeamData: GameData.teamsData.guestTeam!,
+        gameConfig: {
+          mode: "board-football",
+          hostFansCountPercent: 50,
+          mathTime: GameData.matchSettings.time,
+        },
+      },
+      this
+    );
   }
 
   createCameraMotion() {

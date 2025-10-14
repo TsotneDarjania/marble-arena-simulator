@@ -58,9 +58,16 @@ export class Corner {
     const canvasScene = this.match.scene.scene.get(
       "CanvasScene"
     ) as CanvasScene;
-    canvasScene.showTransition()
+    canvasScene.showTransition();
 
     setTimeout(() => {
+      this.match.stadium.stopGoalSelebration();
+      this.match.matchManager.matchEvenetManager.resumeUfterCorner(
+        this.teamWhoShootCorner === "hostTeam" ? "guest" : "host",
+        this.isGoalScored
+      );
+      this.destroy();
+
       clearTimeout(this.timeOut_1);
       clearTimeout(this.timeOut_2);
       clearTimeout(this.timeOut_3);

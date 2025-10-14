@@ -74,7 +74,6 @@ export class LastPenalties {
   }
 
   shoot() {
-    console.log("shoot");
     this.match.scene.soundManager.shoot.play();
 
     const teamData =
@@ -195,6 +194,7 @@ export class LastPenalties {
   }
 
   again() {
+    this.match.matchManager.matchEvenetManager.matchStatus = "isLastPenalties";
     const maxRounds = 5;
     const totalShotsTaken = this.round; // Keep track of the shots taken
     const hostShotsLeft = maxRounds - Math.ceil(totalShotsTaken / 2);
@@ -261,6 +261,22 @@ export class LastPenalties {
   }
 
   endGame() {
+    this.match.matchManager.matchEvenetManager.matchStatus = "finishPenalty";
+    setTimeout(() => {
+      const canvasScene = this.match.scene.scene.get(
+        "CanvasScene"
+      ) as CanvasScene;
+
+      this.match.hostTeam.boardFootballPlayers.goalKeeper.deactive();
+      this.match.guestTeam.boardFootballPlayers.goalKeeper.deactive();
+
+      this.match.ball.alpha = 0;
+
+      canvasScene.showLastresult(
+        this.match.matchManager.hostScore.toString(),
+        this.match.matchManager.guestScore.toString()
+      );
+    }, 1000);
     console.log(
       `Final Score: Host ${this.hostTeamScore} - ${this.guestTeamScore} Guest`
     );

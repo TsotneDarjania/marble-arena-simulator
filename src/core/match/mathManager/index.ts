@@ -157,14 +157,13 @@ export default class MatchManager {
               this.match.matchManager.guestScore.toString()
             );
           } else {
-            if (GameData.matchSettings.showModals) {
-              cavnasScene.showMatchContinueModal();
-            }
+            cavnasScene.showMatchContinueModal();
           }
         }
       }
       if (status === "firstExtraTimeEnd") {
         this.match.matchTimer.time = 105;
+        cavnasScene.showMatchContinueModal();
       }
       if (status === "secondExtraTimeEnd") {
         this.match.matchTimer.time = 120;
@@ -178,9 +177,7 @@ export default class MatchManager {
             this.match.matchManager.guestScore.toString()
           );
         } else {
-          if (GameData.matchSettings.showModals) {
-            cavnasScene.showMatchContinueModal();
-          }
+          cavnasScene.showMatchContinueModal();
         }
       }
 
@@ -194,13 +191,14 @@ export default class MatchManager {
     ) as CanvasScene;
     cavnasScene.destoryMatchContinueModal();
 
-    if(this.match.matchTimer.time === 90){
-      if(!GameData.matchSettings.isExtraTimes) return;
-      if(this.match.matchManager.hostScore !== this.match.matchManager.guestScore){
+    if (this.match.matchTimer.time === 90) {
+      if (!GameData.matchSettings.isExtraTimes) return;
+      if (
+        this.match.matchManager.hostScore !== this.match.matchManager.guestScore
+      ) {
         return;
       }
     }
-
 
     this.match.scene.soundManager.referee.play();
 

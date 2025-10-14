@@ -36,6 +36,8 @@ export default class CanvasScene extends Phaser.Scene {
   }
 
   showMatchContinueModal() {
+    if (!GameData.matchSettings.showModals) return;
+
     this.matchContinueModal = this.add.container();
 
     const bck = this.add
@@ -118,11 +120,11 @@ export default class CanvasScene extends Phaser.Scene {
 
   // During Transitions
   showTransition() {
-    
-    console.log("aq var")
-   
+    console.log("aq var");
+
     const container = this.add
-      .container(this.game.canvas.width / 2, this.game.canvas.height / 2).setAlpha(0)
+      .container(this.game.canvas.width / 2, this.game.canvas.height / 2)
+      .setAlpha(0)
       .setDepth(100);
 
     const bg = this.add.image(0, 0, "default").setTint(0x000000).setScale(100);
@@ -157,7 +159,7 @@ export default class CanvasScene extends Phaser.Scene {
       side === "left"
         ? this.game.canvas.width / 2 + this.lastPenaltiesLeftXPosition
         : this.game.canvas.width / 2 + this.lastPenaltiesRightXPosition,
-      140,
+      180,
       "penaltyDone"
     );
     image.setScale(0.65);
@@ -172,7 +174,7 @@ export default class CanvasScene extends Phaser.Scene {
       side === "left"
         ? this.game.canvas.width / 2 + this.lastPenaltiesLeftXPosition
         : this.game.canvas.width / 2 + this.lastPenaltiesRightXPosition,
-      140,
+      180,
       "penaltyFail"
     );
     image.setScale(0.65);
@@ -336,6 +338,8 @@ export default class CanvasScene extends Phaser.Scene {
   }
 
   showLastresult(hostScore: string, guestScore: string) {
+    if (!GameData.matchSettings.showModals) return;
+
     const container = this.add.container();
 
     const background = this.scene.scene.add

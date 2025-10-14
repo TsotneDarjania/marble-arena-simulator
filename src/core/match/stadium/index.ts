@@ -52,7 +52,7 @@ export class Stadium extends Phaser.GameObjects.Container {
     this.addColliders();
 
     this.addGrids();
-    this.addBrandTitle();
+    // this.addBrandTitle();
     this.addGoalLines();
   }
 

@@ -148,8 +148,14 @@ export class MatchEventManager {
   }
 
   isGoal(whoScored: "host" | "guest") {
+    const canvasScene = this.match.scene.scene.get(
+      "CanvasScene"
+    ) as CanvasScene;
+
     if (this.matchStatus === "playing") {
-    
+      setTimeout(() => {
+        canvasScene.showTransition();
+      }, 3000);
 
       this.match.matchTimer.stopTimer();
 
@@ -158,9 +164,7 @@ export class MatchEventManager {
         this.match.guestTeamCoach.angry();
 
         this.match.matchManager.hostScore++;
-        const canvasScene = this.match.scene.scene.get(
-          "CanvasScene"
-        ) as CanvasScene;
+
         canvasScene.hostTeamScoretext.setText(
           this.match.matchManager.hostScore.toString()
         );
@@ -169,9 +173,6 @@ export class MatchEventManager {
         this.match.hostTeamCoach.angry();
 
         this.match.matchManager.guestScore++;
-        const canvasScene = this.match.scene.scene.get(
-          "CanvasScene"
-        ) as CanvasScene;
         canvasScene.guestTeamScoretext.setText(
           this.match.matchManager.guestScore.toString()
         );
@@ -212,6 +213,11 @@ export class MatchEventManager {
       this.match.matchManager.penalty!.isGoal(whoScored);
       this.matchStatus = "finishPenalty";
     }
+
+    if (this.matchStatus === "isLastPenalties") {
+      this.match.matchManager.lastPenalties?.isGoal();
+      this.matchStatus = "finishPenalty";
+    }
   }
 
   listenGoalEvenets() {
@@ -221,12 +227,12 @@ export class MatchEventManager {
           this.match.ball.x <
           this.match.stadium.leftGoalLine.getBounds().centerX
         ) {
-          if (
-            this.match.matchManager.matchEvenetManager.matchStatus ===
-            "isLastPenalties"
-          ) {
-            return;
-          }
+          // if (
+          //   this.match.matchManager.matchEvenetManager.matchStatus ===
+          //   "isLastPenalties"
+          // ) {
+          //   return;
+          // }
           this.isGoal("guest");
         }
 

@@ -30,7 +30,7 @@ export class Ball extends Phaser.Physics.Arcade.Image {
 
     // enable damping
     this.setDamping(true);
-    this.setDrag(0.7); // <-- THIS is realistic friction for damping mode
+    this.setDrag(0.65); // <-- THIS is realistic friction for damping mode
   }
 
   private addParticles() {
@@ -54,7 +54,7 @@ export class Ball extends Phaser.Physics.Arcade.Image {
     const angle = Phaser.Math.Angle.Between(this.x, this.y, x, y);
     const velocity = this.scene.physics.velocityFromRotation(
       angle,
-      speed * 1.2
+      speed * 1.35
     );
 
     this.setVelocity(velocity.x, velocity.y);
@@ -62,7 +62,7 @@ export class Ball extends Phaser.Physics.Arcade.Image {
 
     // ✅ Keep minimal constant velocity
     const body = this.body as Phaser.Physics.Arcade.Body;
-    const minSpeed = 120; // adjust as needed
+    const minSpeed = 110; // adjust as needed
 
     this.scene.time.addEvent({
       delay: 120, // check every 50ms
