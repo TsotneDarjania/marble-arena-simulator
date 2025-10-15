@@ -1,3 +1,4 @@
+import { layoutData } from "../../../config/layout";
 import { TeamDataType } from "../../../types/gameTypes";
 
 type LayoutItem = {
@@ -62,7 +63,7 @@ export default class TeamsSelector extends Phaser.GameObjects.Container {
   private buildInitial() {
     // label above the row
     this.titleText = this.scene.add.text(0, -this.height / 2 - 30, "", {
-      fontSize: "22px",
+      fontSize: layoutData.menu.teamsSelectorTItle.fonstSize,
       color: "#ffffffff",
       stroke: "#fbfffbff",
       strokeThickness: 1,

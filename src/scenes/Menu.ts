@@ -6,6 +6,8 @@ import { TeamDataType } from "../types/gameTypes";
 import { GameData } from "../config/gameData";
 import MenuTeamsSettings from "../core/uiMechanics/menuTeamsSettings/menuTeamsSettings";
 import { MenuButton } from "../core/uiMechanics/menuButton/menuButton";
+import { detectMob } from "../utils/helper";
+import { layoutData } from "../config/layout";
 
 export default class Menu extends Phaser.Scene {
   private backgroundImage!: Phaser.GameObjects.Image;
@@ -119,10 +121,10 @@ export default class Menu extends Phaser.Scene {
       .text(
         this.game.canvas.width / 2,
         this.game.canvas.height / 2 -
-          calculatePercentage(21, this.game.canvas.height),
+          calculatePercentage(layoutData.menu.hostTeamChooseTitle.yPercent, this.game.canvas.height),
         "Home Team",
         {
-          fontSize: "40px",
+          fontSize: layoutData.menu.hostTeamChooseTitle.fontSize,
           align: "center",
           color: "#c2f5c2ff",
           stroke: "#c2f5c2ff",
@@ -148,10 +150,10 @@ export default class Menu extends Phaser.Scene {
       .text(
         this.game.canvas.width / 2,
         this.game.canvas.height / 2 +
-          calculatePercentage(10, this.game.canvas.height),
+          calculatePercentage(layoutData.menu.guestTeamChooseTitle.yPercent, this.game.canvas.height),
         "Away Team",
         {
-          fontSize: "40px",
+          fontSize: layoutData.menu.guestTeamChooseTitle.fontSize,
           align: "center",
           color: "#c2f5c2ff",
           stroke: "#c2f5c2ff",

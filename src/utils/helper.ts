@@ -6,6 +6,22 @@ export function getTeamParamsFromURL() {
   if (!hostTeamId || !guestTeamId) {
     return null;
   }
-  
-  return {hostTeamId, guestTeamId}
+
+  return { hostTeamId, guestTeamId };
+}
+
+export function detectMob() {
+  const toMatch = [
+    /Android/i,
+    /webOS/i,
+    /iPhone/i,
+    /iPad/i,
+    /iPod/i,
+    /BlackBerry/i,
+    /Windows Phone/i,
+  ];
+
+  return toMatch.some((toMatchItem) => {
+    return navigator.userAgent.match(toMatchItem);
+  });
 }
