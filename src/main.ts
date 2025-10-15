@@ -4,25 +4,36 @@ import CanvasScene from "./scenes/CanvasScene";
 import GamePlay from "./scenes/GamePlay";
 import Menu from "./scenes/Menu";
 import Preload from "./scenes/Preloader";
-import {  getTeams } from "./api/getTeams";
+import { getTeams } from "./api/getTeams";
 import { GameData } from "./config/gameData";
 import { getTeamParamsFromURL } from "./utils/helper";
 
-
 async function initGame() {
   const teamParams = getTeamParamsFromURL();
-  if (teamParams) {
-    // gameConfig.gameMode = "marble-league"
-  }
 
-  const teams = await getTeams()
-  if(!teams){
+  const teams = await getTeams();
+  if (!teams) {
     console.log("can not get teams....");
     return;
   }
 
   GameData.teams = teams;
-  
+
+  if (teamParams) {
+    const hostTeam = GameData.teams.find(
+      (team) => team.id === Number(teamParams.hostTeamId)
+    );
+    const guestTeam = GameData.teams.find(
+      (team) => team.id === Number(teamParams.guestTeamId)
+    );
+
+    GameData.teamsData.hostTeam = hostTeam!;
+    GameData.teamsData.guestTeam = guestTeam!;
+  } else {
+    GameData.teamsData.hostTeam = GameData.teams![0];
+    GameData.teamsData.guestTeam = GameData.teams![1];
+  }
+
   // const teamData = (await getGameData()) as {
   //   hostTeam: TeamDataServerType;
   //   guestTeam: TeamDataServerType;

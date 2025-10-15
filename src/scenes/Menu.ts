@@ -11,11 +11,24 @@ export default class Menu extends Phaser.Scene {
   private backgroundImage!: Phaser.GameObjects.Image;
   private nextBtn?: MenuButton;
 
+  selectButtonClickSound!: Phaser.Sound.BaseSound;
+  buttonClickSound!: Phaser.Sound.BaseSound;
+
   constructor() {
     super("Menu");
   }
 
   create() {
+    // Add Sounds
+    this.selectButtonClickSound = this.sound.add("selectTeamButtonSound", {
+      volume: 1,
+      loop: false,
+    });
+    this.buttonClickSound = this.sound.add("button", {
+      volume: 0.2,
+      loop: false,
+    });
+
     const title = this.add
       .text(
         this.game.canvas.width / 2,
@@ -128,7 +141,7 @@ export default class Menu extends Phaser.Scene {
       300,
       50,
       GameData.teams!,
-      GameData.teams![0]
+      GameData.teamsData.hostTeam!
     ).setAlpha(0);
 
     const guestTeamChooseTitle = this.add
@@ -157,7 +170,7 @@ export default class Menu extends Phaser.Scene {
       300,
       50,
       GameData.teams!,
-      GameData.teams![2]
+      GameData.teamsData.guestTeam!
     ).setAlpha(0);
 
     // Track current selections
@@ -167,11 +180,15 @@ export default class Menu extends Phaser.Scene {
     homeTeamSelector.eventEmitter.on("change", (team: TeamDataType) => {
       selectedHome = team;
       this.syncNextEnabled(selectedHome, selectedAway);
+
+      this.selectButtonClickSound.play();
     });
 
     guestTeamSelector.eventEmitter.on("change", (team: TeamDataType) => {
       selectedAway = team;
       this.syncNextEnabled(selectedHome, selectedAway);
+
+      this.selectButtonClickSound.play();
     });
 
     // Fade in the UI
@@ -209,7 +226,8 @@ export default class Menu extends Phaser.Scene {
 
           GameData.teamsData.hostTeam = selectedHome;
           GameData.teamsData.guestTeam = selectedAway;
-
+          this.buttonClickSound.play()
+          
           new MenuTeamsSettings(
             this,
             this.game.canvas.width / 2,

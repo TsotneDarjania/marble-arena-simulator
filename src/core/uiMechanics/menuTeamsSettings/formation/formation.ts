@@ -1,3 +1,4 @@
+import Menu from "../../../../scenes/Menu";
 import { Formation, TeamDataType } from "../../../../types/gameTypes";
 
 export class TeamFormation extends Phaser.GameObjects.Container {
@@ -18,7 +19,7 @@ export class TeamFormation extends Phaser.GameObjects.Container {
   ];
 
   constructor(
-    scene: Phaser.Scene,
+    public  scene: Menu,
     x: number,
     y: number,
     public team: TeamDataType
@@ -137,6 +138,8 @@ export class TeamFormation extends Phaser.GameObjects.Container {
       cursor: "pointer",
     });
     arrow.on("pointerdown", () => {
+      this.scene.selectButtonClickSound.play()
+
       let currentIndex = this.formations.indexOf(this.team.default_strategy);
       currentIndex--;
 
@@ -159,6 +162,7 @@ export class TeamFormation extends Phaser.GameObjects.Container {
       cursor: "pointer",
     });
     arrow.on("pointerdown", () => {
+      this.scene.selectButtonClickSound.play()
       let currentIndex = this.formations.indexOf(this.team.default_strategy);
       currentIndex++;
 

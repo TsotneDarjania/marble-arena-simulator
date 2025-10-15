@@ -1,3 +1,4 @@
+import Menu from "../../../../scenes/Menu";
 import { TeamDataType } from "../../../../types/gameTypes";
 import { TeamFormation } from "../formation/formation";
 import { TeamStrengthSelector } from "../teamStrengthSelector/TeamStrengthSelector";
@@ -12,7 +13,7 @@ export class TeamPlan extends Phaser.GameObjects.Container {
   attackeTacticSelector: TeamTacticSelector;
 
   constructor(
-    scene: Phaser.Scene,
+    public scene: Menu,
     x: number,
     y: number,
     public isHost: boolean,

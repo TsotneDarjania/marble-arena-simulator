@@ -1,4 +1,5 @@
 import { GameData } from "../../../config/gameData";
+import Menu from "../../../scenes/Menu";
 import { TeamDataType } from "../../../types/gameTypes";
 import { MenuButton } from "../menuButton/menuButton";
 import { GameSettingsPopup } from "./gameSettingsPopup/gameSettingsPopup";
@@ -17,7 +18,7 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
   gameSetgingsPopup: GameSettingsPopup;
 
   constructor(
-    scene: Phaser.Scene,
+    public scene: Menu,
     x: number,
     y: number,
     public homeTeam: TeamDataType,
@@ -81,6 +82,7 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
       "Start Match"
     );
     this.startMatchButton.on("click", () => {
+      this.scene.buttonClickSound.play()
       this.scene.scene.start("GamePlay")
     })
     this.add(this.startMatchButton);
@@ -96,6 +98,7 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
       0xf5d22b
     );
     this.matchSettingsButton.on("click", () => {
+      this.scene.buttonClickSound.play()
       this.gameSetgingsPopup.hide()
       this.matchSettingsPopup.show({
         duration: 1000,
@@ -115,6 +118,7 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
       0xf5d22b
     );
     this.gameSettingsButton.on("click", () => {
+      this.scene.buttonClickSound.play()
       this.matchSettingsPopup.hide()
       this.gameSetgingsPopup.show({
         duration: 1000,

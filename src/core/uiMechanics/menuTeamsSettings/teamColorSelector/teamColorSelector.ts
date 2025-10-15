@@ -1,3 +1,5 @@
+import Menu from "../../../../scenes/Menu";
+
 export class TeamColorSelector extends Phaser.GameObjects.Container {
   private valueBox!: Phaser.GameObjects.Rectangle;
   private label!: Phaser.GameObjects.Text;
@@ -5,7 +7,7 @@ export class TeamColorSelector extends Phaser.GameObjects.Container {
   private index: number;
 
   constructor(
-    scene: Phaser.Scene,
+    public scene: Menu,
     x: number,
     y: number,
     public title: string,
@@ -43,6 +45,7 @@ export class TeamColorSelector extends Phaser.GameObjects.Container {
     this.add(leftArrow);
 
     leftArrow.on("pointerdown", () => {
+      this.scene.selectButtonClickSound.play()
       this.index--;
       if (this.index < 0) this.index = this.colors.length - 1;
       this.updateUI(true);
@@ -57,6 +60,7 @@ export class TeamColorSelector extends Phaser.GameObjects.Container {
     this.add(rightArrow);
 
     rightArrow.on("pointerdown", () => {
+      this.scene.selectButtonClickSound.play()
       this.index++;
       if (this.index >= this.colors.length) this.index = 0;
       this.updateUI(true);
@@ -70,6 +74,7 @@ export class TeamColorSelector extends Phaser.GameObjects.Container {
   }
 
   private updateUI(emit = false) {
+    this.scene.buttonClickSound.play()
     this.valueBox.fillColor = this.colors[this.index];
     if (emit) this.emit("change", this.getValue());
   }

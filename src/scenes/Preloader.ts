@@ -60,6 +60,10 @@ export default class Preload extends Scene {
     this.load.audio("faul", ["sounds/is-faul.mp3"]);
     this.load.audio("referee", ["sounds/referee.mp3"]);
     this.load.audio("goalkeeperJumpSound", ["sounds/goalkeeperJumpSound.mp3"]);
+    this.load.audio("selectTeamButtonSound", ["sounds/ui/select-button-click.mp3"]);
+    this.load.audio("button", ["sounds/ui/button.mp3"]);
+
+    
 
     // Teams
     GameData.teams!.forEach((team) => {

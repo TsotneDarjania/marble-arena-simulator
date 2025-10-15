@@ -75,10 +75,12 @@ export default class CanvasScene extends Phaser.Scene {
   }
 
   destroyPressToStartText() {
-    this.pressToStartText.destroy();
+    this.pressToStartText?.destroy();
   }
 
   showPressToStartText() {
+    if (!GameData.matchSettings.showModals) return;
+
     this.pressToStartText = this.add
       .text(
         this.game.canvas.width / 2,
@@ -118,16 +120,107 @@ export default class CanvasScene extends Phaser.Scene {
     );
   }
 
+
+  showComentator(side: "left" | "right", comment: string) {
+    const image = this.add.image(
+      this.game.canvas.width / 2,
+      this.game.canvas.height / 2,
+      "default"
+    );
+    image.setAlpha(0);
+    image.setScale(1.2);
+    image.setOrigin(0.5);
+    image.setTint(0x000000);
+    image.setAlpha(0.7);
+    image.setDisplaySize(this.game.canvas.width, this.game.canvas.height);
+
+    const comentatorImage = this.add.image(0, 0, "comentator");
+    comentatorImage.setOrigin(0.5);
+    comentatorImage.setScale(0.35);
+    comentatorImage.setAlpha(0);
+    comentatorImage.setPosition(
+      side === "left"
+        ? comentatorImage.getBounds().width / 2 + 130
+        : this.game.canvas.width - comentatorImage.getBounds().width / 2 - 130,
+      comentatorImage.getBounds().height / 2 + 20
+    );
+
+    // const liveImage = this.add.image(0, 0, "live");
+    // liveImage.setOrigin(0.5);
+    // liveImage.setScale(0.3);
+    // liveImage.setAlpha(0);
+    // liveImage.setPosition(
+    //   side === "left"
+    //     ? comentatorImage.getBounds().width / 2 + 152
+    //     : this.game.canvas.width - comentatorImage.getBounds().width / 2 - 152,
+    //   comentatorImage.getBounds().centerY + 246
+    // );
+
+    // const mikeImage = this.add.image(0, 0, "mike");
+    // mikeImage.setOrigin(0.5);
+    // mikeImage.setScale(0.4);
+    // mikeImage.setAlpha(0);
+    // mikeImage.setPosition(
+    //   side === "left"
+    //     ? comentatorImage.getBounds().width / 2 - 80
+    //     : this.game.canvas.width - comentatorImage.getBounds().width / 2 + 80,
+    //   comentatorImage.getBounds().centerY + 246
+    // );
+
+    const text = this.add.text(
+      this.game.canvas.width / 2,
+      this.game.canvas.height / 2 + 100,
+      comment,
+      {
+        fontSize: "85px",
+        color: "#DBD65C",
+        align: "center",
+        strokeThickness: 5,
+      }
+    );
+    text.setAlpha(0);
+    text.setScale(0);
+    text.setOrigin(0.5);
+
+    this.tweens.add({
+      targets: [image],
+      duration: 800,
+      ease: Phaser.Math.Easing.Back.Out,
+      alpha: 0.6,
+    });
+
+    this.tweens.add({
+      targets: [comentatorImage],
+      duration: 300,
+      ease: Phaser.Math.Easing.Back.Out,
+      alpha: 1,
+    });
+
+    this.tweens.add({
+      targets: [text],
+      duration: 700,
+      ease: Phaser.Math.Easing.Back.Out,
+      alpha: 1,
+      scale: 1,
+      delay: 400,
+    });
+
+    setTimeout(() => {
+      image.destroy();
+      comentatorImage.destroy();
+      text.destroy();
+    }, 2000);
+  }
+
   // During Transitions
   showTransition() {
-    console.log("aq var");
 
     const container = this.add
       .container(this.game.canvas.width / 2, this.game.canvas.height / 2)
       .setAlpha(0)
       .setDepth(100);
 
-    const bg = this.add.image(0, 0, "default").setTint(0x000000).setScale(100);
+    const bg = this.add.image(0, 0, "default").setTint(0x0E2329).setScale(100);
 
     const marbleArenaLogo = this.add
       .image(0, 0, "marbleArenaLogo")
@@ -145,7 +238,7 @@ export default class CanvasScene extends Phaser.Scene {
           targets: container,
           alpha: 0,
           delay: 1000,
-          duration: 500,
+          duration: 300,
           onComplete: () => {
             container.destroy(true);
           },
@@ -159,7 +252,7 @@ export default class CanvasScene extends Phaser.Scene {
       side === "left"
         ? this.game.canvas.width / 2 + this.lastPenaltiesLeftXPosition
         : this.game.canvas.width / 2 + this.lastPenaltiesRightXPosition,
-      180,
+      170,
       "penaltyDone"
     );
     image.setScale(0.65);
@@ -174,7 +267,7 @@ export default class CanvasScene extends Phaser.Scene {
       side === "left"
         ? this.game.canvas.width / 2 + this.lastPenaltiesLeftXPosition
         : this.game.canvas.width / 2 + this.lastPenaltiesRightXPosition,
-      180,
+      170,
       "penaltyFail"
     );
     image.setScale(0.65);
@@ -231,7 +324,7 @@ export default class CanvasScene extends Phaser.Scene {
           fontSize: "35px",
           color: "#E9FFFF",
           fontStyle: "bold",
-          strokeThickness: 2,
+          strokeThickness: 1,
           align: "left",
         }
       )
@@ -247,7 +340,7 @@ export default class CanvasScene extends Phaser.Scene {
           fontSize: "35px",
           color: "#E9FFFF",
           fontStyle: "bold",
-          strokeThickness: 2,
+          strokeThickness: 1,
           align: "right",
         }
       )
@@ -259,7 +352,7 @@ export default class CanvasScene extends Phaser.Scene {
         fontSize: "45px",
         color: "#E9FFFF",
         fontStyle: "bold",
-        strokeThickness: 2,
+        strokeThickness: 1,
         align: "right",
       })
       .setOrigin(1, 0.5));
@@ -269,7 +362,7 @@ export default class CanvasScene extends Phaser.Scene {
         fontSize: "45px",
         color: "#E9FFFF",
         fontStyle: "bold",
-        strokeThickness: 2,
+        strokeThickness: 1,
         align: "left",
       })
       .setOrigin(1, 0.5));
@@ -341,11 +434,12 @@ export default class CanvasScene extends Phaser.Scene {
     if (!GameData.matchSettings.showModals) return;
 
     const container = this.add.container();
+    container.setDepth(200);
 
     const background = this.scene.scene.add
       .image(this.game.canvas.width / 2, this.game.canvas.height / 2, "default")
       .setAlpha(0.8)
-      .setDisplaySize(900, 250)
+      .setDisplaySize(this.game.canvas.width, this.game.canvas.height)
       .setTint(0x0c2114);
 
     const hostTeamText = this.scene.scene.add

@@ -1,3 +1,5 @@
+import Menu from "../../../../scenes/Menu";
+
 // StadiumBackgroundColorSelector.ts
 export class StadiumBackgroundColorSelector extends Phaser.GameObjects.Container {
   private label?: Phaser.GameObjects.Text;
@@ -11,7 +13,7 @@ export class StadiumBackgroundColorSelector extends Phaser.GameObjects.Container
   private readonly live: boolean;
 
   constructor(
-    scene: Phaser.Scene,
+    public scene: Menu,
     x: number,
     y: number,
     {

@@ -1,3 +1,4 @@
+import Menu from "../../../../scenes/Menu";
 import { TeamDataType } from "../../../../types/gameTypes";
 import { TeamFormation } from "../formation/formation";
 
@@ -5,7 +6,7 @@ export class TeamTacticSelector extends Phaser.GameObjects.Container {
   valueText: Phaser.GameObjects.Text;
 
   constructor(
-    scene: Phaser.Scene,
+    public scene: Menu,
     x: number,
     y: number,
     public team: TeamDataType,
@@ -60,6 +61,7 @@ export class TeamTacticSelector extends Phaser.GameObjects.Container {
     this.add(arrow);
 
     arrow.on("pointerdown", () => {
+      this.scene.selectButtonClickSound.play()
       // @ts-ignore
       let strategies = [];
       let currentStrategyIndex = 0;
@@ -115,6 +117,7 @@ export class TeamTacticSelector extends Phaser.GameObjects.Container {
     this.add(arrow);
 
     arrow.on("pointerdown", () => {
+      this.scene.selectButtonClickSound.play()
       // @ts-ignore
       let strategies = [];
       let currentStrategyIndex = 0;

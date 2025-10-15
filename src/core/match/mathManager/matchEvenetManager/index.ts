@@ -227,12 +227,6 @@ export class MatchEventManager {
           this.match.ball.x <
           this.match.stadium.leftGoalLine.getBounds().centerX
         ) {
-          // if (
-          //   this.match.matchManager.matchEvenetManager.matchStatus ===
-          //   "isLastPenalties"
-          // ) {
-          //   return;
-          // }
           this.isGoal("guest");
         }
 
@@ -305,6 +299,16 @@ export class MatchEventManager {
       this.match.scene.soundManager.referee.play();
 
       this.match.ball.stop();
+
+      const canvasScene = this.match.scene.scene.get(
+        "CanvasScene"
+      ) as CanvasScene;
+      canvasScene.showComentator(
+        this.match.matchManager.teamWhoHasBall === "hostTeam"
+          ? "right"
+          : "left",
+        "Corner Kick!"
+      );
     }, 1400);
 
     this.timeOut_2 = setTimeout(() => {
@@ -339,6 +343,16 @@ export class MatchEventManager {
       this.match.scene.soundManager.referee.play();
 
       this.match.ball.stop();
+
+      const canvasScene = this.match.scene.scene.get(
+        "CanvasScene"
+      ) as CanvasScene;
+      canvasScene.showComentator(
+        this.match.matchManager.teamWhoHasBall === "hostTeam"
+          ? "left"
+          : "right",
+        "Corner Kick!"
+      );
     }, 900);
 
     this.timeOut_3 = setTimeout(() => {
@@ -510,6 +524,16 @@ export class MatchEventManager {
       this.match.hostTeam.boardFootballPlayers.goalKeeper.stopMotion();
       this.match.guestTeam.stopFullMotion();
       this.match.guestTeam.boardFootballPlayers.goalKeeper.stopMotion();
+
+      const canvasScene = this.match.scene.scene.get(
+        "CanvasScene"
+      ) as CanvasScene;
+      canvasScene.showComentator(
+        this.match.matchManager.teamWhoHasBall === "hostTeam"
+          ? "left"
+          : "right",
+        "Free kick!"
+      );
     }, 1500);
 
     setTimeout(() => {
@@ -551,6 +575,16 @@ export class MatchEventManager {
       this.match.hostTeam.boardFootballPlayers.goalKeeper.stopMotion();
       this.match.guestTeam.stopFullMotion();
       this.match.guestTeam.boardFootballPlayers.goalKeeper.stopMotion();
+
+      const canvasScene = this.match.scene.scene.get(
+        "CanvasScene"
+      ) as CanvasScene;
+      canvasScene.showComentator(
+        this.match.matchManager.teamWhoHasBall === "hostTeam"
+          ? "left"
+          : "right",
+        "Penalty!"
+      );
     }, 1500);
 
     setTimeout(() => {

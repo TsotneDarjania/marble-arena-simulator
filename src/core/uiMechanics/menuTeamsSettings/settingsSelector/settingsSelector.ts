@@ -1,8 +1,10 @@
+import Menu from "../../../../scenes/Menu";
+
 export class SettingsSelector extends Phaser.GameObjects.Container {
   valueText: Phaser.GameObjects.Text;
 
   constructor(
-    scene: Phaser.Scene,
+    public scene: Menu,
     x: number,
     y: number,
     public title: string,
@@ -62,6 +64,8 @@ export class SettingsSelector extends Phaser.GameObjects.Container {
     arrow.on("pointerdown", () => {
       let currentIndex = this.values.indexOf(this.targetValue);
 
+      this.scene.selectButtonClickSound.play()
+
       currentIndex--;
       if (currentIndex < 0) {
         currentIndex = this.values.length - 1;
@@ -86,6 +90,8 @@ export class SettingsSelector extends Phaser.GameObjects.Container {
 
     arrow.on("pointerdown", () => {
       let currentIndex = this.values.indexOf(this.targetValue);
+
+      this.scene.selectButtonClickSound.play()
 
       currentIndex++;
       if (currentIndex > this.values.length - 1) {
