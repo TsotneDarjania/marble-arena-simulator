@@ -1,4 +1,3 @@
-// main.ts
 import { Game, Types } from "phaser";
 import CanvasScene from "./scenes/CanvasScene";
 import GamePlay from "./scenes/GamePlay";
@@ -8,69 +7,80 @@ import { getTeams } from "./api/getTeams";
 import { GameData } from "./config/gameData";
 import { getTeamParamsFromURL } from "./utils/helper";
 
+function getViewportSize() {
+  const vv = (window as any).visualViewport;
+  return {
+    width: Math.floor(vv?.width ?? window.innerWidth),
+    height: Math.floor(vv?.height ?? window.innerHeight),
+  };
+}
+
 async function initGame() {
   const teamParams = getTeamParamsFromURL();
-
   const teams = await getTeams();
+
   if (!teams) {
-    console.log("can not get teams....");
+    console.error("Could not get teams...");
     return;
   }
 
   GameData.teams = teams;
 
   if (teamParams) {
-    const hostTeam = GameData.teams.find(
-      (team) => team.id === Number(teamParams.hostTeamId)
-    );
-    const guestTeam = GameData.teams.find(
-      (team) => team.id === Number(teamParams.guestTeamId)
-    );
-
-    GameData.teamsData.hostTeam = hostTeam!;
-    GameData.teamsData.guestTeam = guestTeam!;
+    GameData.teamsData.hostTeam = teams.find(
+      (t) => t.id === Number(teamParams.hostTeamId)
+    )!;
+    GameData.teamsData.guestTeam = teams.find(
+      (t) => t.id === Number(teamParams.guestTeamId)
+    )!;
   } else {
-    GameData.teamsData.hostTeam = GameData.teams![0];
-    GameData.teamsData.guestTeam = GameData.teams![1];
+    GameData.teamsData.hostTeam = teams[0];
+    GameData.teamsData.guestTeam = teams[1];
   }
 
-  // const teamData = (await getGameData()) as {
-  //   hostTeam: TeamDataServerType;
-  //   guestTeam: TeamDataServerType;
-  // };
-
-  // GameDataStore.teamData = teamData;
-
-  // matchDataConfig.hostTeamData.logoURL = teamData.hostTeam.team_logo_url;
-  // matchDataConfig.hostTeamData.logoKey = teamData.hostTeam.name;
-
-  // matchDataConfig.guestTeamData.logoURL = teamData.guestTeam.team_logo_url;
-  // matchDataConfig.guestTeamData.logoKey = teamData.guestTeam.name;
+  const { width, height } = getViewportSize();
 
   const config: Types.Core.GameConfig = {
     type: Phaser.AUTO,
-    width: window.innerWidth,
-    height: window.innerHeight,
     parent: "game-container",
-    antialias: true,
+    backgroundColor: "#000000",
     physics: {
       default: "arcade",
       arcade: {
-        // debug: true
+        // debug: true,
       },
     },
     scale: {
-      mode: Phaser.Scale.FIT,
+      mode: Phaser.Scale.RESIZE,
       autoCenter: Phaser.Scale.CENTER_BOTH,
+      width,
+      height,
     },
     scene: [Preload, Menu, GamePlay, CanvasScene],
   };
 
   const game = new Game(config);
 
-  game.events.once("ready", () => {
-    game.scene.start("Preload");
-  });
+  /** 🔄 Resize logic (keeps fitting visible viewport) */
+  const resizeGame = () => {
+    const { width, height } = getViewportSize();
+    game.scale.resize(width, height);
+  };
+
+  window.addEventListener("resize", resizeGame);
+  window.addEventListener("orientationchange", resizeGame);
+  (window as any).visualViewport?.addEventListener("resize", resizeGame);
+
+  /** 📱 Enable fullscreen on first interaction */
+  const enableFullscreen = () => {
+    document.body.requestFullscreen?.().catch(() => {});
+    window.removeEventListener("pointerdown", enableFullscreen);
+    window.removeEventListener("keydown", enableFullscreen);
+  };
+  window.addEventListener("pointerdown", enableFullscreen, { once: true });
+  window.addEventListener("keydown", enableFullscreen, { once: true });
+
+  game.scene.start("Preload");
 }
 
 initGame();
