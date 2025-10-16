@@ -1,4 +1,5 @@
 import { GameData } from "../config/gameData";
+import { layoutData } from "../config/layout";
 import { calculatePercentage } from "../utils/math";
 
 export class IntroWindow extends Phaser.GameObjects.Container {
@@ -27,8 +28,9 @@ export class IntroWindow extends Phaser.GameObjects.Container {
   showTeamsLogo() {
     // ---------- HOST ----------
     const hostContainer = this.scene.add
-      .container(0, this.scene.game.canvas.height / 2 - 140)
-      .setAlpha(0);
+      .container(0, this.scene.game.canvas.height / 2 - layoutData.gameplay.teamsLogosY)
+      .setAlpha(0)
+      .setScale(layoutData.gameplay.teamsLogosScale);
     this.add(hostContainer);
 
     const hostLogo = this.scene.add
@@ -93,9 +95,10 @@ export class IntroWindow extends Phaser.GameObjects.Container {
     const guestContainer = this.scene.add
       .container(
         this.scene.game.canvas.width,
-        this.scene.game.canvas.height / 2 - 140
+        this.scene.game.canvas.height / 2 - layoutData.gameplay.teamsLogosY
       )
-      .setAlpha(0);
+      .setAlpha(0)
+      .setScale(layoutData.gameplay.teamsLogosScale);
     this.add(guestContainer);
 
     const guestLogo = this.scene.add
@@ -178,7 +181,7 @@ export class IntroWindow extends Phaser.GameObjects.Container {
         this.scene.game.canvas.height / 2,
         "Marble Arena",
         {
-          fontSize: "144px",
+          fontSize: layoutData.gameplay.brandTitleFontSize,
           color: "#ffffff",
           fontStyle: "bold",
           align: "center",
@@ -208,7 +211,4 @@ export class IntroWindow extends Phaser.GameObjects.Container {
       });
     }, 2000);
   }
-
-
-
 }

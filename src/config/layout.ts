@@ -1,12 +1,24 @@
 import { detectMob } from "../utils/helper";
 
 export const layoutData = {
+  gameplay: {
+    indicatorsContainer: {
+      scale: detectMob() ? 0.4 : 0.75,
+      y: detectMob() ? 40 : 100,
+    },
+    brandTitleFontSize: detectMob() ? "45px" : "144px",
+    teamsLogosScale : detectMob() ? 0.7 : 1,
+    teamsLogosY : detectMob() ? 30: 140,
+    transitionLogoScale : detectMob() ? 0.24: 0.5,
+    comentatorScale : detectMob() ? 0.15: 0.35,
+  },
   menu: {
+    teamsSelectorScale: detectMob() ? 0.6 : 1,
     popup: {
-      scale : detectMob() ? 0.6 : 1,
+      scale: detectMob() ? 0.45 : 1,
     },
     teamsTitle: {
-      fontSize: detectMob() ? "30px" : "50px",
+      fontSize: detectMob() ? "25px" : "50px",
     },
     teamsSelectorTItle: {
       fonstSize: detectMob() ? "18px" : "22px",
@@ -34,33 +46,33 @@ export const layoutData = {
       teamPlan: {
         teamFormation: {
           tacticSelector: {
-            scale: detectMob() ? 0.5 : 1,
-            defencSelectorY: detectMob() ? 295 : 530,
-            midfilderY: detectMob() ? 320 : 580,
-            attackerY: detectMob() ? 345 : 630,
+            scale: detectMob() ? 0.4 : 1,
+            defencSelectorY: detectMob() ? 225 : 530,
+            midfilderY: detectMob() ? 250 : 580,
+            attackerY: detectMob() ? 275 : 630,
             host: {
-              x: detectMob() ? 62 : 100,
+              x: detectMob() ? 45 : 100,
             },
             guest: {
-              x: detectMob() ? 285 : 520,
+              x: detectMob() ? 215 : 520,
             },
           },
           host: {
-            scale: detectMob() ? 0.6 : 1,
-            x: detectMob() ? 80 : 158,
-            y: detectMob() ? 140 : 250,
+            scale: detectMob() ? 0.4 : 1,
+            x: detectMob() ? 65 : 158,
+            y: detectMob() ? 110 : 250,
             strengthSelector: {
-              y: detectMob() ? 280 : 500,
-              x: detectMob() ? 108 : 170,
+              x: detectMob() ? 65 : 170,
+              y: detectMob() ? 210 : 500,
               scale: detectMob() ? 0.4 : 1,
             },
           },
           guest: {
-            scale: detectMob() ? 0.6 : 1,
-            x: detectMob() ? 270 : 475,
-            y: detectMob() ? 140 : 250,
+            scale: detectMob() ? 0.4 : 1,
+            x: detectMob() ? 190 : 475,
+            y: detectMob() ? 110 : 250,
             strengthSelector: {
-              x: detectMob() ? 238 : 450,
+              x: detectMob() ? 190 : 450,
             },
           },
         },

@@ -147,7 +147,9 @@ export default class Menu extends Phaser.Scene {
       50,
       GameData.teams!,
       GameData.teamsData.hostTeam!
-    ).setAlpha(0);
+    )
+      .setScale(layoutData.menu.teamsSelectorScale)
+      .setAlpha(0);
 
     const guestTeamChooseTitle = this.add
       .text(
@@ -179,7 +181,9 @@ export default class Menu extends Phaser.Scene {
       50,
       GameData.teams!,
       GameData.teamsData.guestTeam!
-    ).setAlpha(0);
+    )
+      .setScale(layoutData.menu.teamsSelectorScale)
+      .setAlpha(0);
 
     // Track current selections
     let selectedHome: TeamDataType = GameData.teams![0];
