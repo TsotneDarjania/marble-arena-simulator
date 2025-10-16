@@ -1,6 +1,6 @@
 import { calculatePercentage } from "../../../utils/math";
 
-export default class SelectBar extends Phaser.GameObjects.Container {
+export default class CameraZoomSelectBar extends Phaser.GameObjects.Container {
   background: Phaser.GameObjects.Image;
   indicatorButton: Phaser.GameObjects.Image;
   eventEmitter: Phaser.Events.EventEmitter;

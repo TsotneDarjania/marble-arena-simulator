@@ -1,4 +1,3 @@
-import CanvasScene from "../../../../../scenes/CanvasScene";
 import GamePlay from "../../../../../scenes/GamePlay";
 import { TeamDataType } from "../../../../../types/gameTypes";
 import { getRandomIntNumber, mapToRange } from "../../../../../utils/math";
@@ -35,13 +34,13 @@ export default class BoardGoalKeeper extends BoardFootballPlayer {
     this.tween = this.scene.tweens.add({
       targets: this,
       y: -55,
-      duration: mapToRange(this.teamData.goalKeeperSpeed, 1200, 400),
+      duration: mapToRange(this.teamData.goalkeeper_speed, 1200, 400),
       ease: Phaser.Math.Easing.Quadratic.InOut,
       onComplete: () => {
         this.tween = this.scene.tweens.add({
           targets: this,
           y: { from: -55, to: 52 },
-          duration: mapToRange(this.teamData.goalKeeperSpeed, 1200, 400),
+          duration: mapToRange(this.teamData.goalkeeper_speed, 1200, 400),
           ease: Phaser.Math.Easing.Quadratic.InOut,
           yoyo: true,
           repeat: -1,
@@ -83,21 +82,10 @@ export default class BoardGoalKeeper extends BoardFootballPlayer {
   }
 
   save() {
-    // this.scene.soundManager.goalKeeperJumpSound.play();
-    this.scene.match.matchManager.comentatorManager.showCommentForGoalKeeper(
-      this.playerData.who === "hostPlayer" ? "host" : "guest"
-    );
-
     setTimeout(() => {
       this.alreadyTouchBall = false;
     }, 200);
-    // const canvasScene = this.scene.scene.get("CanvasScene") as CanvasScene;
 
-    // if (this.playerData.who === "hostPlayer") {
-    //   canvasScene.showBallSaveIcon("left");
-    // } else {
-    //   canvasScene.showBallSaveIcon("right");
-    // }
     this.makeShortPass();
   }
 

@@ -1,4 +1,4 @@
-import { stadiumConfig } from "../../../config/matchConfig";
+import { GameData } from "../../../config/gameData";
 import GamePlay from "../../../scenes/GamePlay";
 import { calculatePercentage } from "../../../utils/math";
 import Spectators from "./spectators";
@@ -31,6 +31,9 @@ export class Stadium extends Phaser.GameObjects.Container {
 
   stadiumColliders: StadiumColliders;
 
+  leftGoalLine: Phaser.GameObjects.Image;
+  rightGoalLine: Phaser.GameObjects.Image;
+
   constructor(public scene: GamePlay, x: number, y: number) {
     super(scene, x, y);
     scene.add.existing(this);
@@ -49,6 +52,94 @@ export class Stadium extends Phaser.GameObjects.Container {
     this.addColliders();
 
     this.addGrids();
+    // this.addBrandTitle();
+    this.addGoalLines();
+  }
+
+  addGoalLines() {
+    this.leftGoalLine = this.scene.add
+      .image(
+        this.scene.game.canvas.width / 2 - 505,
+        this.scene.game.canvas.height / 2,
+        "default"
+      )
+      .setOrigin(0.5)
+      .setDisplaySize(5, 100)
+      .setTint(0xdc1800)
+      .setAlpha(0);
+
+    this.rightGoalLine = this.scene.add
+      .image(
+        this.scene.game.canvas.width / 2 + 505,
+        this.scene.game.canvas.height / 2,
+        "default"
+      )
+      .setOrigin(0.5)
+      .setDisplaySize(5, 100)
+      .setTint(0xdc1800)
+      .setAlpha(0);
+  }
+
+  addBrandTitle() {
+    const cx = this.scene.game.canvas.width / 2;
+    const cy = this.scene.game.canvas.height / 2 + 295;
+    const text = "Marble Arena";
+
+    // 1. Dark imprint that sinks into the grass
+    const imprint = this.scene.add
+      .text(cx, cy, text, {
+        fontFamily: "Arial Black",
+        fontSize: "36px",
+        color: "#0e3d0e", // dark turf tone
+        stroke: "#000000",
+        strokeThickness: 2,
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setAlpha(0.6)
+      .setBlendMode(Phaser.BlendModes.MULTIPLY);
+
+    // slight blur to soften the imprint edges
+    if (imprint.postFX?.addBlur) imprint.postFX.addBlur(1.5, 1.5, 1);
+
+    // 2. Overspray / chalk layer for grassy paint halo
+    const overspray = this.scene.add
+      .text(cx, cy, text, {
+        fontFamily: "Arial Black",
+        fontSize: "36px",
+        color: "#7fff00", // bright green for halo
+        stroke: "#1c6b1c", // darker green rim
+        strokeThickness: 10,
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setAlpha(0.35)
+      .setBlendMode(Phaser.BlendModes.OVERLAY);
+
+    if (overspray.postFX?.addBlur) overspray.postFX.addBlur(2.5, 2.5, 1);
+
+    // 3. Top crisp paint layer
+    const paint = this.scene.add
+      .text(cx, cy, text, {
+        fontFamily: "Arial Black",
+        fontSize: "36px",
+        color: "#b9ff9f", // painted stripe color
+        stroke: "#134d13", // edge outline
+        strokeThickness: 4,
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setBlendMode(Phaser.BlendModes.NORMAL);
+
+    // small breathing shimmer (optional)
+    this.scene.tweens.add({
+      targets: paint,
+      alpha: { from: 0.95, to: 1 },
+      duration: 900,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.easeInOut",
+    });
   }
 
   addGrids() {
@@ -67,24 +158,22 @@ export class Stadium extends Phaser.GameObjects.Container {
 
   addSpectatorsBakcground() {
     const stadiumBck = this.scene.add.image(
-      this.scene.game.canvas.width / 2 - 40,
-      this.scene.game.canvas.height / 2 + 30,
+      this.scene.game.canvas.width / 2,
+      this.scene.game.canvas.height / 2 + 20,
       "stadiumBck"
     );
-    stadiumBck.setTint(stadiumConfig.spectatorsBackground);
-    stadiumBck.setScale(0.9);
+    stadiumBck.setTint(GameData.gameSettings.stadiumBackgroundColor);
+    stadiumBck.setScale(0.7);
   }
 
   addfield() {
-    this.stadiumField = this.scene.add.image(
-      this.scene.game.canvas.width / 2,
-      this.scene.game.canvas.height / 2,
-      "stadiumLines"
-    );
-    this.stadiumField.setDisplaySize(
-      this.fieldImageWidth,
-      this.fieldImageHeight
-    );
+    this.stadiumField = this.scene.add
+      .image(
+        this.scene.game.canvas.width / 2,
+        this.scene.game.canvas.height / 2,
+        "stadiumField"
+      )
+      .setDisplaySize(this.fieldImageWidth, this.fieldImageHeight);
   }
 
   addSpectators() {
@@ -94,13 +183,11 @@ export class Stadium extends Phaser.GameObjects.Container {
   }
 
   addSurounding() {
-    const stadiumSurrounding = this.scene.add.image(
-      0,
-      30,
-      "stadiumSurrounding"
-    );
+    const stadiumSurrounding = this.scene.add
+      .image(0, -10, "stadiumSurrounding")
+      .setScale(2.2);
 
-    stadiumSurrounding.setTint(0xffffff);
+    stadiumSurrounding.setTint(0x08364e);
     this.add(stadiumSurrounding);
   }
 
@@ -108,29 +195,20 @@ export class Stadium extends Phaser.GameObjects.Container {
     this.lightsContainer = this.scene.add.container();
     this.lightsContainer.setPosition(0, -20);
 
-    this.light1 = new StadiumLight(this.scene, 0, -320);
-    this.lightsContainer.add(this.light1);
-
-    this.light2 = new StadiumLight(this.scene, -400, -320);
-    this.lightsContainer.add(this.light2);
-
-    this.light3 = new StadiumLight(this.scene, 400, -320);
-    this.lightsContainer.add(this.light3);
-
-    this.light4 = new StadiumLight(this.scene, -660, -200);
-    this.light4.setRotation(-0.85398);
+    this.light4 = new StadiumLight(this.scene, -540, -290);
+    this.light4.setRotation(-0.80398);
     this.lightsContainer.add(this.light4);
 
-    this.light5 = new StadiumLight(this.scene, 650, -184);
-    this.light5.setRotation(0.805398);
+    this.light5 = new StadiumLight(this.scene, 540, -294);
+    this.light5.setRotation(0.803398);
     this.lightsContainer.add(this.light5);
 
-    this.light6 = new StadiumLight(this.scene, -650, 289);
+    this.light6 = new StadiumLight(this.scene, -550, 339);
     this.light6.setRotation(-2.4036);
     this.lightsContainer.add(this.light6);
 
-    this.light7 = new StadiumLight(this.scene, 650, 279);
-    this.light7.setRotation(2.2736);
+    this.light7 = new StadiumLight(this.scene, 550, 339);
+    this.light7.setRotation(2.4036);
     this.lightsContainer.add(this.light7);
 
     this.add(this.lightsContainer);
@@ -139,9 +217,6 @@ export class Stadium extends Phaser.GameObjects.Container {
   startGoalSelebration(team: "host" | "guest") {
     this.scene.soundManager.goalSelebration.play();
 
-    this.light1.startAnimation(false);
-    this.light2.startAnimation(false);
-    this.light3.startAnimation(false);
     this.light4.startAnimation(true);
     this.light5.startAnimation(false);
     this.light6.startAnimation(true);
@@ -151,9 +226,6 @@ export class Stadium extends Phaser.GameObjects.Container {
   }
 
   stopGoalSelebration() {
-    this.light1.stopAnimation();
-    this.light2.stopAnimation();
-    this.light3.stopAnimation();
     this.light4.stopAnimation();
     this.light5.stopAnimation();
     this.light6.stopAnimation();

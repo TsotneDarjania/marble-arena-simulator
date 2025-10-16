@@ -1,225 +1,265 @@
+// Menu.ts
 import * as Phaser from "phaser";
-import { matchDataConfig, stadiumConfig } from "../config/matchConfig";
-import { TeamDataServerType } from "../main";
-import { GameDataStore } from "../config/gameDataStore";
+import { calculatePercentage } from "../utils/math";
+import { TeamsSelector } from "../core";
+import { TeamDataType } from "../types/gameTypes";
+import { GameData } from "../config/gameData";
+import MenuTeamsSettings from "../core/uiMechanics/menuTeamsSettings/menuTeamsSettings";
+import { MenuButton } from "../core/uiMechanics/menuButton/menuButton";
+import { detectMob } from "../utils/helper";
+import { layoutData } from "../config/layout";
 
 export default class Menu extends Phaser.Scene {
+  private backgroundImage!: Phaser.GameObjects.Image;
+  private nextBtn?: MenuButton;
+
+  selectButtonClickSound!: Phaser.Sound.BaseSound;
+  buttonClickSound!: Phaser.Sound.BaseSound;
+
   constructor() {
     super("Menu");
   }
 
   create() {
-    this.addGameMenu();
+    // Add Sounds
+    this.selectButtonClickSound = this.sound.add("selectTeamButtonSound", {
+      volume: 1,
+      loop: false,
+    });
+    this.buttonClickSound = this.sound.add("button", {
+      volume: 0.2,
+      loop: false,
+    });
+
+    const title = this.add
+      .text(
+        this.game.canvas.width / 2,
+        this.game.canvas.height / 2,
+        "MARBLE ARENA",
+        {
+          fontSize: "50px",
+          align: "center",
+          color: "#25e000ff",
+          stroke: "#68f54cff",
+          strokeThickness: 2,
+        }
+      )
+      .setOrigin(0.5)
+      .setAlpha(0);
+
+    const subtitle = this.add
+      .text(
+        this.game.canvas.width / 2,
+        this.game.canvas.height / 2 + 50,
+        "SIMULATOR",
+        {
+          fontSize: "40px",
+          align: "center",
+          color: "#85ce77ff",
+          strokeThickness: 2,
+          stroke: "#58974cff",
+        }
+      )
+      .setOrigin(0.5)
+      .setAlpha(0);
+
+    // Title & Subtitle Animation
+    this.tweens.add({
+      targets: [title, subtitle],
+      duration: 1000,
+      alpha: 1,
+      onComplete: () => {
+        this.tweens.add({
+          targets: [title, subtitle],
+          delay: 300,
+          duration: 1000,
+          alpha: 0,
+          onComplete: () => {
+            subtitle.destroy();
+            title.destroy();
+            this.showMenuInterface();
+          },
+        });
+      },
+    });
   }
 
-  addGameMenu() {
-    this.add
-      .text(400, 50, "Match Settings", {
-        fontSize: "32px",
-        color: "#ffffff",
-      })
+  private showMenuInterface() {
+    // Background
+    this.backgroundImage = this.add
+      .image(0, -5, "default")
+      .setDisplaySize(this.game.canvas.width + 10, this.game.canvas.height + 10)
+      .setOrigin(0)
+      .setTint(0x021f14)
+      .setAlpha(0);
+
+    this.tweens.add({
+      targets: this.backgroundImage,
+      alpha: 1,
+      duration: 2000,
+    });
+
+    // Titles
+    const teamsTitle = this.add
+      .text(
+        this.game.canvas.width / 2,
+        this.game.canvas.height / 2 -
+          calculatePercentage(40, this.game.canvas.height),
+        "Select Teams",
+        {
+          fontSize: layoutData.menu.teamsTitle.fontSize,
+          align: "center",
+          color: "#aff0a2ff",
+          stroke: "#aff0a2ff",
+          strokeThickness: 2,
+        }
+      )
+      .setAlpha(0)
       .setOrigin(0.5);
 
-    // Match Time Options
-    const times = [1, 1.5, 2, 2.5, 3, 4, 5, 10];
-    let selectedTime = times[0];
-    let selectedTimeButton: Phaser.GameObjects.Text | null = null;
-
-    this.add.text(100, 100, "Match Time (min):", { color: "#fff" });
-
-    times.forEach((time, index) => {
-      const btn = this.add
-        .text(100 + index * 70, 130, `${time}`, {
-          backgroundColor: "#444",
-          padding: { x: 10, y: 5 },
-          color: "#fff",
-        })
-        .setInteractive();
-
-      if (index === 0) {
-        btn.setStyle({ backgroundColor: "#00aaff" });
-        selectedTimeButton = btn;
-      }
-
-      btn.on("pointerdown", () => {
-        if (selectedTimeButton) {
-          selectedTimeButton.setStyle({ backgroundColor: "#444" });
+    const hostTeamChooseTitle = this.add
+      .text(
+        this.game.canvas.width / 2,
+        this.game.canvas.height / 2 -
+          calculatePercentage(
+            layoutData.menu.hostTeamChooseTitle.yPercent,
+            this.game.canvas.height
+          ),
+        "Home Team",
+        {
+          fontSize: layoutData.menu.hostTeamChooseTitle.fontSize,
+          align: "center",
+          color: "#c2f5c2ff",
+          stroke: "#c2f5c2ff",
+          strokeThickness: 2,
         }
-        btn.setStyle({ backgroundColor: "#00aaff" });
-        selectedTime = time;
-        selectedTimeButton = btn;
-      });
+      )
+      .setAlpha(0)
+      .setOrigin(0.5);
+
+    // Home selector
+    const homeTeamSelector = new TeamsSelector(
+      this,
+      this.game.canvas.width / 2,
+      this.game.canvas.height / 2 -
+        calculatePercentage(10, this.game.canvas.height),
+      300,
+      50,
+      GameData.teams!,
+      GameData.teamsData.hostTeam!
+    )
+      .setScale(layoutData.menu.teamsSelectorScale)
+      .setAlpha(0);
+
+    const guestTeamChooseTitle = this.add
+      .text(
+        this.game.canvas.width / 2,
+        this.game.canvas.height / 2 +
+          calculatePercentage(
+            layoutData.menu.guestTeamChooseTitle.yPercent,
+            this.game.canvas.height
+          ),
+        "Away Team",
+        {
+          fontSize: layoutData.menu.guestTeamChooseTitle.fontSize,
+          align: "center",
+          color: "#c2f5c2ff",
+          stroke: "#c2f5c2ff",
+          strokeThickness: 2,
+        }
+      )
+      .setAlpha(0)
+      .setOrigin(0.5);
+
+    // Away selector
+    const guestTeamSelector = new TeamsSelector(
+      this,
+      this.game.canvas.width / 2,
+      this.game.canvas.height / 2 +
+        calculatePercentage(21, this.game.canvas.height),
+      300,
+      50,
+      GameData.teams!,
+      GameData.teamsData.guestTeam!
+    )
+      .setScale(layoutData.menu.teamsSelectorScale)
+      .setAlpha(0);
+
+    // Track current selections
+    let selectedHome: TeamDataType = GameData.teams![0];
+    let selectedAway: TeamDataType = GameData.teams![2];
+
+    homeTeamSelector.eventEmitter.on("change", (team: TeamDataType) => {
+      selectedHome = team;
+      this.syncNextEnabled(selectedHome, selectedAway);
+
+      this.selectButtonClickSound.play();
     });
 
-    // Team Color Mode
-    let hostColorChoice: "primary" | "secondary" = "primary";
-    let guestColorChoice: "primary" | "secondary" = "primary";
+    guestTeamSelector.eventEmitter.on("change", (team: TeamDataType) => {
+      selectedAway = team;
+      this.syncNextEnabled(selectedHome, selectedAway);
 
-    this.add.text(100, 200, "Host Team Color:", { color: "#fff" });
-    const hostPrimaryBtn = this.add
-      .text(100, 230, "Use Primary", {
-        backgroundColor: "#00aaff",
-        color: "#000",
-        padding: { x: 10, y: 5 },
-      })
-      .setInteractive();
-
-    const hostSecondaryBtn = this.add
-      .text(220, 230, "Use Secondary", {
-        backgroundColor: "#444",
-        color: "#fff",
-        padding: { x: 10, y: 5 },
-      })
-      .setInteractive();
-
-    hostPrimaryBtn.on("pointerdown", () => {
-      hostColorChoice = "primary";
-      hostPrimaryBtn.setStyle({ backgroundColor: "#00aaff", color: "#000" });
-      hostSecondaryBtn.setStyle({ backgroundColor: "#444", color: "#fff" });
+      this.selectButtonClickSound.play();
     });
 
-    hostSecondaryBtn.on("pointerdown", () => {
-      hostColorChoice = "secondary";
-      hostSecondaryBtn.setStyle({ backgroundColor: "#00aaff", color: "#000" });
-      hostPrimaryBtn.setStyle({ backgroundColor: "#444", color: "#fff" });
+    // Fade in the UI
+    this.tweens.add({
+      targets: [
+        guestTeamSelector,
+        guestTeamChooseTitle,
+        homeTeamSelector,
+        hostTeamChooseTitle,
+        teamsTitle,
+      ],
+      duration: 1000,
+      alpha: 1,
+      onComplete: () => {
+        // NEXT button (class-based)
+        this.nextBtn = new MenuButton(
+          this,
+          this.game.canvas.width / 2,
+          this.game.canvas.height - layoutData.menu.nextButton.y,
+          "NEXT",
+          layoutData.menu.nextButton.width,
+          layoutData.menu.nextButton.height,
+          14
+        )
+          .setAlpha(0)
+          .setEnabled(false); // will sync right after
+
+        this.nextBtn.on("click", () => {
+          hostTeamChooseTitle.alpha = 0;
+          homeTeamSelector.alpha = 0;
+          teamsTitle.alpha = 0;
+          guestTeamChooseTitle.alpha = 0;
+          guestTeamSelector.alpha = 0;
+          this.nextBtn?.destroy();
+
+          GameData.teamsData.hostTeam = selectedHome;
+          GameData.teamsData.guestTeam = selectedAway;
+          this.buttonClickSound.play();
+
+          new MenuTeamsSettings(
+            this,
+            this.game.canvas.width / 2,
+            this.game.canvas.height / 2,
+            selectedHome!,
+            selectedAway!
+          );
+        });
+        this.add.existing(this.nextBtn);
+        this.tweens.add({ targets: this.nextBtn, duration: 300, alpha: 1 });
+
+        // Initial enable/disable state
+        this.syncNextEnabled(selectedHome, selectedAway);
+      },
     });
+  }
 
-    this.add.text(100, 280, "Guest Team Color:", { color: "#fff" });
-    const guestPrimaryBtn = this.add
-      .text(100, 310, "Use Primary", {
-        backgroundColor: "#00aaff",
-        color: "#000",
-        padding: { x: 10, y: 5 },
-      })
-      .setInteractive();
-
-    const guestSecondaryBtn = this.add
-      .text(220, 310, "Use Secondary", {
-        backgroundColor: "#444",
-        color: "#fff",
-        padding: { x: 10, y: 5 },
-      })
-      .setInteractive();
-
-    guestPrimaryBtn.on("pointerdown", () => {
-      guestColorChoice = "primary";
-      guestPrimaryBtn.setStyle({ backgroundColor: "#00aaff", color: "#000" });
-      guestSecondaryBtn.setStyle({ backgroundColor: "#444", color: "#fff" });
-    });
-
-    guestSecondaryBtn.on("pointerdown", () => {
-      guestColorChoice = "secondary";
-      guestSecondaryBtn.setStyle({ backgroundColor: "#00aaff", color: "#000" });
-      guestPrimaryBtn.setStyle({ backgroundColor: "#444", color: "#fff" });
-    });
-
-    // Extra Time Toggle
-    let extraTime = false;
-    const extraTimeText = this.add
-      .text(100, 370, "Extra Time: OFF", {
-        backgroundColor: "#444",
-        color: "#fff",
-        padding: { x: 10, y: 5 },
-      })
-      .setInteractive();
-
-    extraTimeText.on("pointerdown", () => {
-      extraTime = !extraTime;
-      extraTimeText.setText(`Extra Time: ${extraTime ? "ON" : "OFF"}`);
-    });
-
-    // Stadium Background Color Picker
-    this.add.text(100, 410, "Stadium Background:", { color: "#fff" });
-
-    const colorInput = document.createElement("input");
-    colorInput.type = "color";
-    colorInput.value = "#008800"; // Default
-    colorInput.style.position = "absolute";
-    colorInput.style.left = `${this.scale.canvas.offsetLeft + 260}px`;
-    colorInput.style.top = `${this.scale.canvas.offsetTop + 410}px`;
-    colorInput.style.zIndex = "1000";
-    document.body.appendChild(colorInput);
-
-    let selectedStadiumColor = "0xffffff";
-    colorInput.addEventListener("input", () => {
-      selectedStadiumColor = "0x" + colorInput.value.replace("#", "");
-    });
-
-    this.events.on("shutdown", () => {
-      colorInput.remove();
-    });
-
-    // Start Button
-    const startBtn = this.add
-      .text(400, 470, "Start Match", {
-        fontSize: "24px",
-        backgroundColor: "#0f0",
-        padding: { x: 15, y: 10 },
-        color: "#000",
-      })
-      .setOrigin(0.5)
-      .setInteractive();
-
-    startBtn.on("pointerdown", async () => {
-      const getColor = (
-        team: TeamDataServerType,
-        type: "primary" | "secondary"
-      ) =>
-        parseInt(
-          (type === "primary"
-            ? team.primary_color
-            : team.secondary_color
-          ).replace("#", ""),
-          16
-        );
-
-      const host = GameDataStore.teamData.hostTeam!;
-      const guest = GameDataStore.teamData.guestTeam!;
-
-      matchDataConfig.hostTeamData = {
-        ...matchDataConfig.hostTeamData,
-        initials: host.tablo_name,
-        formation: host.default_strategy,
-        tactics: {
-          formation: {
-            defenceLine: host.defence_strategy,
-            centerLine: host.midfielder_strategy,
-            attackLine: host.attack_strategy,
-          },
-        },
-        fansColor: getColor(host, hostColorChoice),
-        passSpeed: host.pass_speed,
-        shootSpeed: Math.min(host.pass_speed + 15, 99),
-        shootAccuracy: host.shoot_accuracy,
-        goalKeeperSpeed: host.goalkeeper_speed,
-        motionSpeed: host.defence_speed,
-        freeKiskFrequency: host.fault_possibility,
-      };
-
-      matchDataConfig.guestTeamData = {
-        ...matchDataConfig.guestTeamData,
-        initials: guest.tablo_name,
-        formation: guest.default_strategy,
-        tactics: {
-          formation: {
-            defenceLine: guest.defence_strategy,
-            centerLine: guest.midfielder_strategy,
-            attackLine: guest.attack_strategy,
-          },
-        },
-        fansColor: getColor(guest, guestColorChoice),
-        passSpeed: guest.pass_speed,
-        shootSpeed: Math.min(guest.pass_speed + 15, 99),
-        shootAccuracy: guest.shoot_accuracy,
-        goalKeeperSpeed: guest.goalkeeper_speed,
-        motionSpeed: guest.defence_speed,
-        freeKiskFrequency: guest.fault_possibility,
-      };
-
-      matchDataConfig.gameConfig.mathTime = selectedTime;
-      stadiumConfig.spectatorsBackground = Number(selectedStadiumColor);
-
-      this.scene.start("GamePlay", { extraTime });
-    });
+  // Enable only when teams are different (tweak if you allow mirror matches)
+  private syncNextEnabled(home: TeamDataType, away: TeamDataType) {
+    const enabled = !!home && !!away && home.name !== away.name;
+    if (this.nextBtn) this.nextBtn.setEnabled(enabled);
   }
 }

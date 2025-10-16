@@ -55,51 +55,25 @@ export class Corner {
   }
 
   destroyCorner() {
-    const bg = this.match.scene.add
-      .image(
-        this.match.scene.game.canvas.width / 2,
-        this.match.scene.game.canvas.height / 2,
-        "default"
-      )
-      .setDepth(150)
-      .setTint(0x000000)
-      .setScale(100)
-      .setAlpha(0);
-
     const canvasScene = this.match.scene.scene.get(
       "CanvasScene"
     ) as CanvasScene;
-    canvasScene.showMarbleArenaLogo();
+    canvasScene.showTransition();
 
-    this.match.scene.tweens.add({
-      targets: [bg],
-      alpha: 1,
-      duration: 500,
-      onComplete: () => {
-        this.match.stadium.stopGoalSelebration();
-        this.match.matchManager.matchEvenetManager.resumeUfterCorner(
-          this.teamWhoShootCorner === "hostTeam" ? "guest" : "host",
-          this.isGoalScored
-        );
-        this.destroy();
-        setTimeout(() => {
-          this.match.scene.tweens.add({
-            targets: bg,
-            alpha: 0,
-            delay: 300,
-            duration: 500,
-            onComplete: () => {
-              clearTimeout(this.timeOut_1);
-              clearTimeout(this.timeOut_2);
-              clearTimeout(this.timeOut_3);
-              clearTimeout(this.timeOut_4);
-              clearTimeout(this.timeOut_5);
-              bg.destroy();
-            },
-          });
-        }, 300);
-      },
-    });
+    setTimeout(() => {
+      this.match.stadium.stopGoalSelebration();
+      this.match.matchManager.matchEvenetManager.resumeUfterCorner(
+        this.teamWhoShootCorner === "hostTeam" ? "guest" : "host",
+        this.isGoalScored
+      );
+      this.destroy();
+
+      clearTimeout(this.timeOut_1);
+      clearTimeout(this.timeOut_2);
+      clearTimeout(this.timeOut_3);
+      clearTimeout(this.timeOut_4);
+      clearTimeout(this.timeOut_5);
+    }, 1300);
   }
 
   isGoal(whoScored: "host" | "guest") {
@@ -124,7 +98,9 @@ export class Corner {
     this.isGoalScored = true;
     this.match.stadium.startGoalSelebration(whoScored);
     this.match.ball.startBlinkAnimation();
-    this.match.ball.stop();
+    setTimeout(() => {
+      this.match.ball.stop();
+    }, 90);
     this.match.hostTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.guestTeam.boardFootballPlayers.goalKeeper.stopMotion();
 
@@ -213,7 +189,7 @@ export class Corner {
         : this.match.matchData.guestTeamData;
     let x = 0;
     const isfailShoot =
-      getRandomIntNumber(0, 100) < teamData.shootAccuracy ? false : true;
+      getRandomIntNumber(0, 100) < teamData.shoot_accuracy ? false : true;
 
     let y = this.match.stadium.stadiumField.getBounds().centerY;
 
@@ -244,7 +220,7 @@ export class Corner {
           .centerX - 10;
     }
     this.match.scene.match.ball.kick(
-      mapToRange(teamData.shootSpeed, 250, 500),
+      mapToRange(teamData.pass_speed, 250, 500),
       {
         x,
         y,
@@ -287,8 +263,8 @@ export class Corner {
       x,
       y,
       this.teamWhoShootCorner === "hostTeam"
-        ? this.match.matchData.guestTeamData.logoKey
-        : this.match.matchData.hostTeamData.logoKey
+        ? this.match.matchData.guestTeamData.name
+        : this.match.matchData.hostTeamData.name
     );
     this.deffender.setDepth(110);
     this.deffender.setScale(0.6);
@@ -318,8 +294,8 @@ export class Corner {
       x,
       y,
       this.teamWhoShootCorner === "hostTeam"
-        ? this.match.matchData.hostTeamData.logoKey
-        : this.match.matchData.guestTeamData.logoKey
+        ? this.match.matchData.hostTeamData.name
+        : this.match.matchData.guestTeamData.name
     );
     this.attacker.setDepth(110);
     this.attacker.setCircle(30);
@@ -337,8 +313,8 @@ export class Corner {
       x,
       y,
       this.teamWhoShootCorner === "hostTeam"
-        ? this.match.matchData.hostTeamData.logoKey
-        : this.match.matchData.guestTeamData.logoKey
+        ? this.match.matchData.hostTeamData.name
+        : this.match.matchData.guestTeamData.name
     );
     this.fakeFootballer.setScale(0.6);
   }

@@ -41,7 +41,7 @@ export class MatchEventManager {
   calculatePenaltyPossibility() {
     if (this.match.matchManager.teamWhoHasBall === "hostTeam") {
       const random = getRandomIntNumber(0, 100);
-      if (random > this.match.matchData.guestTeamData.penaltyFrequency) {
+      if (random > this.match.matchData.hostTeamData.fault_possibility) {
         return;
       }
       const randomFootballer =
@@ -67,7 +67,7 @@ export class MatchEventManager {
       randomFootballer.startFreeKickBehaviour();
     } else {
       const random = getRandomIntNumber(0, 100);
-      if (random > this.match.matchData.hostTeamData.penaltyFrequency) {
+      if (random > this.match.matchData.guestTeamData.fault_possibility) {
         return;
       }
 
@@ -98,9 +98,10 @@ export class MatchEventManager {
   calculateFreeKickPossibility() {
     if (this.match.matchManager.teamWhoHasBall === "hostTeam") {
       const random = getRandomIntNumber(0, 100);
-      if (random > this.match.matchData.guestTeamData.freeKiskFrequency) {
+      if (random > this.match.matchData.guestTeamData.fault_possibility) {
         return;
       }
+
       const randomFootballer =
         getRandomIntNumber(0, 100) > 50
           ? this.match.guestTeam.boardFootballPlayers.middleColumn.footballers[
@@ -121,9 +122,10 @@ export class MatchEventManager {
       randomFootballer.startFreeKickBehaviour();
     } else {
       const random = getRandomIntNumber(0, 100);
-      if (random > this.match.matchData.hostTeamData.freeKiskFrequency) {
+      if (random > this.match.matchData.hostTeamData.fault_possibility) {
         return;
       }
+
       const randomFootballer =
         getRandomIntNumber(0, 100) > 50
           ? this.match.hostTeam.boardFootballPlayers.middleColumn.footballers[
@@ -146,43 +148,14 @@ export class MatchEventManager {
   }
 
   isGoal(whoScored: "host" | "guest") {
+    const canvasScene = this.match.scene.scene.get(
+      "CanvasScene"
+    ) as CanvasScene;
+
     if (this.matchStatus === "playing") {
       setTimeout(() => {
-        const bg = this.match.scene.add
-          .image(
-            this.match.scene.game.canvas.width / 2,
-            this.match.scene.game.canvas.height / 2,
-            "default"
-          )
-          .setDepth(150)
-          .setTint(0x000000)
-          .setScale(100)
-          .setAlpha(0);
-
-        const canvasScene = this.match.scene.scene.get(
-          "CanvasScene"
-        ) as CanvasScene;
-        canvasScene.showMarbleArenaLogo();
-
-        this.match.scene.tweens.add({
-          targets: [bg],
-          alpha: 1,
-          duration: 500,
-          onComplete: () => {
-            setTimeout(() => {
-              this.match.scene.tweens.add({
-                targets: bg,
-                alpha: 0,
-                delay: 300,
-                duration: 500,
-                onComplete: () => {
-                  bg.destroy();
-                },
-              });
-            }, 300);
-          },
-        });
-      }, 2700);
+        canvasScene.showTransition();
+      }, 3000);
 
       this.match.matchTimer.stopTimer();
 
@@ -191,9 +164,7 @@ export class MatchEventManager {
         this.match.guestTeamCoach.angry();
 
         this.match.matchManager.hostScore++;
-        const canvasScene = this.match.scene.scene.get(
-          "CanvasScene"
-        ) as CanvasScene;
+
         canvasScene.hostTeamScoretext.setText(
           this.match.matchManager.hostScore.toString()
         );
@@ -202,9 +173,6 @@ export class MatchEventManager {
         this.match.hostTeamCoach.angry();
 
         this.match.matchManager.guestScore++;
-        const canvasScene = this.match.scene.scene.get(
-          "CanvasScene"
-        ) as CanvasScene;
         canvasScene.guestTeamScoretext.setText(
           this.match.matchManager.guestScore.toString()
         );
@@ -218,7 +186,10 @@ export class MatchEventManager {
       this.match.guestTeam.stopFullMotion();
       this.match.guestTeam.boardFootballPlayers.goalKeeper.stopMotion();
 
-      this.match.ball.stop();
+      setTimeout(() => {
+        this.match.ball.stop();
+      }, 90);
+
       this.match.ball.startBlinkAnimation();
       this.match.stadium.startGoalSelebration(whoScored);
 
@@ -242,6 +213,11 @@ export class MatchEventManager {
       this.match.matchManager.penalty!.isGoal(whoScored);
       this.matchStatus = "finishPenalty";
     }
+
+    if (this.matchStatus === "isLastPenalties") {
+      this.match.matchManager.lastPenalties?.isGoal();
+      this.matchStatus = "finishPenalty";
+    }
   }
 
   listenGoalEvenets() {
@@ -249,24 +225,14 @@ export class MatchEventManager {
       if (this.isPossibleToListenGoalEvents) {
         if (
           this.match.ball.x <
-          this.match.hostTeam.boardFootballPlayers.goalKeeper.getBounds()
-            .centerX -
-            16
+          this.match.stadium.leftGoalLine.getBounds().centerX
         ) {
-          if (
-            this.match.matchManager.matchEvenetManager.matchStatus ===
-            "isLastPenalties"
-          ) {
-            return;
-          }
           this.isGoal("guest");
         }
 
         if (
           this.match.ball.x >
-          this.match.guestTeam.boardFootballPlayers.goalKeeper.getBounds()
-            .centerX +
-            16
+          this.match.stadium.rightGoalLine.getBounds().centerX
         ) {
           this.isGoal("host");
         }
@@ -333,6 +299,7 @@ export class MatchEventManager {
       this.match.scene.soundManager.referee.play();
 
       this.match.ball.stop();
+
       const canvasScene = this.match.scene.scene.get(
         "CanvasScene"
       ) as CanvasScene;
@@ -376,6 +343,7 @@ export class MatchEventManager {
       this.match.scene.soundManager.referee.play();
 
       this.match.ball.stop();
+
       const canvasScene = this.match.scene.scene.get(
         "CanvasScene"
       ) as CanvasScene;

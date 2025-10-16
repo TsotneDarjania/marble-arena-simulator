@@ -1,17 +1,61 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/style.css">
-    <title>Phaser - Template</title>
-</head>
 
-<body>
+    <!-- Viewport and safe-area setup -->
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover"
+    />
+
+    <!-- Mobile fullscreen setup -->
+    <meta name="theme-color" content="#000000" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+
+    <link rel="stylesheet" href="/style.css" />
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #000;
+        overflow: hidden;
+      }
+
+      /* Container always fits the visible screen area */
+      #app,
+      #game-container {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100dvh; /* Dynamic viewport height (respects address bar) */
+        overflow: hidden;
+        touch-action: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+
+    <title>Phaser - Mobile Fullscreen</title>
+  </head>
+
+  <body>
     <div id="app">
-        <div id="game-container"></div>
+      <div id="game-container"></div>
     </div>
     <script type="module" src="/src/main.ts"></script>
-</body>
+  </body>
 </html>

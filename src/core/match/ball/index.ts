@@ -22,22 +22,24 @@ export class Ball extends Phaser.Physics.Arcade.Image {
     this.setScale(0.4);
     this.setCircle(22, 10, 11);
 
-    // Enable physics properties
-    this.setBounce(0.8);
-    // this.setCollideWorldBounds(true);
+    this.setBounce(0.9);
+
     this.addParticles();
     this.createBlinkAnimation();
-
     this.setDepth(11);
+
+    // enable damping
+    this.setDamping(true);
+    this.setDrag(0.65); // <-- THIS is realistic friction for damping mode
   }
 
   private addParticles() {
     this.emitter = this.scene.add.particles(this.x, this.y, "circle", {
-      lifespan: 370,
-      alpha: { start: 0.6, end: 0 },
-      scale: { start: 0.2, end: 0 },
-      tint: [0xf7332d, 0xf7332d, 0xfa8238, 0xf7e52d],
-      frequency: 0,
+      lifespan: 270,
+      alpha: { start: 0.3, end: 0 },
+      scale: { start: 0.15, end: 0 },
+      tint: [0xf7332d, 0xf7e52d],
+      frequency: 5,
       blendMode: "ADD",
     });
     this.emitter.setDepth(10);
@@ -49,10 +51,39 @@ export class Ball extends Phaser.Physics.Arcade.Image {
   }
 
   kick(speed: number, { x, y }: { x: number; y: number }) {
-    // Apply a force gradually for smoother motion
-    this.scene.physics.moveTo(this, x, y, speed);
-    this.anglurarVelocity = speed * 4;
-    this.setAngularVelocity(this.anglurarVelocity);
+    const angle = Phaser.Math.Angle.Between(this.x, this.y, x, y);
+    const velocity = this.scene.physics.velocityFromRotation(
+      angle,
+      speed * 1.35
+    );
+
+    this.setVelocity(velocity.x, velocity.y);
+    this.setAngularVelocity(speed * 3.5);
+
+    // ✅ Keep minimal constant velocity
+    const body = this.body as Phaser.Physics.Arcade.Body;
+    const minSpeed = 110; // adjust as needed
+
+    this.scene.time.addEvent({
+      delay: 120, // check every 50ms
+      loop: true,
+      callback: () => {
+        const vx = body.velocity.x;
+        const vy = body.velocity.y;
+        const currentSpeed = Math.sqrt(vx * vx + vy * vy);
+
+        if (currentSpeed < minSpeed) {
+          // normalize direction and reapply minimal speed
+          const dir = new Phaser.Math.Vector2(vx, vy).normalize();
+          body.setVelocity(dir.x * minSpeed, dir.y * minSpeed);
+        }
+
+        // stop enforcing when ball is almost stopped manually
+        if (currentSpeed <= 1) {
+          (this.scene.time as any).removeEvent(this);
+        }
+      },
+    });
   }
 
   stop() {
@@ -65,7 +96,7 @@ export class Ball extends Phaser.Physics.Arcade.Image {
       targets: this,
       x: x,
       y: y,
-      duration: 200,
+      duration: 120,
     });
   }
 

@@ -11,7 +11,7 @@ export class FootballersMotionManager {
   }
 
   init() {
-    this.defineFootballers();
+    this.getGoalKeepers();
 
     this.hostTeamGoalKeeper.startMotion();
     this.guestTeamGoalKeeper.startMotion();
@@ -20,13 +20,10 @@ export class FootballersMotionManager {
       this.match.guestTeam.startFullMotion();
     }
 
-    if (this.match.matchData.gameConfig.mode === "marble-football") {
-      this.match.guestTeam.startSpecificColumnMotion("middleColumn");
-      this.updateColumnsMotion();
-    }
+    this.updateColumnsMotion()
   }
 
-  defineFootballers() {
+  getGoalKeepers() {
     this.hostTeamGoalKeeper =
       this.match.hostTeam.boardFootballPlayers.goalKeeper;
     this.guestTeamGoalKeeper =

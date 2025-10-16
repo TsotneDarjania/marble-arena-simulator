@@ -1,33 +1,23 @@
 import { Scene } from "phaser";
-import { matchDataConfig } from "../config/matchConfig";
-import { TeamDataServerType } from "../main";
+import { GameData } from "../config/gameData";
 
 export default class Preload extends Scene {
-  private teamData: {
-    hostTeam: TeamDataServerType;
-    guestTeam: TeamDataServerType;
-  };
+  // private teamData: {
+  //   hostTeam: TeamDataServerType;
+  //   guestTeam: TeamDataServerType;
+  // };
 
   constructor() {
     super("Preload");
-  }
-
-  init(teamData: any) {
-    console.log(teamData);
-    this.teamData = teamData;
-    console.log("Received teamData:", this.teamData);
   }
 
   preload() {
     this.load.setPath("assets/");
 
     // Stadium
-    this.load.image("stadiumLines", "image/gameObjects/stadium-lines.png");
+    this.load.image("stadiumField", "image/gameObjects/stadium-field.png");
+    this.load.image("spectatorCornerLine", "image/gameObjects/spectator-corner-line.png");
     this.load.image("spectatorLine", "image/gameObjects/spectator-line.png");
-    this.load.image(
-      "spectatorLine13",
-      "image/gameObjects/spectator-line-13.png"
-    );
     this.load.image(
       "stadiumSurrounding",
       "image/gameObjects/stadium-surrounding.png"
@@ -38,6 +28,8 @@ export default class Preload extends Scene {
     this.load.image("grid", "image/gameObjects/grid.png");
 
     // UI
+    this.load.image("menu-stadium-field", "image/ui/fitch.png");
+    this.load.image("menuArrowButton", "image/ui/arrow.png");
     this.load.image("defaultButton", "image/ui/default-button.png");
     this.load.image("default", "image/ui/default.png");
     this.load.image("cameraZoomButton", "image/ui/camera-zoom-button.png");
@@ -49,17 +41,7 @@ export default class Preload extends Scene {
     this.load.image("live", "image/ui/live.png");
     this.load.image("mike", "image/ui/mike.png");
     this.load.image("marbleArenaLogo", "image/ui/logo.png");
-
-    // Default Team Logos
-    this.load.image(
-      matchDataConfig.hostTeamData.logoKey,
-      matchDataConfig.hostTeamData.logoURL
-    );
-    this.load.image(
-      matchDataConfig.guestTeamData.logoKey,
-      matchDataConfig.guestTeamData.logoURL
-    );
-    this.load.image("liverpool", "image/teamLogos/premierLeague/Liverpool.png");
+    this.load.image("closeButton", "image/ui/close.png");
 
     // GameObjects
     this.load.image("ball", "image/gameObjects/ball.png");
@@ -78,9 +60,18 @@ export default class Preload extends Scene {
     this.load.audio("faul", ["sounds/is-faul.mp3"]);
     this.load.audio("referee", ["sounds/referee.mp3"]);
     this.load.audio("goalkeeperJumpSound", ["sounds/goalkeeperJumpSound.mp3"]);
+    this.load.audio("selectTeamButtonSound", ["sounds/ui/select-button-click.mp3"]);
+    this.load.audio("button", ["sounds/ui/button.mp3"]);
+
+    
+
+    // Teams
+    GameData.teams!.forEach((team) => {
+      this.load.image(team.name, team.team_logo_url);
+    });
   }
 
   create() {
-    this.scene.start("Menu", this.teamData);
+    this.scene.start("Menu");
   }
 }

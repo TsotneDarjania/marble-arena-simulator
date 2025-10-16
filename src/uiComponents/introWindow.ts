@@ -1,3 +1,5 @@
+import { GameData } from "../config/gameData";
+import { layoutData } from "../config/layout";
 import { calculatePercentage } from "../utils/math";
 
 export class IntroWindow extends Phaser.GameObjects.Container {
@@ -6,25 +8,7 @@ export class IntroWindow extends Phaser.GameObjects.Container {
 
   background: Phaser.GameObjects.Image;
 
-  constructor(
-    scene: Phaser.Scene,
-    x: number,
-    y: number,
-    public matchData: {
-      hostTeam: {
-        name: string;
-        logoKey: string;
-      };
-      guestTeam: {
-        name: string;
-        logoKey: string;
-      };
-      info: {
-        matchTitle: string;
-        matchSubTitle: string;
-      };
-    }
-  ) {
+  constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y);
     scene.add.existing(this);
 
@@ -34,90 +18,146 @@ export class IntroWindow extends Phaser.GameObjects.Container {
   init() {
     this.addBackground();
     this.showBrandTitle();
-    this.addMatchInfoTexts();
+    if (GameData.matchSettings.showModals) {
+      setTimeout(() => {
+        this.showTeamsLogo();
+      }, 2700);
+    }
   }
 
-  addMatchInfoTexts() {
-    setTimeout(() => {
-      const matchModeTitle = this.scene.add
-        .text(
-          this.scene.game.canvas.width / 2 +
-            calculatePercentage(100, this.scene.game.canvas.width),
-          this.scene.game.canvas.height / 2 - 50,
-          this.matchData.info.matchTitle,
-          {
-            fontSize: "64px",
-            color: "#ffffff",
-            fontStyle: "bold",
-            align: "center",
-          }
-        )
-        .setScale(0)
-        .setAlpha(0)
-        .setOrigin(0.5);
+  showTeamsLogo() {
+    // ---------- HOST ----------
+    const hostContainer = this.scene.add
+      .container(0, this.scene.game.canvas.height / 2 - layoutData.gameplay.teamsLogosY)
+      .setAlpha(0)
+      .setScale(layoutData.gameplay.teamsLogosScale);
+    this.add(hostContainer);
 
-      this.add(matchModeTitle);
-
-      this.scene.tweens.add({
-        targets: matchModeTitle,
-        duration: 2000,
-        scale: 1,
-        alpha: 1,
-        x: this.scene.game.canvas.width / 2,
-        ease: "Expo.easeInOut",
-      });
-
-      const matchInfo = this.scene.add
-        .text(
-          this.scene.game.canvas.width / 2 -
-            calculatePercentage(100, this.scene.game.canvas.width),
-          this.scene.game.canvas.height / 2 + 50,
-          this.matchData.info.matchSubTitle,
-          {
-            fontSize: "45px",
-            color: "#ffffff",
-            fontStyle: "bold",
-            align: "center",
-          }
-        )
-        .setScale(0)
-        .setAlpha(0)
-        .setOrigin(0.5);
-
-      this.add(matchInfo);
-
-      this.scene.tweens.add({
-        targets: matchInfo,
-        duration: 2000,
-        scale: 1,
-        alpha: 1,
-        x: this.scene.game.canvas.width / 2,
-        ease: "Expo.easeInOut",
-        onComplete: () => {
-          setTimeout(() => {
-            this.scene.tweens.add({
-              targets: matchModeTitle,
-              duration: 200,
-              scale: 0,
-              alpha: 0,
-              x:
-                this.scene.game.canvas.width / 2 -
-                calculatePercentage(100, this.scene.game.canvas.width),
-            });
-
-            this.scene.tweens.add({
-              targets: matchInfo,
-              duration: 200,
-              scale: 0,
-              alpha: 0,
-              x:
-                this.scene.game.canvas.width / 2 +
-                calculatePercentage(100, this.scene.game.canvas.width),
-            });
-          }, 800);
+    const hostLogo = this.scene.add
+      .image(0, -70, GameData.teamsData.hostTeam!.name)
+      .setScale(1.3);
+    const hostText = this.scene.add
+      .text(0, 0, GameData.teamsData.hostTeam!.name, {
+        fontFamily: "Arial",
+        fontSize: "36px",
+        fontStyle: "bold",
+        color: "#ffffffff",
+        backgroundColor: "#05441eff",
+        padding: { top: 2, bottom: 2, left: 8, right: 8 },
+        shadow: {
+          offsetX: 2,
+          offsetY: 2,
+          color: "#0a3a1dff",
+          blur: 1,
+          fill: true,
         },
-      });
-    }, 2000);
+      })
+      .setOrigin(0.5);
+    const hostStrengthText = this.scene.add
+      .text(0, 50, `Strength : ${GameData.teamsData.hostTeam!.attack_speed}`, {
+        fontFamily: "Arial",
+        fontSize: "28px",
+        fontStyle: "bold",
+        color: "#ffffffff",
+        backgroundColor: "#05441eff",
+        padding: { top: 2, bottom: 2, left: 8, right: 8 },
+        shadow: {
+          offsetX: 2,
+          offsetY: 2,
+          color: "#0a3a1dff",
+          blur: 1,
+          fill: true,
+        },
+      })
+      .setOrigin(0.5);
+    hostContainer.add([hostLogo, hostText, hostStrengthText]);
+
+    this.scene.tweens.add({
+      targets: hostContainer,
+      duration: 500,
+      x: this.scene.game.canvas.width / 2 - 150,
+      alpha: 1,
+      ease: "Sine.easeOut",
+      onComplete: () => {
+        this.scene.tweens.add({
+          delay: 1000,
+          targets: hostContainer,
+          duration: 500,
+          x: -hostContainer.width - 200,
+          alpha: 0,
+          ease: "Sine.easeIn",
+          onComplete: () => hostContainer.destroy(true),
+        });
+      },
+    });
+
+    // ---------- GUEST ----------
+    const guestContainer = this.scene.add
+      .container(
+        this.scene.game.canvas.width,
+        this.scene.game.canvas.height / 2 - layoutData.gameplay.teamsLogosY
+      )
+      .setAlpha(0)
+      .setScale(layoutData.gameplay.teamsLogosScale);
+    this.add(guestContainer);
+
+    const guestLogo = this.scene.add
+      .image(0, -70, GameData.teamsData.guestTeam!.name)
+      .setScale(1.3);
+    const guestText = this.scene.add
+      .text(0, 0, GameData.teamsData.guestTeam!.name, {
+        fontFamily: "Arial",
+        fontSize: "36px",
+        fontStyle: "bold",
+        color: "#ffffffff",
+        backgroundColor: "#05441eff",
+        padding: { top: 2, bottom: 2, left: 8, right: 8 },
+        shadow: {
+          offsetX: 2,
+          offsetY: 2,
+          color: "#0a3a1dff",
+          blur: 1,
+          fill: true,
+        },
+      })
+      .setOrigin(0.5);
+    const guestStrengthText = this.scene.add
+      .text(0, 50, `Strength : ${GameData.teamsData.guestTeam!.attack_speed}`, {
+        fontFamily: "Arial",
+        fontSize: "28px",
+        fontStyle: "bold",
+        color: "#ffffffff",
+        backgroundColor: "#05441eff",
+        padding: { top: 2, bottom: 2, left: 8, right: 8 },
+        shadow: {
+          offsetX: 2,
+          offsetY: 2,
+          color: "#0a3a1dff",
+          blur: 1,
+          fill: true,
+        },
+      })
+      .setOrigin(0.5);
+    guestContainer.add([guestLogo, guestText, guestStrengthText]);
+
+    this.scene.tweens.add({
+      targets: guestContainer,
+      duration: 500,
+      x: this.scene.game.canvas.width / 2 + 150,
+      alpha: 1,
+      ease: "Sine.easeOut",
+      onComplete: () => {
+        this.scene.tweens.add({
+          delay: 1000,
+          targets: guestContainer,
+          duration: 500,
+          x: this.scene.game.canvas.width + 200,
+          alpha: 0,
+          ease: "Sine.easeIn",
+          onComplete: () => guestContainer.destroy(true),
+        });
+      },
+    });
   }
 
   addBackground() {
@@ -141,7 +181,7 @@ export class IntroWindow extends Phaser.GameObjects.Container {
         this.scene.game.canvas.height / 2,
         "Marble Arena",
         {
-          fontSize: "144px",
+          fontSize: layoutData.gameplay.brandTitleFontSize,
           color: "#ffffff",
           fontStyle: "bold",
           align: "center",
@@ -169,97 +209,6 @@ export class IntroWindow extends Phaser.GameObjects.Container {
         alpha: 0,
         ease: "Expo.easeInOut",
       });
-
-      this.addHostTeamIndicators();
-      this.addGuesTeamIndicators();
     }, 2000);
-  }
-
-  addGuesTeamIndicators() {
-    this.guestTeamIndicators = this.scene.add
-      .container(
-        this.scene.game.canvas.width -
-          calculatePercentage(7, this.scene.game.canvas.width),
-        this.scene.game.canvas.height + 500
-      )
-      .setAlpha(0);
-
-    // const guestTeamLogo = this.scene.add
-    //   .image(0, 0, this.matchData.guestTeam.logoKey)
-    //   .setDisplaySize(
-    //     calculatePercentage(12, this.scene.game.canvas.width),
-    //     calculatePercentage(12, this.scene.game.canvas.width)
-    //   );
-
-    // this.guestTeamIndicators.add(guestTeamLogo);
-
-    //Title
-    // const title = this.scene.add
-    //   .text(
-    //     calculatePercentage(-7, this.scene.game.canvas.width),
-    //     calculatePercentage(-0.5, this.scene.game.canvas.width),
-    //     this.matchData.guestTeam.name,
-    //     {
-    //       fontSize: "42px",
-    //       color: "#ffffff",
-    //       fontStyle: "bold",
-    //       align: "right",
-    //     }
-    //   )
-    //   .setOrigin(1, 0);
-
-    // this.guestTeamIndicators.add(title);
-
-    this.add(this.guestTeamIndicators);
-
-    this.scene.tweens.add({
-      targets: this.guestTeamIndicators,
-      duration: 2000,
-      y:
-        this.scene.game.canvas.height -
-        calculatePercentage(7, this.scene.game.canvas.width),
-      alpha: 1,
-      ease: "Expo.easeInOut",
-    });
-  }
-
-  addHostTeamIndicators() {
-    this.hostTeamIndicators = this.scene.add
-      .container(calculatePercentage(7, this.scene.game.canvas.width), -500)
-      .setAlpha(0);
-
-    // const hostTeamLogo = this.scene.add
-    //   .image(0, 0, this.matchData.hostTeam.logoKey)
-    //   .setDisplaySize(
-    //     calculatePercentage(12, this.scene.game.canvas.width),
-    //     calculatePercentage(12, this.scene.game.canvas.width)
-    //   );
-
-    // this.hostTeamIndicators.add(hostTeamLogo);
-
-    //Title
-    // const title = this.scene.add.text(
-    //   calculatePercentage(7, this.scene.game.canvas.width),
-    //   calculatePercentage(-0.5, this.scene.game.canvas.width),
-    //   this.matchData.hostTeam.name,
-    //   {
-    //     fontSize: "42px",
-    //     color: "#ffffff",
-    //     fontStyle: "bold",
-    //     align: "left",
-    //   }
-    // );
-
-    // this.hostTeamIndicators.add(title);
-
-    this.add(this.hostTeamIndicators);
-
-    this.scene.tweens.add({
-      targets: this.hostTeamIndicators,
-      duration: 2000,
-      y: calculatePercentage(7, this.scene.game.canvas.width),
-      alpha: 1,
-      ease: "Expo.easeInOut",
-    });
   }
 }

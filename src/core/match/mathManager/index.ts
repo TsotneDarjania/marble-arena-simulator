@@ -1,7 +1,7 @@
 import Match from "..";
+import { GameData } from "../../../config/gameData";
 import CanvasScene from "../../../scenes/CanvasScene";
 import { getRandomIntNumber } from "../../../utils/math";
-import { ComentatorManager } from "../commentatorManager";
 import { Corner } from "../matchEvents/corner";
 import { Freekick } from "../matchEvents/freeKick";
 import { LastPenalties } from "../matchEvents/lastPenalties";
@@ -29,7 +29,6 @@ export default class MatchManager {
   // Core
   footballersMotionManager!: FootballersMotionManager;
   matchEvenetManager!: MatchEventManager;
-  comentatorManager!: ComentatorManager;
 
   whichTeamHaveToResume!: "host" | "guest";
 
@@ -41,17 +40,7 @@ export default class MatchManager {
     this.match.matchTimer.startTimer();
     this.createFootballersMotionManager();
     this.createMatchEvenetManager();
-    this.createComentatorManager();
     this.teamWhoHasBall = "hostTeam";
-
-    // this.match.matchManager.matchEvenetManager.matchStatus = "isLastPenalties";
-    // this.match.hostTeam.hideTeam();
-    // this.match.guestTeam.hideTeam();
-    // this.startLastPenalties();
-  }
-
-  createComentatorManager() {
-    this.comentatorManager = new ComentatorManager(this.match);
   }
 
   createFootballersMotionManager() {
@@ -140,36 +129,86 @@ export default class MatchManager {
       this.match.ball.reset();
       this.match.matchTimer.stopTimer();
 
-      if (status === "halfTimeEnd") {
-        this.match.matchTimer.time = 45;
-      }
-      if (status === "fullTimeEnd") {
-        this.match.matchTimer.time = 90;
-      }
-      if (status === "firstExtraTimeEnd") {
-        this.match.matchTimer.time = 105;
-      }
-      if (status === "secondExtraTimeEnd") {
-        this.match.matchTimer.time = 120;
-      }
-
       const cavnasScene = this.match.scene.scene.get(
         "CanvasScene"
       ) as CanvasScene;
+
+      if (status === "halfTimeEnd") {
+        this.match.matchTimer.time = 45;
+        if (GameData.matchSettings.showModals) {
+          cavnasScene.showMatchContinueModal();
+        }
+      }
+      if (status === "fullTimeEnd") {
+        this.match.matchTimer.time = 90;
+
+        if (!GameData.matchSettings.isExtraTimes) {
+          cavnasScene.showLastresult(
+            this.match.matchManager.hostScore.toString(),
+            this.match.matchManager.guestScore.toString()
+          );
+        } else {
+          if (
+            this.match.matchManager.hostScore !==
+            this.match.matchManager.guestScore
+          ) {
+            cavnasScene.showLastresult(
+              this.match.matchManager.hostScore.toString(),
+              this.match.matchManager.guestScore.toString()
+            );
+          } else {
+            cavnasScene.showMatchContinueModal();
+          }
+        }
+      }
+      if (status === "firstExtraTimeEnd") {
+        this.match.matchTimer.time = 105;
+        cavnasScene.showMatchContinueModal();
+      }
+      if (status === "secondExtraTimeEnd") {
+        this.match.matchTimer.time = 120;
+
+        if (
+          this.match.matchManager.hostScore !==
+          this.match.matchManager.guestScore
+        ) {
+          cavnasScene.showLastresult(
+            this.match.matchManager.hostScore.toString(),
+            this.match.matchManager.guestScore.toString()
+          );
+        } else {
+          cavnasScene.showMatchContinueModal();
+        }
+      }
+
       cavnasScene.timerText.setText(this.match.matchTimer.time.toString());
     }, 1500);
   }
 
   resumeMatch() {
+    const cavnasScene = this.match.scene.scene.get(
+      "CanvasScene"
+    ) as CanvasScene;
+    cavnasScene.destoryMatchContinueModal();
+
+    if (this.match.matchTimer.time === 90) {
+      if (!GameData.matchSettings.isExtraTimes) return;
+      if (
+        this.match.matchManager.hostScore !== this.match.matchManager.guestScore
+      ) {
+        return;
+      }
+    }
+
     this.match.scene.soundManager.referee.play();
+
     setTimeout(() => {
+      this.matchEvenetManager.matchStatus = "playing";
       if (this.matchEvenetManager.isSecondExtraTimeEnded) {
         this.startLastPenalties();
       } else {
         this.match.hostTeam.boardFootballPlayers.goalKeeper.startMotion();
         this.match.guestTeam.boardFootballPlayers.goalKeeper.startMotion();
-
-        this.matchEvenetManager.matchStatus = "playing";
         this.match.matchManager.teamWhoHasBall =
           this.whichTeamHaveToResume === "host" ? "hostTeam" : "guestTeam";
         this.makeFirstKick(this.whichTeamHaveToResume);

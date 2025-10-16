@@ -46,8 +46,8 @@ export class Penalty {
         : calculatePercentage(40, this.match.stadium.innerFielddWidth),
       0,
       this.whoIsGulity === "host"
-        ? this.match.matchData.guestTeamData.logoKey
-        : this.match.matchData.hostTeamData.logoKey
+        ? this.match.matchData.guestTeamData.name
+        : this.match.matchData.hostTeamData.name
     );
     this.shooterFootballer.setScale(0.6);
     this.shooterFootballer.setDepth(100);
@@ -93,7 +93,7 @@ export class Penalty {
           .centerX - 10;
     }
     this.match.scene.match.ball.kick(
-      mapToRange(teamData.shootSpeed, 250, 500),
+      mapToRange(teamData.pass_speed, 250, 500),
       {
         x,
         y,
@@ -134,7 +134,9 @@ export class Penalty {
     this.wasGoalScored = true;
     this.match.stadium.startGoalSelebration(whoScored);
     this.match.ball.startBlinkAnimation();
-    this.match.ball.stop();
+    setTimeout(() => {
+      this.match.ball.stop();
+    }, 90);
     this.match.hostTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.guestTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.hostTeam.stopFullMotion();
@@ -154,47 +156,22 @@ export class Penalty {
   }
 
   destoy() {
-    const bg = this.match.scene.add
-      .image(
-        this.match.scene.game.canvas.width / 2,
-        this.match.scene.game.canvas.height / 2,
-        "default"
-      )
-      .setDepth(150)
-      .setTint(0x000000)
-      .setScale(100)
-      .setAlpha(0);
-
     const canvasScene = this.match.scene.scene.get(
       "CanvasScene"
     ) as CanvasScene;
-    canvasScene.showMarbleArenaLogo();
+    canvasScene.showTransition()
 
-    this.match.scene.tweens.add({
-      targets: [bg],
-      alpha: 1,
-      duration: 500,
-      onComplete: () => {
-        this.match.stadium.stopGoalSelebration();
+    setTimeout(() => {
+
+      this.match.stadium.stopGoalSelebration();
         this.match.matchManager.matchEvenetManager.resumeUfterFreeKick(
           this.whoIsGulity,
           this.wasGoalScored
         );
 
         this.shooterFootballer.destroy();
+      
+    }, 500);
 
-        setTimeout(() => {
-          this.match.scene.tweens.add({
-            targets: bg,
-            alpha: 0,
-            delay: 300,
-            duration: 500,
-            onComplete: () => {
-              bg.destroy();
-            },
-          });
-        }, 300);
-      },
-    });
   }
 }

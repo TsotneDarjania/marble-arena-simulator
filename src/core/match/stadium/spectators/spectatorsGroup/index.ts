@@ -19,7 +19,7 @@ export default class SpectatorsGroup extends Phaser.GameObjects.Container {
     const blitter = this.scene.add.blitter(0, 0, this.imageKey);
 
     for (let i = 0; i < this.linesQunatity; i++) {
-      const image = blitter.create(0, i * 40);
+      const image = blitter.create(0, i * 60);
       this.images.push(image);
     }
 

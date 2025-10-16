@@ -72,7 +72,9 @@ export class Freekick {
     this.isGoalScored = true;
     this.match.stadium.startGoalSelebration(whoScored);
     this.match.ball.startBlinkAnimation();
-    this.match.ball.stop();
+    setTimeout(() => {
+      this.match.ball.stop();
+    }, 90);
     this.match.hostTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.guestTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.hostTeam.stopFullMotion();
@@ -92,49 +94,21 @@ export class Freekick {
   }
 
   destroyFreeKick() {
-    const bg = this.match.scene.add
-      .image(
-        this.match.scene.game.canvas.width / 2,
-        this.match.scene.game.canvas.height / 2,
-        "default"
-      )
-      .setDepth(150)
-      .setTint(0x000000)
-      .setScale(100)
-      .setAlpha(0);
-
     const canvasScene = this.match.scene.scene.get(
       "CanvasScene"
     ) as CanvasScene;
-    canvasScene.showMarbleArenaLogo();
+    canvasScene.showTransition();
 
-    this.match.scene.tweens.add({
-      targets: [bg],
-      alpha: 1,
-      duration: 500,
-      onComplete: () => {
-        this.match.stadium.stopGoalSelebration();
-        this.match.matchManager.matchEvenetManager.resumeUfterFreeKick(
-          this.teamWhoIsGuilty,
-          this.isGoalScored
-        );
+    setTimeout(() => {
+      this.match.stadium.stopGoalSelebration();
+      this.match.matchManager.matchEvenetManager.resumeUfterFreeKick(
+        this.teamWhoIsGuilty,
+        this.isGoalScored
+      );
 
-        this.shooterfootballer.destroy();
-        this.longDistanceSecondShooter?.destroy();
-
-        setTimeout(() => {
-          this.match.scene.tweens.add({
-            targets: bg,
-            alpha: 0,
-            delay: 300,
-            duration: 500,
-            onComplete: () => {
-              bg.destroy();
-            },
-          });
-        }, 300);
-      },
-    });
+      this.shooterfootballer.destroy();
+      this.longDistanceSecondShooter?.destroy();
+    }, 500);
   }
 
   shoot() {
@@ -146,7 +120,7 @@ export class Freekick {
         : this.match.matchData.guestTeamData;
     let x = 0;
     const isfailShoot =
-      getRandomIntNumber(0, 100) < teamData.shootAccuracy ? false : true;
+      getRandomIntNumber(0, 100) < teamData.shoot_accuracy ? false : true;
 
     let y = this.match.stadium.stadiumField.getBounds().centerY;
 
@@ -177,7 +151,7 @@ export class Freekick {
           .centerX - 10;
     }
     this.match.scene.match.ball.kick(
-      mapToRange(teamData.shootSpeed, 250, 500),
+      mapToRange(teamData.pass_speed, 250, 500),
       {
         x,
         y,
@@ -218,8 +192,8 @@ export class Freekick {
         : this.match.ball.getBounds().centerX - 30,
       this.match.ball.getBounds().centerY,
       this.teamWhoIsGuilty === "host"
-        ? this.match.guestTeam.teamData.logoKey
-        : this.match.hostTeam.teamData.logoKey
+        ? this.match.guestTeam.teamData.name
+        : this.match.hostTeam.teamData.name
     );
     this.shooterfootballer.setScale(0.6);
   }
@@ -236,7 +210,7 @@ export class Freekick {
         }
       );
       this.match.hostTeam.boardFootballPlayers.middleColumn.startMotion(
-        this.match.matchData.hostTeamData.motionSpeed
+        this.match.matchData.hostTeamData.attack_speed
       );
 
       const randomFootballer =
@@ -250,7 +224,7 @@ export class Freekick {
       this.longDistanceSecondShooter = this.match.scene.physics.add.image(
         randomFootballer.getBounds().x,
         randomFootballer.getBounds().y,
-        this.match.guestTeam.teamData.logoKey
+        this.match.guestTeam.teamData.name
       );
       this.longDistanceSecondShooter.setDepth(110);
       this.longDistanceSecondShooter.setScale(0.6);
@@ -263,7 +237,7 @@ export class Freekick {
         this.match.scene.soundManager.pass.play();
 
         this.match.ball.kick(
-          mapToRange(this.match.matchData.guestTeamData.passSpeed, 160, 300),
+          mapToRange(this.match.matchData.guestTeamData.pass_speed, 160, 300),
           {
             x,
             y,
@@ -280,7 +254,7 @@ export class Freekick {
         }
       );
       this.match.guestTeam.boardFootballPlayers.middleColumn.startMotion(
-        this.match.matchData.guestTeamData.motionSpeed
+        this.match.matchData.guestTeamData.attack_speed
       );
 
       const randomFootballer =
@@ -295,7 +269,7 @@ export class Freekick {
       this.longDistanceSecondShooter = this.match.scene.physics.add.image(
         randomFootballer.getBounds().x,
         randomFootballer.getBounds().y,
-        this.match.hostTeam.teamData.logoKey
+        this.match.hostTeam.teamData.name
       );
       this.longDistanceSecondShooter.setDepth(110);
       this.longDistanceSecondShooter.setScale(0.6);
@@ -308,7 +282,7 @@ export class Freekick {
         this.match.scene.soundManager.pass.play();
 
         this.match.ball.kick(
-          mapToRange(this.match.matchData.hostTeamData.passSpeed, 160, 300),
+          mapToRange(this.match.matchData.hostTeamData.pass_speed, 160, 300),
           {
             x,
             y,

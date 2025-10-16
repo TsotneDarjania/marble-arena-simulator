@@ -1,17 +1,19 @@
 import GamePlay from "../../scenes/GamePlay";
+import { detectMob } from "../../utils/helper";
 
 export default class GamePlayCameraController {
   constructor(public scene: GamePlay) {}
 
   showStartGameAnimation() {
     this.scene.cameras.main.zoomTo(
-      this.scene.cameras.main.zoom + 0.5, // Target zoom level
+      detectMob() ? this.scene.cameras.main.zoom + 0.2 :this.scene.cameras.main.zoom + 0.5, // Target zoom level
       7000, // Duration (in milliseconds)
       "Cubic.easeInOut", // Easing function
       false // Force (set to true if you want to force the zoom change)
     );
 
     this.scene.cameras.main.once("camerazoomcomplete", () => {
+      
       this.scene.events.emit("cameraZoomFinished");
     });
   }

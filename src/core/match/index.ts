@@ -1,4 +1,4 @@
-import { matchDataConfig } from "../../config/matchConfig";
+import { GameData } from "../../config/gameData";
 import GamePlay from "../../scenes/GamePlay";
 import { MatchDataType } from "../../types/gameTypes";
 import { Ball } from "./ball";
@@ -48,9 +48,9 @@ export default class Match {
 
   setFanColors() {
     this.stadium.spectators.fanColors = {
-      hostColor: this.matchData.hostTeamData.fansColor,
-      guestColor: this.matchData.guestTeamData.fansColor,
-      hostQuantityPercent: matchDataConfig.gameConfig.hostFansCountPercent,
+      hostColor: GameData.matchSettings.hostTeamFansColor,
+      guestColor: GameData.matchSettings.guestTeamFansColor,
+      hostQuantityPercent: 50,
     };
   }
 
@@ -93,17 +93,17 @@ export default class Match {
   addCoaches() {
     this.hostTeamCoach = new Coach(
       this.scene,
-      this.scene.game.canvas.width / 2 - 150,
-      this.scene.game.canvas.height / 2 + 320,
-      this.matchData.hostTeamData.logoKey,
+      this.scene.game.canvas.width / 2 - 290,
+      this.scene.game.canvas.height / 2 + 300,
+      GameData.teamsData.hostTeam!.name,
       true
     );
 
     this.guestTeamCoach = new Coach(
       this.scene,
-      this.scene.game.canvas.width / 2 + 150,
-      this.scene.game.canvas.height / 2 + 320,
-      this.matchData.guestTeamData.logoKey,
+      this.scene.game.canvas.width / 2 + 290,
+      this.scene.game.canvas.height / 2 + 300,
+      GameData.teamsData.guestTeam!.name,
       false
     );
   }

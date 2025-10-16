@@ -117,9 +117,9 @@ export default class BoardFootballPlayers {
   }
 
   startFullMotion() {
-    this.defenceColumn.startMotion(this.teamData.motionSpeed);
-    this.middleColumn.startMotion(this.teamData.motionSpeed);
-    this.attackColumn.startMotion(this.teamData.motionSpeed);
+    this.defenceColumn.startMotion(this.teamData.attack_speed);
+    this.middleColumn.startMotion(this.teamData.attack_speed);
+    this.attackColumn.startMotion(this.teamData.attack_speed);
   }
 
   startSpecificMotion(
@@ -127,13 +127,13 @@ export default class BoardFootballPlayers {
   ) {
     switch (position) {
       case "defenceColumn":
-        this.defenceColumn.startMotion(this.teamData.motionSpeed);
+        this.defenceColumn.startMotion(this.teamData.attack_speed);
         break;
       case "middleColumn":
-        this.middleColumn.startMotion(this.teamData.motionSpeed);
+        this.middleColumn.startMotion(this.teamData.attack_speed);
         break;
       case "attackColumn":
-        this.attackColumn.startMotion(this.teamData.motionSpeed);
+        this.attackColumn.startMotion(this.teamData.attack_speed);
         break;
       default:
         throw new Error("Invalid Parameter of Column position");
