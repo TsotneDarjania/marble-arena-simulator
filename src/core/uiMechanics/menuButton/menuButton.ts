@@ -1,3 +1,5 @@
+import { layoutData } from "../../../config/layout";
+
 export type ButtonMode = "normal" | "hover" | "pressed" | "disabled";
 
 export class MenuButton extends Phaser.GameObjects.Container {
@@ -21,8 +23,8 @@ export class MenuButton extends Phaser.GameObjects.Container {
     x: number,
     y: number,
     label: string,
-    public w = 200,
-    public h = 48,
+    public w = layoutData.menu.menuTeamsSettings.menuButton.width,
+    public h = layoutData.menu.menuTeamsSettings.menuButton.height,
     public r = 14,
     bckColor?: number,          // <-- Optional
   ) {
@@ -87,7 +89,7 @@ export class MenuButton extends Phaser.GameObjects.Container {
     this.labelText = this.scene.add
       .text(0, 0, label, {
         fontFamily: "Arial, sans-serif",
-        fontSize: "20px",
+        fontSize: layoutData.menu.nextButton.fontSize,
         fontStyle: "bold",
         color: "#ffffff",
         stroke: "#000000",

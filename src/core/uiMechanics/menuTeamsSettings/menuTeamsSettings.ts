@@ -1,4 +1,5 @@
 import { GameData } from "../../../config/gameData";
+import { layoutData } from "../../../config/layout";
 import Menu from "../../../scenes/Menu";
 import { TeamDataType } from "../../../types/gameTypes";
 import { MenuButton } from "../menuButton/menuButton";
@@ -53,7 +54,7 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
         strokeWidth: 6,
         strokeColor: 0x071c13,
       }
-    );
+    )
 
     this.gameSetgingsPopup = new GameSettingsPopup(
       this.scene,
@@ -70,7 +71,7 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
   }
 
   addTeamPlans() {
-    this.hostTeamPlan = new TeamPlan(this.scene, 0, 0, true, this.homeTeam);
+    this.hostTeamPlan = new TeamPlan(this.scene, 0, 0, true, this.homeTeam)
     this.guestTeamPlan = new TeamPlan(this.scene, 0, 0, false, this.guestTeam);
   }
 
@@ -78,8 +79,8 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
     this.startMatchButton = new MenuButton(
       this.scene,
       0,
-      this.scene.game.canvas.height / 2 - 50,
-      "Start Match"
+      this.scene.game.canvas.height / 2 - layoutData.menu.menuTeamsSettings.menuButton.y,
+      "Start Match",
     );
     this.startMatchButton.on("click", () => {
       this.scene.buttonClickSound.play()
@@ -90,7 +91,7 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
     this.matchSettingsButton = new MenuButton(
       this.scene,
       -220,
-      this.scene.game.canvas.height / 2 - 50,
+      this.scene.game.canvas.height / 2 - layoutData.menu.menuTeamsSettings.menuButton.y,
       "Match Settings",
       undefined,
       undefined,
@@ -110,7 +111,7 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
     this.gameSettingsButton = new MenuButton(
       this.scene,
       220,
-      this.scene.game.canvas.height / 2 - 50,
+      this.scene.game.canvas.height / 2 - layoutData.menu.menuTeamsSettings.menuButton.y,
       "Game Settings",
       undefined,
       undefined,

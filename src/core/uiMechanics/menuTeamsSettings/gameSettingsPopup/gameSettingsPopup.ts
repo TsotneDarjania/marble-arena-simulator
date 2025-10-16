@@ -1,4 +1,6 @@
 import { GameData } from "../../../../config/gameData";
+import { layoutData } from "../../../../config/layout";
+import Menu from "../../../../scenes/Menu";
 import { SettingsSelector } from "../settingsSelector/settingsSelector";
 import { StadiumBackgroundColorSelector } from "../stadiumBackgroundColorSelector/stadiumBackgroundColorSelector";
 
@@ -24,7 +26,7 @@ export class GameSettingsPopup extends Phaser.GameObjects.Container {
   private closeButton!: Phaser.GameObjects.Image; // <<< added
 
   constructor(
-    scene: Phaser.Scene,
+    public scene: Menu,
     x: number,
     y: number,
     style: PopupStyle = {}
@@ -240,8 +242,8 @@ export class GameSettingsPopup extends Phaser.GameObjects.Container {
 
     this.scene.tweens.add({
       targets: this,
-      scaleX: 1,
-      scaleY: 1,
+      scaleX: layoutData.menu.popup.scale,
+      scaleY: layoutData.menu.popup.scale,
       alpha: 1,
       duration,
       ease,

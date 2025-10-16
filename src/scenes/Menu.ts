@@ -107,7 +107,7 @@ export default class Menu extends Phaser.Scene {
           calculatePercentage(40, this.game.canvas.height),
         "Select Teams",
         {
-          fontSize: "50px",
+          fontSize: layoutData.menu.teamsTitle.fontSize,
           align: "center",
           color: "#aff0a2ff",
           stroke: "#aff0a2ff",
@@ -121,7 +121,10 @@ export default class Menu extends Phaser.Scene {
       .text(
         this.game.canvas.width / 2,
         this.game.canvas.height / 2 -
-          calculatePercentage(layoutData.menu.hostTeamChooseTitle.yPercent, this.game.canvas.height),
+          calculatePercentage(
+            layoutData.menu.hostTeamChooseTitle.yPercent,
+            this.game.canvas.height
+          ),
         "Home Team",
         {
           fontSize: layoutData.menu.hostTeamChooseTitle.fontSize,
@@ -150,7 +153,10 @@ export default class Menu extends Phaser.Scene {
       .text(
         this.game.canvas.width / 2,
         this.game.canvas.height / 2 +
-          calculatePercentage(layoutData.menu.guestTeamChooseTitle.yPercent, this.game.canvas.height),
+          calculatePercentage(
+            layoutData.menu.guestTeamChooseTitle.yPercent,
+            this.game.canvas.height
+          ),
         "Away Team",
         {
           fontSize: layoutData.menu.guestTeamChooseTitle.fontSize,
@@ -209,10 +215,10 @@ export default class Menu extends Phaser.Scene {
         this.nextBtn = new MenuButton(
           this,
           this.game.canvas.width / 2,
-          this.game.canvas.height - 56,
+          this.game.canvas.height - layoutData.menu.nextButton.y,
           "NEXT",
-          200,
-          48,
+          layoutData.menu.nextButton.width,
+          layoutData.menu.nextButton.height,
           14
         )
           .setAlpha(0)
@@ -228,8 +234,8 @@ export default class Menu extends Phaser.Scene {
 
           GameData.teamsData.hostTeam = selectedHome;
           GameData.teamsData.guestTeam = selectedAway;
-          this.buttonClickSound.play()
-          
+          this.buttonClickSound.play();
+
           new MenuTeamsSettings(
             this,
             this.game.canvas.width / 2,
