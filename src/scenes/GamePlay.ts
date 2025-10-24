@@ -28,6 +28,9 @@ export default class GamePlay extends Phaser.Scene {
     this.createMatch();
     this.createCameraMotion();
     this.createEventManager();
+
+    console.log(GameData.teamsData.hostTeam)
+    console.log(GameData.teamsData.guestTeam)
   }
 
   addSoundManager() {

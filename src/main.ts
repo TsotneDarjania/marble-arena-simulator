@@ -143,7 +143,7 @@ async function startGame() {
     GameData.teamsData.guestTeam = teams[1];
   }
 
-  const dpr = getDPR() * 10;
+  const dpr = getDPR();
   const { w, h } = getCSSViewport();
 
   const config: Types.Core.GameConfig = {
@@ -156,8 +156,8 @@ async function startGame() {
     scale: {
       mode: Phaser.Scale.RESIZE,
       autoCenter: Phaser.Scale.CENTER_BOTH,
-      width: Math.max(3000, w * dpr),
-      height: Math.max(3000, h * dpr),
+      width: Math.max(1, w * dpr),
+      height: Math.max(1, h * dpr),
       zoom: 1 / dpr,
     },
 
