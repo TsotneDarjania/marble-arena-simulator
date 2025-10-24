@@ -131,6 +131,22 @@ export class Column extends Phaser.GameObjects.Container {
               ));
         }
       }
+      if (
+        this.teamData.defence_strategy === "wide-back" &&
+        this.type === "defence"
+      ) {
+        if (i === 0 || i === this.quantity - 1) {
+          this.side === "left"
+            ? (footballer.x -= calculatePercentage(
+                2.5,
+                this.stadium.innerFielddWidth
+              ))
+            : (footballer.x += calculatePercentage(
+                2.5,
+                this.stadium.innerFielddWidth
+              ));
+        }
+      }
 
       if (
         this.teamData.midfielder_strategy === "wide-attack" &&
@@ -139,10 +155,27 @@ export class Column extends Phaser.GameObjects.Container {
         if (i === 0 || i === this.quantity - 1) {
           this.side === "left"
             ? (footballer.x += calculatePercentage(
-                2.5,
+                4.5,
                 this.stadium.innerFielddWidth
               ))
             : (footballer.x -= calculatePercentage(
+                4.5,
+                this.stadium.innerFielddWidth
+              ));
+        }
+      }
+
+      if (
+        this.teamData.midfielder_strategy=== "wide-back" &&
+        this.type === "middle"
+      ) {
+        if (i === 0 || i === this.quantity - 1) {
+          this.side === "left"
+            ? (footballer.x -= calculatePercentage(
+                2.5,
+                this.stadium.innerFielddWidth
+              ))
+            : (footballer.x += calculatePercentage(
                 2.5,
                 this.stadium.innerFielddWidth
               ));
@@ -150,10 +183,10 @@ export class Column extends Phaser.GameObjects.Container {
       }
 
       if (
-        this.teamData.attack_strategy === "wide-back" &&
+        this.teamData.midfielder_strategy=== "center-attack" &&
         this.type === "middle"
       ) {
-        if (i === 0 || i === this.quantity - 1) {
+        if (i !== 0 && i !== this.quantity - 1) {
           this.side === "left"
             ? (footballer.x -= calculatePercentage(
                 2.5,

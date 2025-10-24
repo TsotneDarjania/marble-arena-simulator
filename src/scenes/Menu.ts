@@ -186,8 +186,8 @@ export default class Menu extends Phaser.Scene {
       .setAlpha(0);
 
     // Track current selections
-    let selectedHome: TeamDataType = GameData.teams![0];
-    let selectedAway: TeamDataType = GameData.teams![2];
+    let selectedHome: TeamDataType = GameData.teamsData.hostTeam!
+    let selectedAway: TeamDataType =  GameData.teamsData.guestTeam!
 
     homeTeamSelector.eventEmitter.on("change", (team: TeamDataType) => {
       selectedHome = team;

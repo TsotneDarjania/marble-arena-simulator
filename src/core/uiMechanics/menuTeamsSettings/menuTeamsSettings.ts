@@ -71,6 +71,7 @@ export default class MenuTeamsSettings extends Phaser.GameObjects.Container {
   }
 
   addTeamPlans() {
+    console.log(this.homeTeam.name,this.guestTeam.name)
     this.hostTeamPlan = new TeamPlan(this.scene, 0, 0, true, this.homeTeam)
     this.guestTeamPlan = new TeamPlan(this.scene, 0, 0, false, this.guestTeam);
   }
