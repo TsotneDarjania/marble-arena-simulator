@@ -84,7 +84,7 @@ export class Stadium extends Phaser.GameObjects.Container {
     this.scene.add.text(
       this.scene.game.canvas.width / 2,
       this.scene.game.canvas.height / 2 + 295,
-      "MARBLE ARENA",{
+      "M-arena.com",{
         align: "center",
         fontSize: "35px",
         strokeThickness: 1,
