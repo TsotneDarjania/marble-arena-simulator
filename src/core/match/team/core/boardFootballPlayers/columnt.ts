@@ -166,7 +166,7 @@ export class Column extends Phaser.GameObjects.Container {
       }
 
       if (
-        this.teamData.midfielder_strategy=== "wide-back" &&
+        this.teamData.midfielder_strategy === "wide-back" &&
         this.type === "middle"
       ) {
         if (i === 0 || i === this.quantity - 1) {
@@ -183,16 +183,16 @@ export class Column extends Phaser.GameObjects.Container {
       }
 
       if (
-        this.teamData.midfielder_strategy=== "center-attack" &&
+        this.teamData.midfielder_strategy === "center-attack" &&
         this.type === "middle"
       ) {
         if (i !== 0 && i !== this.quantity - 1) {
           this.side === "left"
-            ? (footballer.x -= calculatePercentage(
+            ? (footballer.x += calculatePercentage(
                 2.5,
                 this.stadium.innerFielddWidth
               ))
-            : (footballer.x += calculatePercentage(
+            : (footballer.x -= calculatePercentage(
                 2.5,
                 this.stadium.innerFielddWidth
               ));
