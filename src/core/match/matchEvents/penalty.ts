@@ -32,8 +32,8 @@ export class Penalty {
   changeBallPosition() {
     this.match.ball.setPosition(
       this.whoIsGulity === "host"
-        ? this.shooterFootballer.getBounds().centerX - 30
-        : this.shooterFootballer.getBounds().centerX + 30,
+        ? this.shooterFootballer.getBounds().centerX - 35
+        : this.shooterFootballer.getBounds().centerX + 35,
       this.match.scene.game.canvas.height / 2
     );
   }
@@ -42,8 +42,8 @@ export class Penalty {
     this.shooterFootballer = new Phaser.GameObjects.Image(
       this.match.scene,
       this.whoIsGulity === "host"
-        ? -calculatePercentage(40, this.match.stadium.innerFielddWidth)
-        : calculatePercentage(40, this.match.stadium.innerFielddWidth),
+        ? -calculatePercentage(37, this.match.stadium.innerFielddWidth)
+        : calculatePercentage(37, this.match.stadium.innerFielddWidth),
       0,
       this.whoIsGulity === "host"
         ? this.match.matchData.guestTeamData.name

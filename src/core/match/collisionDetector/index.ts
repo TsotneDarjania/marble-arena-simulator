@@ -26,12 +26,12 @@ export default class CollisionDetector {
           this.scene.soundManager.goalBorder.play();
         }
 
-        // if (
-        //   this.match.matchManager.matchEvenetManager.matchStatus === "isreeKick"
-        // ) {
-        //   this.match.matchManager.freeKick!.stopFreeKick();
-        //   this.scene.soundManager.goalBorder.play();
-        // }
+        if (
+          this.match.matchManager.matchEvenetManager.matchStatus === "isreeKick"
+        ) {
+          this.match.matchManager.freeKick!.stopFreeKick();
+          this.scene.soundManager.border.play();
+        }
 
         if (
           this.match.matchManager.matchEvenetManager.matchStatus ===

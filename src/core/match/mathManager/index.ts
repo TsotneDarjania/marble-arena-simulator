@@ -200,6 +200,12 @@ export default class MatchManager {
       }
     }
 
+    if(this.match.matchTimer.time === 120){
+      if(this.match.matchManager.hostScore !== this.match.matchManager.guestScore){
+        return;
+      }
+    }
+
     this.match.scene.soundManager.referee.play();
 
     setTimeout(() => {

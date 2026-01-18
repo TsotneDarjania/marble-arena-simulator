@@ -1,10 +1,6 @@
 import Match from "..";
 import CanvasScene from "../../../scenes/CanvasScene";
-import {
-  calculatePercentage,
-  getRandomIntNumber,
-  mapToRange,
-} from "../../../utils/math";
+import { calculatePercentage, getRandomIntNumber, mapToRange } from "../../../utils/math";
 
 export class LastPenalties {
   whosTurn: "host" | "guest" = "host";
@@ -13,7 +9,10 @@ export class LastPenalties {
 
   hostTeamScore = 0;
   guestTeamScore = 0;
-  round = 1;
+
+  // ✅ Correct shot counters (replace your old `round` logic)
+  shotsTakenHost = 0;
+  shotsTakenGuest = 0;
 
   constructor(public match: Match) {
     this.init();
@@ -23,6 +22,7 @@ export class LastPenalties {
     this.match.guestTeam.boardFootballPlayers.goalKeeper.setX(
       this.match.hostTeam.boardFootballPlayers.goalKeeper.x
     );
+
     this.prepareGoalkeeper();
     this.prepareAttaker();
     this.prepareBall();
@@ -30,6 +30,11 @@ export class LastPenalties {
     setTimeout(() => {
       this.shoot();
     }, getRandomIntNumber(2000, 5000));
+  }
+
+  private registerShot() {
+    if (this.whosTurn === "host") this.shotsTakenHost++;
+    else this.shotsTakenGuest++;
   }
 
   prepareGoalkeeper() {
@@ -50,9 +55,14 @@ export class LastPenalties {
   }
 
   prepareAttaker() {
+    // ✅ optional cleanup to avoid piling attackers
+    if (this.attacker) {
+      this.attacker.destroy();
+    }
+
     this.attacker = new Phaser.GameObjects.Image(
       this.match.scene,
-      -calculatePercentage(40, this.match.stadium.innerFielddWidth),
+      -calculatePercentage(37, this.match.stadium.innerFielddWidth),
       0,
       this.whosTurn === "host"
         ? this.match.matchData.hostTeamData.name
@@ -80,27 +90,21 @@ export class LastPenalties {
       this.whosTurn === "host"
         ? this.match.matchData.hostTeamData
         : this.match.matchData.guestTeamData;
+
     let x = 0;
     const isfailShoot = getRandomIntNumber(0, 100) < 70 ? false : true;
-
     let y = this.match.stadium.stadiumField.getBounds().centerY;
 
     if (isfailShoot) {
       const isTop = getRandomIntNumber(0, 100);
-      if (isTop > 50) {
-        y += getRandomIntNumber(60, 90);
-      } else {
-        y -= getRandomIntNumber(60, 90);
-      }
+      if (isTop > 50) y += getRandomIntNumber(60, 90);
+      else y -= getRandomIntNumber(60, 90);
     } else {
       const isTop = getRandomIntNumber(0, 100);
-
-      if (isTop > 50) {
-        y += getRandomIntNumber(0, 55);
-      } else {
-        y -= getRandomIntNumber(0, 55);
-      }
+      if (isTop > 50) y += getRandomIntNumber(0, 55);
+      else y -= getRandomIntNumber(0, 55);
     }
+
     if (this.whosTurn === "host") {
       x =
         this.match.scene.match.guestTeam.boardFootballPlayers.goalKeeper.getBounds()
@@ -110,27 +114,23 @@ export class LastPenalties {
         this.match.scene.match.hostTeam.boardFootballPlayers.goalKeeper.getBounds()
           .centerX - 10;
     }
-    this.match.scene.match.ball.kick(
-      mapToRange(teamData.pass_speed, 250, 500),
-      {
-        x,
-        y,
-      }
-    );
+
+    this.match.scene.match.ball.kick(mapToRange(teamData.pass_speed, 250, 500), {
+      x,
+      y,
+    });
   }
 
   save() {
-    const canvasScene = this.match.scene.scene.get(
-      "CanvasScene"
-    ) as CanvasScene;
+    const canvasScene = this.match.scene.scene.get("CanvasScene") as CanvasScene;
 
-    if (this.whosTurn === "host") {
-      canvasScene.drawPenaltyFail("left");
-    } else {
-      canvasScene.drawPenaltyFail("right");
-    }
+    if (this.whosTurn === "host") canvasScene.drawPenaltyFail("left");
+    else canvasScene.drawPenaltyFail("right");
 
     this.canCheckIfIsGoal = false;
+
+    // ✅ Count shot when outcome is known
+    this.registerShot();
 
     this.match.ball.stop();
     this.match.hostTeam.boardFootballPlayers.goalKeeper.stopMotion();
@@ -146,15 +146,17 @@ export class LastPenalties {
   isGoal() {
     this.canCheckIfIsGoal = false;
 
-    const canvasScene = this.match.scene.scene.get(
-      "CanvasScene"
-    ) as CanvasScene;
+    // ✅ Count shot when outcome is known
+    this.registerShot();
+
+    const canvasScene = this.match.scene.scene.get("CanvasScene") as CanvasScene;
 
     this.match.stadium.startGoalSelebration(this.whosTurn);
     this.match.ball.startBlinkAnimation();
     setTimeout(() => {
       this.match.ball.stop();
     }, 90);
+
     this.match.hostTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.guestTeam.boardFootballPlayers.goalKeeper.stopMotion();
     this.match.hostTeam.boardFootballPlayers.goalKeeper.deactive();
@@ -168,9 +170,7 @@ export class LastPenalties {
       this.hostTeamScore++;
 
       this.match.matchManager.hostScore++;
-      canvasScene.hostTeamScoretext.setText(
-        this.match.matchManager.hostScore.toString()
-      );
+      canvasScene.hostTeamScoretext.setText(this.match.matchManager.hostScore.toString());
     } else {
       canvasScene.drawPenaltyDone("right");
 
@@ -179,9 +179,7 @@ export class LastPenalties {
       this.guestTeamScore++;
 
       this.match.matchManager.guestScore++;
-      canvasScene.guestTeamScoretext.setText(
-        this.match.matchManager.guestScore.toString()
-      );
+      canvasScene.guestTeamScoretext.setText(this.match.matchManager.guestScore.toString());
     }
 
     setTimeout(() => {
@@ -195,48 +193,35 @@ export class LastPenalties {
 
   again() {
     this.match.matchManager.matchEvenetManager.matchStatus = "isLastPenalties";
+
     const maxRounds = 5;
-    const totalShotsTaken = this.round; // Keep track of the shots taken
-    const hostShotsLeft = maxRounds - Math.ceil(totalShotsTaken / 2);
-    const guestShotsLeft = maxRounds - Math.floor(totalShotsTaken / 2);
 
-    // Early win check: Only end if the opponent **CANNOT** catch up
-    if (this.hostTeamScore > this.guestTeamScore + guestShotsLeft) {
-      console.log("Host Team Wins Early!");
-      this.endGame();
-      return;
-    }
-    if (this.guestTeamScore > this.hostTeamScore + hostShotsLeft) {
-      console.log("Guest Team Wins Early!");
-      this.endGame();
-      return;
-    }
+    const hostShotsLeft = Math.max(0, maxRounds - this.shotsTakenHost);
+    const guestShotsLeft = Math.max(0, maxRounds - this.shotsTakenGuest);
 
-    // If both teams have taken 5 shots, determine winner
-    if (totalShotsTaken >= maxRounds * 2) {
-      if (this.hostTeamScore > this.guestTeamScore) {
-        console.log("Host Team Wins!");
+    // ✅ Early win check (only in the initial 5 kicks phase)
+    if (this.shotsTakenHost <= maxRounds && this.shotsTakenGuest <= maxRounds) {
+      if (this.hostTeamScore > this.guestTeamScore + guestShotsLeft) {
+        console.log("Host Team Wins Early!");
         this.endGame();
         return;
-      } else if (this.guestTeamScore > this.hostTeamScore) {
-        console.log("Guest Team Wins!");
+      }
+      if (this.guestTeamScore > this.hostTeamScore + hostShotsLeft) {
+        console.log("Guest Team Wins Early!");
         this.endGame();
         return;
-      } else {
-        console.log("Sudden Death Begins!");
       }
     }
 
-    // Sudden Death: Continue until one team scores and the other misses
+    // ✅ Sudden death correct rule:
+    // End only after BOTH have taken the same number of kicks, and score differs
     if (
-      totalShotsTaken > maxRounds * 2 &&
+      this.shotsTakenHost >= maxRounds &&
+      this.shotsTakenGuest >= maxRounds &&
+      this.shotsTakenHost === this.shotsTakenGuest &&
       this.hostTeamScore !== this.guestTeamScore
     ) {
-      console.log(
-        this.hostTeamScore > this.guestTeamScore
-          ? "Host Team Wins!"
-          : "Guest Team Wins!"
-      );
+      console.log(this.hostTeamScore > this.guestTeamScore ? "Host Team Wins!" : "Guest Team Wins!");
       this.endGame();
       return;
     }
@@ -256,16 +241,14 @@ export class LastPenalties {
 
     setTimeout(() => {
       this.shoot();
-      this.round++; // Increment round AFTER all conditions
     }, getRandomIntNumber(2000, 4000));
   }
 
   endGame() {
     this.match.matchManager.matchEvenetManager.matchStatus = "finishPenalty";
+
     setTimeout(() => {
-      const canvasScene = this.match.scene.scene.get(
-        "CanvasScene"
-      ) as CanvasScene;
+      const canvasScene = this.match.scene.scene.get("CanvasScene") as CanvasScene;
 
       this.match.hostTeam.boardFootballPlayers.goalKeeper.deactive();
       this.match.guestTeam.boardFootballPlayers.goalKeeper.deactive();
@@ -277,6 +260,7 @@ export class LastPenalties {
         this.match.matchManager.guestScore.toString()
       );
     }, 1000);
+
     console.log(
       `Final Score: Host ${this.hostTeamScore} - ${this.guestTeamScore} Guest`
     );

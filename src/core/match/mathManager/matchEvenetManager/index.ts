@@ -333,6 +333,9 @@ export class MatchEventManager {
   }
 
   makeCornerFromGoaleeper(goalKeeper: BoardGoalKeeper, side: "top" | "bottom") {
+    // alert("aaaaaaaaa")
+    // this.match.ball.setDepth(100)
+
     this.match.matchTimer.stopTimer();
     this.match.scene.soundManager.catchBall.play();
     this.matchStatus = "isCorner";

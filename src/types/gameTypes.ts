@@ -16,6 +16,7 @@ export type Formation =
   | "5-4-1";
 
 export type TeamDataType = {
+  is_national_team: string,
   attack_speed: number;
   attack_strategy: "normal" | "wide-back";
   default_strategy: Formation;

@@ -6,7 +6,6 @@ import { TeamDataType } from "../types/gameTypes";
 import { GameData } from "../config/gameData";
 import MenuTeamsSettings from "../core/uiMechanics/menuTeamsSettings/menuTeamsSettings";
 import { MenuButton } from "../core/uiMechanics/menuButton/menuButton";
-import { detectMob } from "../utils/helper";
 import { layoutData } from "../config/layout";
 
 export default class Menu extends Phaser.Scene {
@@ -16,11 +15,14 @@ export default class Menu extends Phaser.Scene {
   selectButtonClickSound!: Phaser.Sound.BaseSound;
   buttonClickSound!: Phaser.Sound.BaseSound;
 
+  teams: Array<TeamDataType> = [];
+
   constructor() {
     super("Menu");
   }
 
   create() {
+    console.log(GameData.teams);
     // Add Sounds
     this.selectButtonClickSound = this.sound.add("selectTeamButtonSound", {
       volume: 1,
@@ -42,7 +44,7 @@ export default class Menu extends Phaser.Scene {
           color: "#25e000ff",
           stroke: "#68f54cff",
           strokeThickness: 2,
-        }
+        },
       )
       .setOrigin(0.5)
       .setAlpha(0);
@@ -58,7 +60,7 @@ export default class Menu extends Phaser.Scene {
           color: "#85ce77ff",
           strokeThickness: 2,
           stroke: "#58974cff",
-        }
+        },
       )
       .setOrigin(0.5)
       .setAlpha(0);
@@ -77,11 +79,53 @@ export default class Menu extends Phaser.Scene {
           onComplete: () => {
             subtitle.destroy();
             title.destroy();
-            this.showMenuInterface();
+
+            this.showChooseTypeInterface();
+            // this.showMenuInterface();
           },
         });
       },
     });
+  }
+
+  private showChooseTypeInterface() {
+    const button_1 = new MenuButton(
+      this,
+      this.scene.scene.game.canvas.width / 2,
+      this.scene.scene.game.canvas.height / 2 - 35,
+      "National Teams",
+      240,
+      53,
+      1,
+    )
+      .setInteractive()
+      .on("click", () => {
+        this.teams = GameData.teams!.filter(
+          (team) => team.is_national_team === "yes",
+        ).sort((a, b) => a.name.localeCompare(b.name));
+        button_1.destroy();
+        button_2.destroy();
+        this.showMenuInterface();
+      });
+    const button_2 = new MenuButton(
+      this,
+      this.scene.scene.game.canvas.width / 2,
+      this.scene.scene.game.canvas.height / 2 + 35,
+      "Teams",
+      240,
+      53,
+      1,
+    )
+      .setInteractive()
+      .on("click", () => {
+        this.teams = GameData.teams!.filter(
+          (team) => team.is_national_team === "no",
+        ).sort((a, b) => a.name.localeCompare(b.name));
+
+        button_1.destroy();
+        button_2.destroy();
+        this.showMenuInterface();
+      });
   }
 
   private showMenuInterface() {
@@ -112,7 +156,7 @@ export default class Menu extends Phaser.Scene {
           color: "#aff0a2ff",
           stroke: "#aff0a2ff",
           strokeThickness: 2,
-        }
+        },
       )
       .setAlpha(0)
       .setOrigin(0.5);
@@ -123,7 +167,7 @@ export default class Menu extends Phaser.Scene {
         this.game.canvas.height / 2 -
           calculatePercentage(
             layoutData.menu.hostTeamChooseTitle.yPercent,
-            this.game.canvas.height
+            this.game.canvas.height,
           ),
         "Home Team",
         {
@@ -132,7 +176,7 @@ export default class Menu extends Phaser.Scene {
           color: "#c2f5c2ff",
           stroke: "#c2f5c2ff",
           strokeThickness: 2,
-        }
+        },
       )
       .setAlpha(0)
       .setOrigin(0.5);
@@ -145,11 +189,12 @@ export default class Menu extends Phaser.Scene {
         calculatePercentage(10, this.game.canvas.height),
       300,
       50,
-      GameData.teams!,
-      GameData.teamsData.hostTeam!
+      this.teams!,
+      this.teams[0]!,
     )
       .setScale(layoutData.menu.teamsSelectorScale)
       .setAlpha(0);
+      GameData.teamsData.hostTeam = this.teams[0]
 
     const guestTeamChooseTitle = this.add
       .text(
@@ -157,7 +202,7 @@ export default class Menu extends Phaser.Scene {
         this.game.canvas.height / 2 +
           calculatePercentage(
             layoutData.menu.guestTeamChooseTitle.yPercent,
-            this.game.canvas.height
+            this.game.canvas.height,
           ),
         "Away Team",
         {
@@ -166,7 +211,7 @@ export default class Menu extends Phaser.Scene {
           color: "#c2f5c2ff",
           stroke: "#c2f5c2ff",
           strokeThickness: 2,
-        }
+        },
       )
       .setAlpha(0)
       .setOrigin(0.5);
@@ -179,15 +224,16 @@ export default class Menu extends Phaser.Scene {
         calculatePercentage(21, this.game.canvas.height),
       300,
       50,
-      GameData.teams!,
-      GameData.teamsData.guestTeam!
+      this.teams!,
+      this.teams[1]!,
     )
       .setScale(layoutData.menu.teamsSelectorScale)
       .setAlpha(0);
+      GameData.teamsData.guestTeam= this.teams[1]
 
     // Track current selections
-    let selectedHome: TeamDataType = GameData.teamsData.hostTeam!
-    let selectedAway: TeamDataType =  GameData.teamsData.guestTeam!
+    let selectedHome: TeamDataType = GameData.teamsData.hostTeam!;
+    let selectedAway: TeamDataType = GameData.teamsData.guestTeam!;
 
     homeTeamSelector.eventEmitter.on("change", (team: TeamDataType) => {
       selectedHome = team;
@@ -223,7 +269,7 @@ export default class Menu extends Phaser.Scene {
           "NEXT",
           layoutData.menu.nextButton.width,
           layoutData.menu.nextButton.height,
-          14
+          14,
         )
           .setAlpha(0)
           .setEnabled(false); // will sync right after
@@ -245,7 +291,7 @@ export default class Menu extends Phaser.Scene {
             this.game.canvas.width / 2,
             this.game.canvas.height / 2,
             selectedHome!,
-            selectedAway!
+            selectedAway!,
           );
         });
         this.add.existing(this.nextBtn);
