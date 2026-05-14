@@ -75,7 +75,7 @@ export class IntroWindow extends Phaser.GameObjects.Container {
     this.scene.tweens.add({
       targets: hostContainer,
       duration: 500,
-      x: this.scene.game.canvas.width / 2 - 150,
+      x: this.scene.game.canvas.width / 2 - 250,
       alpha: 1,
       ease: "Sine.easeOut",
       onComplete: () => {
@@ -143,7 +143,7 @@ export class IntroWindow extends Phaser.GameObjects.Container {
     this.scene.tweens.add({
       targets: guestContainer,
       duration: 500,
-      x: this.scene.game.canvas.width / 2 + 150,
+      x: this.scene.game.canvas.width / 2 + 250,
       alpha: 1,
       ease: "Sine.easeOut",
       onComplete: () => {
