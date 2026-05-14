@@ -16,6 +16,6 @@ export const GameData: GameDataType = {
   gameSettings: {
     fansSounds: true,
     gameSounds: true,
-    stadiumBackgroundColor: 0x032e29,
+    stadiumBackgroundColor: 0x528f42,
   },
 };
