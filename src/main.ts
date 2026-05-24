@@ -243,6 +243,15 @@ async function startGameLazy() {
 
   const game = new Phaser.Game(config);
 
+  // Keep sound and game running when the tab/window loses focus
+  game.sound.pauseOnBlur = false;
+  game.events.on(Phaser.Core.Events.BLUR, () => {
+    if (!game.loop.running) game.loop.wake();
+  });
+  game.events.on(Phaser.Core.Events.HIDDEN, () => {
+    if (!game.loop.running) game.loop.wake();
+  });
+
   // Expose DPR to scenes (for crisp text: resolution: dpr)
   game.registry.set("__dpr", getDPR());
 
@@ -266,6 +275,41 @@ async function startGameLazy() {
   window.addEventListener("resize", onWinResize, { passive: true });
   window.addEventListener("orientationchange", onWinResize, { passive: true });
   (window as any).visualViewport?.addEventListener("resize", onWinResize, {
+    passive: true,
+  });
+
+  // Scene content is laid out once at boot and doesn't react to RESIZE events,
+  // so after the viewport settles (fullscreen toggle or a real window resize)
+  // we stop every running scene and restart from Menu — this re-runs all
+  // create() positioning against the new canvas size without a page reload.
+  let baselineW = w;
+  let baselineH = h;
+  let menuResetTimer: ReturnType<typeof setTimeout> | undefined;
+  const restartFromMenu = () => {
+    const scenes = game.scene.getScenes(true);
+    scenes.forEach((s) => game.scene.stop(s.scene.key));
+    game.scene.start("Menu");
+  };
+  const scheduleMenuResetIfSizeChanged = (delay: number) => {
+    if (menuResetTimer) clearTimeout(menuResetTimer);
+    menuResetTimer = setTimeout(() => {
+      const { w: nw, h: nh } = getCSSViewport();
+      if (Math.abs(nw - baselineW) > 4 || Math.abs(nh - baselineH) > 4) {
+        baselineW = nw;
+        baselineH = nh;
+        restartFromMenu();
+      }
+    }, delay);
+  };
+  const onFullscreenChange = () => scheduleMenuResetIfSizeChanged(250);
+  document.addEventListener("fullscreenchange", onFullscreenChange);
+  document.addEventListener("webkitfullscreenchange", onFullscreenChange as any);
+  const onSettledResize = () => scheduleMenuResetIfSizeChanged(600);
+  window.addEventListener("resize", onSettledResize, { passive: true });
+  window.addEventListener("orientationchange", onSettledResize, {
+    passive: true,
+  });
+  (window as any).visualViewport?.addEventListener("resize", onSettledResize, {
     passive: true,
   });
 
