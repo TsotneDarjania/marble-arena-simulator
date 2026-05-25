@@ -186,7 +186,10 @@ export default class Menu extends Phaser.Scene {
       this,
       this.game.canvas.width / 2,
       this.game.canvas.height / 2 -
-        calculatePercentage(10, this.game.canvas.height),
+        calculatePercentage(
+          layoutData.menu.hostTeamSelector.yPercent,
+          this.game.canvas.height,
+        ),
       300,
       50,
       this.teams!,
@@ -221,7 +224,10 @@ export default class Menu extends Phaser.Scene {
       this,
       this.game.canvas.width / 2,
       this.game.canvas.height / 2 +
-        calculatePercentage(21, this.game.canvas.height),
+        calculatePercentage(
+          layoutData.menu.guestTeamSelector.yPercent,
+          this.game.canvas.height,
+        ),
       300,
       50,
       this.teams!,

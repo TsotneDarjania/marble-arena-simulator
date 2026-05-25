@@ -193,10 +193,10 @@ async function startGameLazy() {
 
   if (teamParams) {
     GameData.teamsData.hostTeam = teams.find(
-      (t) => t.id === Number(teamParams.hostTeamId)
+      (t) => t.id === Number(teamParams.hostTeamId),
     )!;
     GameData.teamsData.guestTeam = teams.find(
-      (t) => t.id === Number(teamParams.guestTeamId)
+      (t) => t.id === Number(teamParams.guestTeamId),
     )!;
   } else {
     GameData.teamsData.hostTeam = teams[0];
@@ -281,42 +281,42 @@ async function startGameLazy() {
   // Scene content is laid out once at boot and doesn't react to RESIZE events,
   // so after the viewport settles (fullscreen toggle or a real window resize)
   // we stop every running scene and restart from Menu — this re-runs all
-  // create() positioning against the new canvas size without a page reload.
-  let baselineW = w;
-  let baselineH = h;
-  let menuResetTimer: ReturnType<typeof setTimeout> | undefined;
-  const restartFromMenu = () => {
-    const scenes = game.scene.getScenes(true);
-    scenes.forEach((s) => game.scene.stop(s.scene.key));
-    game.scene.start("Menu");
-  };
-  const scheduleMenuResetIfSizeChanged = (delay: number) => {
-    if (menuResetTimer) clearTimeout(menuResetTimer);
-    menuResetTimer = setTimeout(() => {
-      const { w: nw, h: nh } = getCSSViewport();
-      if (Math.abs(nw - baselineW) > 4 || Math.abs(nh - baselineH) > 4) {
-        baselineW = nw;
-        baselineH = nh;
-        restartFromMenu();
-      }
-    }, delay);
-  };
-  const onFullscreenChange = () => scheduleMenuResetIfSizeChanged(250);
-  document.addEventListener("fullscreenchange", onFullscreenChange);
-  document.addEventListener("webkitfullscreenchange", onFullscreenChange as any);
-  const onSettledResize = () => scheduleMenuResetIfSizeChanged(600);
-  window.addEventListener("resize", onSettledResize, { passive: true });
-  window.addEventListener("orientationchange", onSettledResize, {
-    passive: true,
-  });
-  (window as any).visualViewport?.addEventListener("resize", onSettledResize, {
-    passive: true,
-  });
+  //   // create() positioning against the new canvas size without a page reload.
+  //   let baselineW = w;
+  //   let baselineH = h;
+  //   let menuResetTimer: ReturnType<typeof setTimeout> | undefined;
+  //   const restartFromMenu = () => {
+  //     const scenes = game.scene.getScenes(true);
+  //     scenes.forEach((s) => game.scene.stop(s.scene.key));
+  //     game.scene.start("Menu");
+  //   };
+  //   const scheduleMenuResetIfSizeChanged = (delay: number) => {
+  //     if (menuResetTimer) clearTimeout(menuResetTimer);
+  //     menuResetTimer = setTimeout(() => {
+  //       const { w: nw, h: nh } = getCSSViewport();
+  //       if (Math.abs(nw - baselineW) > 4 || Math.abs(nh - baselineH) > 4) {
+  //         baselineW = nw;
+  //         baselineH = nh;
+  //         restartFromMenu();
+  //       }
+  //     }, delay);
+  //   };
+  //   const onFullscreenChange = () => scheduleMenuResetIfSizeChanged(250);
+  //   document.addEventListener("fullscreenchange", onFullscreenChange);
+  //   document.addEventListener("webkitfullscreenchange", onFullscreenChange as any);
+  //   const onSettledResize = () => scheduleMenuResetIfSizeChanged(600);
+  //   window.addEventListener("resize", onSettledResize, { passive: true });
+  //   window.addEventListener("orientationchange", onSettledResize, {
+  //     passive: true,
+  //   });
+  //   (window as any).visualViewport?.addEventListener("resize", onSettledResize, {
+  //     passive: true,
+  //   });
 
-  // Initial adjust in case the browser changes DPR after fullscreen
-  setTimeout(resizeToDPR, 0);
+  //   // Initial adjust in case the browser changes DPR after fullscreen
+  //   setTimeout(resizeToDPR, 0);
 
-  game.scene.start("Preload");
+  //   game.scene.start("Preload");
 }
 
 /* ---------- boot ---------- */
@@ -324,7 +324,9 @@ function boot() {
   updateOverlay();
 
   window.addEventListener("resize", updateOverlay, { passive: true });
-  window.addEventListener("orientationchange", updateOverlay, { passive: true });
+  window.addEventListener("orientationchange", updateOverlay, {
+    passive: true,
+  });
   (window as any).visualViewport?.addEventListener("resize", updateOverlay, {
     passive: true,
   });

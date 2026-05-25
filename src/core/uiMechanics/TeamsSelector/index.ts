@@ -1,5 +1,5 @@
-import { layoutData } from "../../../config/layout";
 import { TeamDataType } from "../../../types/gameTypes";
+import { detectMob } from "../../../utils/helper";
 
 type LayoutItem = {
   teamIndex: number;
@@ -35,8 +35,13 @@ export default class TeamsSelector extends Phaser.GameObjects.Container {
   // sprites cache
   private sprites = new Map<number, Phaser.GameObjects.Image>();
 
-  // label for selected team name
-  private titleText!: Phaser.GameObjects.Text;
+  // search bar replaces the old title text — it shows the selected team's name as
+  // a placeholder when blurred, and lets the user filter teams by typing.
+  private searchInput?: HTMLInputElement;
+  private pendingSearchTarget: number | null = null;
+  private onAnyResize = () => this.syncSearchPosition();
+  private onSceneTick = () => this.syncSearchFrame();
+  private static stylesInjected = false;
 
   constructor(
     public scene: Phaser.Scene,
@@ -56,21 +61,12 @@ export default class TeamsSelector extends Phaser.GameObjects.Container {
     this.selectedIndex = idx >= 0 ? idx : 0;
 
     this.buildInitial();
+    this.buildSearch();
   }
 
   // ---------- INITIAL BUILD ----------
 
   private buildInitial() {
-    // label above the row
-    this.titleText = this.scene.add.text(0, -this.height / 2 - 30, "", {
-      fontSize: layoutData.menu.teamsSelectorTItle.fonstSize,
-      color: "#ffffffff",
-      stroke: "#fbfffbff",
-      strokeThickness: 1,
-      align: "center",
-    }).setOrigin(0.5);
-    this.add(this.titleText);
-
     const layout = this.computeLayout(this.getVisibleIndices());
     layout.forEach((li) => {
       const img = this.scene.add.image(li.x, 0, li.key)
@@ -87,7 +83,6 @@ export default class TeamsSelector extends Phaser.GameObjects.Container {
       this.sprites.set(li.teamIndex, img);
     });
 
-    this.syncTitleImmediate();
     this.addArrows();
     this.addKeyboard();
   }
@@ -153,42 +148,29 @@ export default class TeamsSelector extends Phaser.GameObjects.Container {
     });
   }
 
-  private shortestDelta(from: number, to: number, n: number) {
+  private shortestDelta(from: number, to: number) {
     const forward = this.wrapIndex(to - from);
     const backward = -this.wrapIndex(from - to);
     return Math.abs(backward) < Math.abs(forward) ? backward : forward;
   }
 
-  // ---------- TITLE LABEL ----------
+  // ---------- TITLE / SELECTION LABEL ----------
 
-  private syncTitleImmediate() {
+  private syncTitleLabel() {
+    if (!this.searchInput) return;
     const team = this.items[this.selectedIndex];
-    this.titleText.setText(team?.name ?? "");
-  }
-
-  private tweenTitle() {
-    const team = this.items[this.selectedIndex];
-    this.scene.tweens.add({
-      targets: this.titleText,
-      alpha: 0,
-      duration: 80,
-      onComplete: () => {
-        this.titleText.setText(team?.name ?? "");
-        this.scene.tweens.add({
-          targets: this.titleText,
-          alpha: 1,
-          duration: 140,
-          ease: "Quad.easeOut",
-        });
-      },
-    });
+    this.searchInput.placeholder = team?.name ?? "";
   }
 
   // ---------- SELECTION / ANIMATION ----------
 
   private selectAbsolute(targetIndex: number) {
-    if (this.animating || targetIndex === this.selectedIndex) return;
-    const delta = this.shortestDelta(this.selectedIndex, targetIndex, this.items.length);
+    if (targetIndex === this.selectedIndex) return;
+    if (this.animating) {
+      this.pendingSearchTarget = targetIndex;
+      return;
+    }
+    const delta = this.shortestDelta(this.selectedIndex, targetIndex);
     this.move(delta);
   }
 
@@ -199,7 +181,7 @@ export default class TeamsSelector extends Phaser.GameObjects.Container {
     this.selectedIndex = this.wrapIndex(this.selectedIndex + delta);
     this.value = this.items[this.selectedIndex];
     this.eventEmitter.emit("change", this.value, this.selectedIndex);
-    this.tweenTitle();
+    this.syncTitleLabel();
 
     const nextIndices = this.getVisibleIndices();
     const nextLayout = this.computeLayout(nextIndices);
@@ -262,6 +244,12 @@ export default class TeamsSelector extends Phaser.GameObjects.Container {
 
     this.scene.time.delayedCall(this.tweenDuration + 20, () => {
       this.animating = false;
+      // consume any queued search target (handles fast typing)
+      if (this.pendingSearchTarget !== null) {
+        const target = this.pendingSearchTarget;
+        this.pendingSearchTarget = null;
+        if (target !== this.selectedIndex) this.selectAbsolute(target);
+      }
     });
   }
 
@@ -270,8 +258,14 @@ export default class TeamsSelector extends Phaser.GameObjects.Container {
   private addKeyboard() {
     const kb = this.scene.input.keyboard;
     if (!kb) return;
-    kb.on("keydown-LEFT", () => this.move(-1));
-    kb.on("keydown-RIGHT", () => this.move(1));
+    kb.on("keydown-LEFT", () => {
+      if (TeamsSelector.isTextInputFocused()) return;
+      this.move(-1);
+    });
+    kb.on("keydown-RIGHT", () => {
+      if (TeamsSelector.isTextInputFocused()) return;
+      this.move(1);
+    });
   }
 
   private makeArrowButton(dir: -1 | 1): Phaser.GameObjects.Container {
@@ -319,5 +313,192 @@ export default class TeamsSelector extends Phaser.GameObjects.Container {
 
     this.add(this.leftArrow);
     this.add(this.rightArrow);
+  }
+
+  // ---------- SEARCH ----------
+
+  private buildSearch() {
+    TeamsSelector.ensureSearchStyles();
+
+    const input = document.createElement("input");
+    input.type = "search";
+    input.autocomplete = "off";
+    input.spellcheck = false;
+    input.className = "ts-search-input";
+    // initial placeholder = current team name (the search bar doubles as the
+    // selected-team label while not focused)
+    input.placeholder = this.items[this.selectedIndex]?.name ?? "Search team…";
+
+    const isMob = detectMob();
+    Object.assign(input.style, {
+      position: "fixed",
+      left: "0px",
+      top: "0px",
+      width: isMob ? "170px" : "240px",
+      height: isMob ? "30px" : "38px",
+      padding: isMob ? "0 12px 0 30px" : "0 16px 0 36px",
+      boxSizing: "border-box",
+      borderRadius: "10px",
+      border: "1px solid rgba(156, 244, 106, 0.4)",
+      background:
+        "linear-gradient(180deg, rgba(8, 38, 22, 0.85), rgba(2, 23, 14, 0.85))",
+      color: "#eafff1",
+      fontFamily: "ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial",
+      fontSize: isMob ? "13px" : "15px",
+      fontWeight: "600",
+      letterSpacing: "0.3px",
+      textAlign: "center",
+      outline: "none",
+      boxShadow:
+        "0 6px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05)",
+      pointerEvents: "none",
+      opacity: "0",
+      zIndex: "1000",
+      transition:
+        "border-color 140ms ease, box-shadow 140ms ease, opacity 200ms ease, transform 140ms ease",
+      backgroundImage: `url("data:image/svg+xml;utf8,${encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#c2f5c2" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>'
+      )}")`,
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: isMob ? "10px center" : "12px center",
+    } as Partial<CSSStyleDeclaration>);
+
+    input.addEventListener("focus", () => {
+      input.style.borderColor = "rgba(156, 244, 106, 0.9)";
+      input.style.boxShadow =
+        "0 0 0 3px rgba(156, 244, 106, 0.22), 0 4px 14px rgba(0,0,0,0.35)";
+      input.select();
+    });
+    input.addEventListener("blur", () => {
+      input.style.borderColor = "rgba(156, 244, 106, 0.35)";
+      input.style.boxShadow = "0 4px 14px rgba(0,0,0,0.35)";
+      // clear any leftover query so the placeholder (selected team name) is visible
+      input.value = "";
+      this.syncTitleLabel();
+    });
+
+    input.addEventListener("input", () => this.handleSearchInput(input.value));
+    input.addEventListener("keydown", (e) => {
+      // keep arrow keys editing the text cursor (default behavior),
+      // but let Enter/Escape act as commit/cancel
+      if (e.key === "Enter") {
+        e.preventDefault();
+        input.blur();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        input.value = "";
+        this.handleSearchInput("");
+        input.blur();
+      }
+    });
+
+    document.body.appendChild(input);
+    this.searchInput = input;
+
+    // initial position + per-frame sync (alpha + position track the container)
+    this.syncSearchPosition();
+    this.scene.scale.on("resize", this.onAnyResize);
+    this.scene.events.on(Phaser.Scenes.Events.POST_UPDATE, this.onSceneTick);
+
+    // tear down DOM when the container or scene goes away
+    const cleanup = () => this.destroySearch();
+    this.once(Phaser.GameObjects.Events.DESTROY, cleanup);
+    this.scene.events.once(Phaser.Scenes.Events.SHUTDOWN, cleanup);
+    this.scene.events.once(Phaser.Scenes.Events.DESTROY, cleanup);
+  }
+
+  private handleSearchInput(rawQuery: string) {
+    if (!this.searchInput) return;
+    const query = rawQuery.trim().toLowerCase();
+
+    if (!query) {
+      this.searchInput.style.borderColor = "rgba(156, 244, 106, 0.35)";
+      return;
+    }
+
+    // 1) prefer prefix match, 2) fall back to substring match
+    let idx = this.items.findIndex((t) => t.name.toLowerCase().startsWith(query));
+    if (idx < 0) idx = this.items.findIndex((t) => t.name.toLowerCase().includes(query));
+
+    if (idx < 0) {
+      // no match — soft red glow
+      this.searchInput.style.borderColor = "rgba(255, 110, 110, 0.85)";
+      return;
+    }
+
+    this.searchInput.style.borderColor = "rgba(156, 244, 106, 0.85)";
+    if (idx !== this.selectedIndex) this.selectAbsolute(idx);
+  }
+
+  private syncSearchFrame() {
+    if (!this.searchInput || !this.scene) return;
+    const a = (this as any).alpha as number;
+    this.searchInput.style.opacity = String(a);
+    this.searchInput.style.pointerEvents = a > 0.95 ? "auto" : "none";
+    this.syncSearchPosition();
+  }
+
+  private syncSearchPosition() {
+    if (!this.searchInput || !this.scene?.game?.canvas) return;
+    const canvas = this.scene.game.canvas;
+    const rect = canvas.getBoundingClientRect();
+
+    // Anchor below the carousel. We mirror the title→logos distance defined
+    // by layoutData (host title yPercent − host selector yPercent = 11% of
+    // canvas height) so title → logos → search bar are evenly spaced.
+    const distancePercent = 11;
+    const titleToLogosWorld = canvas.height * (distancePercent / 100);
+    const localOffset = titleToLogosWorld / (this.scaleY || 1);
+    const mat = this.getWorldTransformMatrix();
+    const world = new Phaser.Math.Vector2();
+    mat.transformPoint(0, localOffset, world);
+
+    const scaleX = rect.width / canvas.width;
+    const scaleY = rect.height / canvas.height;
+    const w = this.searchInput.offsetWidth || 240;
+    const h = this.searchInput.offsetHeight || 38;
+
+    const cssX = rect.left + world.x * scaleX - w / 2;
+    const cssY = rect.top + world.y * scaleY - h / 2;
+
+    this.searchInput.style.left = `${Math.round(cssX)}px`;
+    this.searchInput.style.top = `${Math.round(cssY)}px`;
+  }
+
+  private destroySearch() {
+    if (!this.searchInput) return;
+    this.scene?.scale?.off("resize", this.onAnyResize);
+    this.scene?.events?.off(Phaser.Scenes.Events.POST_UPDATE, this.onSceneTick);
+    if (this.searchInput.parentElement) {
+      this.searchInput.parentElement.removeChild(this.searchInput);
+    }
+    this.searchInput = undefined;
+  }
+
+  private static ensureSearchStyles() {
+    if (TeamsSelector.stylesInjected) return;
+    TeamsSelector.stylesInjected = true;
+    const style = document.createElement("style");
+    style.setAttribute("data-teams-selector", "search");
+    style.textContent = `
+      .ts-search-input::placeholder { color: rgba(195, 245, 195, 0.55); font-weight: 500; }
+      .ts-search-input::-webkit-search-cancel-button {
+        -webkit-appearance: none;
+        width: 14px; height: 14px;
+        background: url('data:image/svg+xml;utf8,${encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c2f5c2" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>'
+        )}') center / contain no-repeat;
+        cursor: pointer; opacity: 0.7;
+      }
+      .ts-search-input::-webkit-search-cancel-button:hover { opacity: 1; }
+    `;
+    document.head.appendChild(style);
+  }
+
+  private static isTextInputFocused(): boolean {
+    const el = document.activeElement as HTMLElement | null;
+    if (!el) return false;
+    const tag = el.tagName;
+    return tag === "INPUT" || tag === "TEXTAREA" || el.isContentEditable;
   }
 }

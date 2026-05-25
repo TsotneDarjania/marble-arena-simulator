@@ -23,19 +23,31 @@ export const layoutData = {
     teamsSelectorTItle: {
       fonstSize: detectMob() ? "18px" : "22px",
     },
+    // host & guest layout below uses an 11%-of-canvas-height gap between section
+    // title and selector — TeamsSelector mirrors the same 11% gap *below* the
+    // carousel, so title → logos → search bar are evenly spaced. Keep the
+    // yPercent values in sync with the distancePercent constant inside
+    // TeamsSelector if they change.
     hostTeamChooseTitle: {
       fontSize: detectMob() ? "22px" : "40px",
-      yPercent: detectMob() ? 28 : 21,
+      yPercent: 21,
+    },
+    hostTeamSelector: {
+      yPercent: 10,
     },
     guestTeamChooseTitle: {
       fontSize: detectMob() ? "22px" : "40px",
-      yPercent: detectMob() ? 2 : 10,
+      yPercent: 10,
+    },
+    guestTeamSelector: {
+      yPercent: 21,
     },
     nextButton: {
       width: detectMob() ? 120 : 200,
-      height: detectMob() ? 35 : 48,
+      height: detectMob() ? 28 : 48,
       fontSize: detectMob() ? "16px" : "20px",
-      y: detectMob() ? 36 : 56,
+      // pulled closer to the bottom on mobile so the guest search bar fits above
+      y: detectMob() ? 8 : 30,
     },
     menuTeamsSettings: {
       menuButton: {
