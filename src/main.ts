@@ -244,13 +244,13 @@ async function startGameLazy() {
   const game = new Phaser.Game(config);
 
   // Keep sound and game running when the tab/window loses focus
-  game.sound.pauseOnBlur = false;
-  game.events.on(Phaser.Core.Events.BLUR, () => {
-    if (!game.loop.running) game.loop.wake();
-  });
-  game.events.on(Phaser.Core.Events.HIDDEN, () => {
-    if (!game.loop.running) game.loop.wake();
-  });
+  // game.sound.pauseOnBlur = false;
+  // game.events.on(Phaser.Core.Events.BLUR, () => {
+  //   if (!game.loop.running) game.loop.wake();
+  // });
+  // game.events.on(Phaser.Core.Events.HIDDEN, () => {
+  //   if (!game.loop.running) game.loop.wake();
+  // });
 
   // Expose DPR to scenes (for crisp text: resolution: dpr)
   game.registry.set("__dpr", getDPR());
