@@ -203,6 +203,7 @@ async function startGameLazy() {
     GameData.teamsData.guestTeam = teams[1];
   }
 
+  //,,,
   // ✅ Lazy import heavy stuff only now
   const PhaserMod = await import("phaser");
   const { default: Preload } = await import("./scenes/Preloader");
